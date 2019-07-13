@@ -1,0 +1,4 @@
+.env
+.idea/
+.next/
+node_modules

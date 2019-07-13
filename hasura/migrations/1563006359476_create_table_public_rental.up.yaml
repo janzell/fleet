@@ -1,0 +1,12 @@
+- args:
+    sql: CREATE TABLE "public"."rental"("id" serial NOT NULL, "driver_id" integer
+      NOT NULL, "taxi_id" integer NOT NULL, "status" text NOT NULL, "rental_start_date"
+      date NOT NULL DEFAULT now(), "rental_end_date" date  DEFAULT now(), PRIMARY
+      KEY ("id") , FOREIGN KEY ("driver_id") REFERENCES "public"."driver"("id") ON
+      UPDATE restrict ON DELETE restrict, FOREIGN KEY ("taxi_id") REFERENCES "public"."taxi"("id")
+      ON UPDATE restrict ON DELETE restrict);
+  type: run_sql
+- args:
+    name: rental
+    schema: public
+  type: add_existing_table_or_view

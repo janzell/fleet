@@ -1,0 +1,5 @@
+- args:
+    table:
+      name: migrations
+      schema: public
+  type: untrack_table

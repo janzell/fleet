@@ -1,0 +1,28 @@
+@import '~antd/dist/antd.css';
+
+.sidebar-bg-color {
+    background: #373744;
+}
+
+.logo {
+    height: 65px;
+    background: #fff;
+    padding: 20px;
+}
+
+.ant-menu.ant-menu-dark .ant-menu-item-selected,
+.ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected,
+.ant-menu-item-active,
+.ant-layout-sider-zero-width-trigger,
+.ant-layout-sider-zero-width-trigger:hover
+{
+    background: #da566a;
+}
+
+.ant-layout-sider-zero-width-trigger {
+    z-index: 1;
+}
+
+.ant-menu-dark .ant-menu-inline.ant-menu-sub {
+    background: #373744;
+}
