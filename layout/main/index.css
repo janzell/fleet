@@ -1,15 +1,26 @@
 @import '~antd/dist/antd.css';
 
-.sidebar-bg-color {
+body {
+    background: #f0f2f5;
+}
+
+.sidebar-bg-color, .ant-layout-sider{
     background: #373744;
 }
 
 .logo {
     height: 65px;
-    background: #fff;
     padding: 20px;
 }
+.logo h2 {
+    color: #FFF;
+}
 
+.anticon-menu-fold,
+.anticon-menu-unfold{
+    font-size: 20px;
+    margin-left: 15px;
+}
 .ant-menu.ant-menu-dark .ant-menu-item-selected,
 .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected,
 .ant-menu-item-active,

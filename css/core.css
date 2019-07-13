@@ -18,6 +18,11 @@ html, body {
 }
 
 
+.ant-page-header {
+    padding-left: 0;
+    padding-right: 0;
+}
+
 .push {
     height: 38px;
 }
@@ -200,9 +205,14 @@ a:active, a:hover {
     width: 372px;
 }
 
-/**
- * Common CSS
- */
+.ant-btn{
+    border-radius: 32px;
+}
+
+
+/** ----------------------------------.*
+   Miscellaneous
+---------------------------------------**/
 ::-webkit-input-placeholder {
     font-style: italic;
 }
@@ -224,139 +234,37 @@ a:active, a:hover {
 .display-block {
     display: block;
 }
+
 .button-disabled{
     opacity: 0.7;
     cursor: not-allowed;
 }
-.w-372 {
-    width: 372px;
-}
-.w-905 {
-    width: 905px;
-}
-.w-890 {
-    width: 890px;
-}
-.w-130 {
-    width: 130px;
-}
-.w-140 {
-    width: 140px;
-}
-.h-250 {
-    height: 250px;
-}
-.fs-20 {
-    font-size: 20px;
-}
-.m-0 {
-    margin: 0;
-}
-.mt-11 {
-    margin-top: 11px;
-}
-.mt-13 {
-    margin-top: 13px;
-}
-.mt-30 {
-    margin-top: 30px;
-}
-.mt-48 {
-    margin-top: 48px;
-}
-.mt-78 {
-    margin-top: 78px;
-}
-.mt-75 {
-    margin-top: 75px;
-}
-.mt-77 {
-    margin-top: 77px;
-}
-.mt-98 {
-    margin-top: 98px;
-}
+
 .mb-20 {
     margin-bottom: 20px;
 }
-.mb-21 {
-    margin-bottom: 21px;
-}
-.mr-10 {
-    margin-right: 10px
-}
-.mr-28 {
-    margin-right: 28px;
-}
-.mr-5 {
-    margin-right: 5px;
-}
-.mr-8 {
-    margin-right: 8px;
-}
-.ml-10 {
-    margin-left: 10px;
-}
-.ml-15 {
-    margin-left: 15px;
-}
-.f-mt-13 {
-    margin-top: 13px;
-}
+
 .mt-10 {
     margin-top: 10px;
 }
 .mt-20 {
     margin-top: 20px;
 }
-.mt-28 {
-    margin-top: 28px;
-}
+
 .mb-10{
     margin-bottom: 10px;
 }
 .mb-0 {
     margin-bottom: 0;
 }
+
 .pull-right {
     float: right;
 }
 .pull-left {
     float: left;
 }
-.pt-20 {
-    padding-top: 20px;
-    height: 75vh;
-    overflow-x: auto;
-}
-.pt-20::-webkit-scrollbar {
-    width: 1em;
-}
-.pt-20::-webkit-scrollbar-thumb {
-    background: #ffffff;
-}
-.pt-20::-webkit-scrollbar-track {
-    background: #ffffff;
-}
-.pr-28 {
-    padding-right: 28px;
-}
-.prf-28 {
-    padding-right: 28px;
-}
-.prf-40 {
-    padding-right: 40px;
-}
-.pr-60 {
-    padding-right: 60px;
-}
-.pl-0 {
-    padding-left: 0;
-}
-.plr-0 {
-    padding-left: 0;
-    padding-right: 0;
-}
+
 .block {
     display: block;
 }
@@ -366,12 +274,7 @@ a:active, a:hover {
 .text-right {
     text-align: right;
 }
-.z-index-1 {
-    z-index: 1;
-}
-.h-58 .ant-input {
-    height: 58px;
-}
+
 .no-bg {
     background: none;
 }

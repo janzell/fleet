@@ -1,0 +1,10 @@
+- args:
+    sql: CREATE TABLE "public"."parts"("id" serial NOT NULL, "name" text NOT NULL,
+      "code" text NOT NULL, "quantity" integer NOT NULL DEFAULT 0, "description" text
+      , "created_at" date NOT NULL DEFAULT now(), "updated_at" date NOT NULL DEFAULT
+      now(), PRIMARY KEY ("id") , UNIQUE ("code"));
+  type: run_sql
+- args:
+    name: parts
+    schema: public
+  type: add_existing_table_or_view

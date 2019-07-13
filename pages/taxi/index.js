@@ -1,7 +1,6 @@
-import {Row, Breadcrumb, Icon, Table, PageHeader} from 'antd';
+import {Row, Table, PageHeader, Button, Divider} from 'antd';
 import MainLayout from '../../layout/main';
 import {getCookie, redirectNotAuthorized} from '../../lib/session';
-import {GET_USER_LIST} from './users-gql';
 
 const RentalsList = props => {
 
@@ -28,7 +27,10 @@ const RentalsList = props => {
       <div className="page taxi">
         <Row>
           <div className="right-content">
-            <PageHeader onBack={() => null} title="Taxi's List" subTitle="List of taxi"/>,
+            <PageHeader onBack={() => null} title="Taxi's List" subTitle="List of taxis"
+                        extra={[<Button key="1" type="primary" href="/taxi/add">Add New</Button>]}>
+            </PageHeader>
+            <Divider/>
             <Table dataSource={props.users} columns={columns}/>;
           </div>
         </Row>

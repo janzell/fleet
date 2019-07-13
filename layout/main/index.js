@@ -1,7 +1,8 @@
-import {Icon, Breadcrumb, Layout, Menu} from 'antd';
+import {Row, Col, Icon, Layout, Menu, Typography} from 'antd';
 import {useState} from 'react';
 import {Router} from '../../routes';
 
+const {Text} = Typography;
 const {Header, Sider, Footer, Content} = Layout;
 const SubMenu = Menu.SubMenu;
 
@@ -16,27 +17,22 @@ const headerStyles = {
   width: '100%',
 };
 
-const contentStyles = {
-  margin: '24px 16px 0',
-};
-
-const LOGO_STATE = {
-  width: 150,
-  display: 'block',
-};
-
-const INITIAL_LOGO_STATE = {
-  textAlign: 'center',
-  color: '#ce4257',
-  fontSize: '20px',
-  fontWeight: 'lighter',
-  display: 'none',
-};
+// const LOGO_STATE = {
+//   width: 150,
+//   display: 'block',
+// };
+// const INITIAL_LOGO_STATE = {
+//   textAlign: 'center',
+//   color: '#ce4257',
+//   fontSize: '20px',
+//   fontWeight: 'lighter',
+//   display: 'none',
+// };
 
 export default (props) => {
 
-  let [logoStyles, setLogoStyles] = useState(LOGO_STATE);
-  let [initialLogoStyles, setInitialLogoStyles] = useState(INITIAL_LOGO_STATE);
+  // let [logoStyles, setLogoStyles] = useState(LOGO_STATE);
+  //let [initialLogoStyles, setInitialLogoStyles] = useState(INITIAL_LOGO_STATE);
   let [collapsed, setCollapsed] = useState(false);
   let [siderMargin, setSiderMargin] = useState(200);
 
@@ -44,13 +40,13 @@ export default (props) => {
     setCollapsed(!collapsed);
 
     if (collapsed) {
-      setLogoStyles({...LOGO_STATE, display: 'block'});
-      setInitialLogoStyles({...INITIAL_LOGO_STATE, display: 'none'});
+      // setLogoStyles({...LOGO_STATE, display: 'block'});
+      // setInitialLogoStyles({...INITIAL_LOGO_STATE, display: 'none'});
       return setSiderMargin(200)
     }
 
-    setLogoStyles({...LOGO_STATE, display: 'none'});
-    setInitialLogoStyles({...INITIAL_LOGO_STATE, display: 'block'});
+    // setLogoStyles({...LOGO_STATE, display: 'none'});
+    // setInitialLogoStyles({...INITIAL_LOGO_STATE, display: 'block'});
     setSiderMargin(80);
   };
 
@@ -65,7 +61,7 @@ export default (props) => {
         collapsible
         collapsed={collapsed}>
         <div className="logo">
-          <h2>EH?</h2>
+          <h2 className="">Fleet</h2>
           {/*<p id="initialLogo" style={initialLogoStyles}>W</p>*/}
         </div>
         <Menu onClick={goTo} style={menuStyles} theme="dark" mode="inline" defaultSelectedKeys={['1']}>
@@ -84,7 +80,7 @@ export default (props) => {
             </Menu.Item>
           </SubMenu>
           <Menu.Item key="/rental">
-            <Icon type="schedule" />
+            <Icon type="schedule"/>
             <span className="nav-text">Rentals</span>
           </Menu.Item>
           <Menu.Item key="/driver">
@@ -105,7 +101,7 @@ export default (props) => {
           </Menu.Item></Menu>
       </Sider>
 
-      <Layout style={{marginLeft: siderMargin, height: '100vh'}}>
+      <Layout style={{marginLeft: siderMargin}}>
         <Header style={headerStyles}>
           <Icon
             className="trigger"
@@ -113,12 +109,21 @@ export default (props) => {
             onClick={toggle}
           />
         </Header>
-
         <Content style={{
-            margin: '80px 16px 0', padding: 24, background: '#fff', minHeight: 280, overflow: 'initial'
-          }}>
-            {props.children}
+          margin: '80px 16px 0', padding: 24, background: '#fff', minHeight: 280, overflow: 'initial'
+        }}>
+          {props.children}
         </Content>
+        <Footer className="">
+          <Row>
+            <Col lg={24}>
+            <p className="text-right">
+              <Text underline>Fleet Management v1.0</Text><br/>
+              <span>Copyright 2019</span>
+            </p>
+            </Col>
+          </Row>
+        </Footer>
       </Layout>
     </Layout>
   )

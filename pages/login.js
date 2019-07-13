@@ -6,6 +6,7 @@ import {login, authMe} from '../lib/authenticate';
 
 import routes from '../routes';
 import {GlobalContext, globalInitialState} from "../context/global-context"
+import {getCookie} from "../lib/session";
 
 const FormItem = Form.Item;
 const {Router, Link} = routes;
@@ -53,7 +54,7 @@ const LoginForm = (props) => {
 
           // we're string the token to cookie with maximum days of =
           if (authenticate) {
-            setCookie({}, 'token', authenticate.access_token, {maxAge: 24 * 60 * 60, path: "/"});
+            setCookie({}, 'token', authenticate.token, {maxAge: 24 * 60 * 60, path: "/"});
           }
 
           // using the token, try to get the user information and store it on the cookies.
@@ -68,7 +69,7 @@ const LoginForm = (props) => {
             path: "/"
           });
 
-          return Router.pushRoute('/dashboard');
+          return Router.push('/dashboard');
         } catch (error) {
           authError();
         }
@@ -130,5 +131,4 @@ const LoginForm = (props) => {
   )
 };
 
-const LoginPage = Form.create()(LoginForm);
-export default LoginPage;
+export default Form.create()(LoginForm);

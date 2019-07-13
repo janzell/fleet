@@ -1,14 +1,53 @@
-import { gql } from 'apollo-boost';
+import {gql} from 'apollo-boost';
 
-const userFields = `id
+const driverFields = `id
     first_name
-    last_name`;
+    last_name
+    license_number
+    address 
+    `;
 
-const getUsersList = gql`
-  query getUsersList($limit: Int!, $offset: Int!) {
-   user(limit: $limit, order_by: {created_at: asc}, offset: $offset) {
-    ${userFields}
-  }
-}`;
+const GET_DRIVERS_LIST = gql`
+    query getDriversList($limit: Int!, $offset: Int!) {
+        drivers(limit: $limit, order_by: {created_at: asc}, offset: $offset) {
+            ${driverFields}
+        }
+    }`;
 
-export {getUsersList};
+const DRIVERS_SUBSCRIPTION = gql`
+    subscription onDriversAdded($limit: Int, $offset: Int) {
+        drivers(limit: $limit, offset: $offset){
+            ${driverFields}
+        }
+    }
+`;
+
+const ADD_DRIVER = gql`
+    mutation addDriver($driver: [drivers_insert_input!]!) {
+        insert_drivers(objects: $driver) {
+            affected_rows
+            returning {
+                id
+                first_name
+                last_name
+                license_number
+                address
+            }
+        }
+    }`;
+
+const UPDATE_DRIVER = gql`
+    mutation updateDriver($id: Int!, $driver: [drivers_insert_input!]!) {
+        insert_drivers(objects: $driver) {
+            affected_rows
+            returning {
+                id
+                first_name
+                last_name
+                license_number
+                address
+            }
+        }
+    }`;
+
+export {GET_DRIVERS_LIST, ADD_DRIVER, DRIVERS_SUBSCRIPTION};
