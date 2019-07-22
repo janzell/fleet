@@ -5,6 +5,7 @@ html, body {
     font-family: Poppins,sans-serif;
     height: 100%;
     margin: 0;
+    background: #ffffff;
 }
 
 /** ----------------------------------.*
@@ -16,7 +17,6 @@ html, body {
     margin: auto;
     max-width: 440px;
 }
-
 
 .ant-page-header {
     padding-left: 0;
@@ -258,6 +258,10 @@ a:active, a:hover {
     margin-bottom: 0;
 }
 
+.pt-20 {
+    padding-top: 20px;
+}
+
 .pull-right {
     float: right;
 }
@@ -277,4 +281,8 @@ a:active, a:hover {
 
 .no-bg {
     background: none;
+}
+
+.ant-table-column-title {
+    text-transform: capitalize;
 }

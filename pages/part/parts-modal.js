@@ -1,21 +1,21 @@
 import {Form, Input, Row, Col, Modal} from 'antd';
 import {RequiredRule} from '../../lib/form-rules';
-import {ADD_DRIVER, UPDATE_DRIVER} from "./drivers-gql";
+import {ADD_PART, UPDATE_PART} from "./parts-gql";
 import {withApollo} from "react-apollo";
 
 const {TextArea} = Input;
 
-const DriverModal = props => {
+const PartsModal = props => {
 
   // Destructor
-  const {driver} = props;
+  const {part} = props;
   const {getFieldDecorator, validateFieldsAndScroll, resetFields} = props.form;
 
   const handleSave = (e) => {
     e.preventDefault();
     validateFieldsAndScroll((err, values) => {
       if (!err) {
-        (driver.id) ? updateDriver(driver.id, values) : storeDriver(values);
+        (part.id) ? updatePart(part.id, values) : storePart(values);
 
         resetFields();
         props.onCancel();
@@ -24,28 +24,28 @@ const DriverModal = props => {
 
   };
 
-  const updateDriver = async (id, data) => {
+  const updatePart = async (id, data) => {
     await props.client.mutate({
-      mutation: UPDATE_DRIVER,
+      mutation: UPDATE_PART,
       variables: {
         id,
-        driver: data
+        part: data
       }
     });
   };
 
-  const storeDriver = async data => {
+  const storePart = async data => {
     await props.client.mutate({
-      mutation: ADD_DRIVER,
+      mutation: ADD_PART,
       variables: {
-        driver: data
+        part: data
       }
     });
   };
 
   return (
     <Modal
-      title="New Driver"
+      title="New "
       centered
       okText="Save"
       visible={props.visible}
@@ -55,7 +55,7 @@ const DriverModal = props => {
       <Row gutter={12}>
         <Col lg={24}>
           <Form.Item label="First Name">
-            {getFieldDecorator('first_name', {rules: RequiredRule, initialValue: driver.first_name})(
+            {getFieldDecorator('first_name', {rules: RequiredRule, initialValue: part.first_name})(
               <Input placeholder="First Name"/>
             )}
           </Form.Item>
@@ -64,7 +64,7 @@ const DriverModal = props => {
       <Row>
         <Col lg={24}>
           <Form.Item label="Last Name">
-            {getFieldDecorator('last_name', {rules: RequiredRule, initialValue: driver.last_name})(
+            {getFieldDecorator('last_name', {rules: RequiredRule, initialValue: part.last_name})(
               <Input placeholder="Last Name"/>
             )}
           </Form.Item>
@@ -73,14 +73,14 @@ const DriverModal = props => {
       <Row gutter={12}>
         <Col lg={24}>
           <Form.Item label="License Number">
-            {getFieldDecorator('license_number', {rules: RequiredRule, initialValue: driver.license_number})(
+            {getFieldDecorator('license_number', {rules: RequiredRule, initialValue: part.license_number})(
               <Input placeholder="License Number"/>
             )}
           </Form.Item>
         </Col>
         <Col lg={24}>
           <Form.Item label="Address">
-            {getFieldDecorator('address', {rules: RequiredRule, initialValue: driver.address})(
+            {getFieldDecorator('address', {rules: RequiredRule, initialValue: part.address})(
               <TextArea placeholder="Address"/>
             )}
           </Form.Item>
@@ -91,4 +91,4 @@ const DriverModal = props => {
   )
 };
 
-export default withApollo(Form.create()(DriverModal));
+export default withApollo(Form.create()(PartsModal));

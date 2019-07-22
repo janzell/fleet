@@ -1,11 +1,11 @@
 import {Form, Input, Row, Col, Modal} from 'antd';
 import {RequiredRule} from '../../lib/form-rules';
-import {ADD_DRIVER, UPDATE_DRIVER} from "./drivers-gql";
+import {ADD_DRIVER, UPDATE_DRIVER} from "./user-gql";
 import {withApollo} from "react-apollo";
 
 const {TextArea} = Input;
 
-const DriverModal = props => {
+const UserModal = props => {
 
   // Destructor
   const {driver} = props;
@@ -91,4 +91,4 @@ const DriverModal = props => {
   )
 };
 
-export default withApollo(Form.create()(DriverModal));
+export default withApollo(Form.create()(UserModal));
