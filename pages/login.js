@@ -1,7 +1,8 @@
-import {Button, Col, Form, Icon, Input, Row, Spin, Popover} from 'antd';
+import {Button, Col, Form, Icon, Input, Row, Spin} from 'antd';
 import Head from 'next/head';
 import {useState} from 'react';
 import {setCookie} from 'nookies';
+
 import {login, authMe} from '../lib/authenticate';
 
 import routes from '../routes';
@@ -12,7 +13,7 @@ const FormItem = Form.Item;
 const {Router, Link} = routes;
 
 // Spinner
-const antIcon = <Icon type="loading" style={{fontSize: 35}} spin/>;
+const SpinnerIcon = <Icon type="loading" style={{fontSize: 35}} spin/>;
 
 /**
  * Login Form.
@@ -38,7 +39,6 @@ const LoginForm = (props) => {
       if (!err) {
         setSpinner(true);
 
-        // authentication error fallback.
         const authError = () => {
           setTimeout(() => {
             setSpinner(false);
@@ -82,17 +82,17 @@ const LoginForm = (props) => {
       <div className="authenticate">
 
         <Head>
-          <title>Eh? | Login</title>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+          <title>Fleet | Login</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         </Head>
 
         <Row>
           <Col className="rm-bg">
-            <Spin indicator={antIcon} spinning={spinner}>
+            <Spin indicator={SpinnerIcon} spinning={spinner}>
               <div className="container-400 container-centered" style={{marginTop: '20vh'}}>
-                <h2 className='page-title text-center'>Log in</h2>
+                <h2 className='page-title text-center'>Fleet Management</h2>
                 <Form className='signup-modal-form clearfix' onSubmit={handleSubmit}>
-                  <Col className='column-wrap' span={24}>
+                  <Col className='column-wrap mt-20' span={24}>
                     {/*{loginFailed ? (*/}
                     {/*  <AlertMsg message={errMsg} type='error' className='text-centered' />*/}
                     {/*) : null}*/}
@@ -101,7 +101,7 @@ const LoginForm = (props) => {
                       {getFieldDecorator('email', {
                         rules: [{required: true, message: 'This field is required'},
                           {type: 'email', message: 'The email must be a valid email address'}]
-                      })(<Input className='signup-modal-input'
+                      })(<Input size="large" className='signup-modal-input'
                                 placeholder='Enter email address'/>)}
                     </FormItem>
                   </Col>
@@ -111,14 +111,11 @@ const LoginForm = (props) => {
                       {getFieldDecorator('password', {
                         rules: [{required: true, message: 'This field is required'},
                           {whitespace: true, message: 'This field is required'}]
-                      })(<Input.Password className='signup-modal-input-password mb-0'
+                      })(<Input.Password size="large" className='signup-modal-input-password mb-0'
                                          placeholder='Enter password'/>)}
                     </FormItem>
-                    <Link route='couple/forgot-password'>
-                      <a className='pull-right'>Forgot Password?</a>
-                    </Link>
                   </Col>
-                  <Col className='column-wrap' span={24}>
+                  <Col className='column-wrap mt-20' span={24}>
                     <Button type='primary' htmlType='submit'>LOG IN</Button>
                   </Col>
                 </Form>

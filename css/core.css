@@ -2,20 +2,41 @@
 @import 'https://fonts.googleapis.com/css?family=Poppins&display=swap';
 
 html, body {
-    font-family: Poppins,sans-serif;
+    font-family: Poppins, sans-serif;
     height: 100%;
     margin: 0;
-    background: #ffffff;
+    background: #edf2f6;
 }
 
 /** ----------------------------------.*
     Layout
 ---------------------------------------**/
+.ant-layout {
+    background: #edf2f6;
+}
+
+.ant-layout-header {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.page {
+    padding: 20px;
+    background: #FFF;
+}
+
+.sidebar-bg-color, .ant-layout-sider,
+.ant-menu-dark, .ant-menu-dark .ant-menu-sub {
+    background: #2d3747;
+}
+
 .container-400 {
     width: 100%;
-    padding: 0 20px;
     margin: auto;
     max-width: 440px;
+    background: #FFF;
+    padding: 20px;
+    border: 1px solid #eee;
+    box-shadow: 6px 10px 20px rgba(0, 0, 0, 0.05);
 }
 
 .ant-page-header {
@@ -31,11 +52,13 @@ html, body {
 .images-container::-webkit-scrollbar {
     width: 5px;
 }
+
 .form-container::-webkit-scrollbar-thumb,
 .images-container::-webkit-scrollbar-thumb {
     background: #ce4257;
     border-radius: 50px;
 }
+
 .form-container::-webkit-scrollbar-track,
 .images-container::-webkit-scrollbar-track {
     background: #f1f1f1;
@@ -45,10 +68,12 @@ html, body {
     background-color: #4a90e2;
     border-color: #4a90e2;
 }
+
 .ant-modal-mask {
     z-index: 1051;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.6);
 }
+
 .ant-modal-wrap {
     z-index: 1051;
     overflow: hidden;
@@ -61,33 +86,42 @@ html, body {
 .anticon-spin {
     fill: #ce4257;
 }
+
 .ant-select-dropdown-menu-item-active {
     color: rgba(0, 0, 0, 0.65);
     font-weight: 600;
     background-color: #fafafa;
 }
+
 .height-auto .ant-select-selection__rendered,
 .height-auto .ant-select-selection--single {
     height: auto;
 }
+
 .height-auto .ant-select-selection--multiple .ant-select-selection__choice__remove {
     margin-top: -7px;
 }
+
 .ant-rate {
     color: #ce4257;
 }
+
 .ant-spin-dot i {
     background-color: #df3154;
 }
+
 .ant-spin-blur::after {
     opacity: 0.7;
 }
+
 a:active, a:hover {
     text-decoration: underline;
 }
+
 .ant-btn:hover {
     opacity: 0.7;
 }
+
 .ant-tabs .ant-tabs-left-bar .ant-tabs-tab {
     text-align: left !important;
     color: #373744;
@@ -95,6 +129,7 @@ a:active, a:hover {
     font-weight: 300;
     padding: 4px 12px;
 }
+
 .ant-popover-inner-content {
     height: 100%;
     width: 140px;
@@ -104,26 +139,32 @@ a:active, a:hover {
     line-height: 1.5;
     padding: 12px !important;
 }
+
 .ant-tabs .ant-tabs-left-bar,
 .ant-tabs .ant-tabs-left-content {
     border: none;
     margin-top: 8px;
 }
+
 .ant-tabs .ant-tabs-left-content {
     padding-left: 78px;
 }
+
 .ant-tabs .ant-tabs-left-bar .ant-tabs-ink-bar {
     display: none;
 }
+
 .ant-tabs-tab-active {
     font-family: Poppins, sans-serif;
     font-weight: bold;
 }
+
 .ant-tabs .ant-tabs-left-bar .ant-tabs-nav-container {
     background: #fafafb;
     width: 275px;
     padding: 24px 45px 34px 45px;
 }
+
 .ant-checkbox-disabled,
 .ant-checkbox-disabled input[type='checkbox'][disabled],
 .ant-checkbox-disabled .ant-checkbox-inner,
@@ -131,18 +172,22 @@ a:active, a:hover {
     background: #fff;
     cursor: pointer;
 }
+
 .ant-input-disabled {
     color: rgba(0, 0, 0, 0.65);
     background-color: #fff;
     cursor: pointer;
     opacity: 1;
 }
+
 .ant-select-selection-selected-value {
     color: #373744;
 }
+
 .ant-select-dropdown-menu-item:hover {
     background-color: #fff;
 }
+
 .ant-select-disabled .ant-select-selection--multiple .ant-select-selection__choice {
     color: rgba(0, 0, 0, 0.65);
 }
@@ -152,8 +197,12 @@ a:active, a:hover {
 }
 
 .authenticate-wrap .ant-spin-spinning {
-    height: 50%;
+    height: 100%;
     max-height: unset;
+}
+
+.authenticate-wrap .ant-spin-container.ant-spin-blur {
+    height: 100vh;
 }
 
 .read-only.ant-input:focus,
@@ -166,6 +215,7 @@ a:active, a:hover {
     -webkit-box-shadow: unset;
     box-shadow: unset;
 }
+
 .ant-select-selection.ant-select-selection--multiple {
     padding-bottom: 0;
     min-height: 58px;
@@ -173,9 +223,11 @@ a:active, a:hover {
     line-height: 54px;
     cursor: pointer;
 }
-.ant-select-selection.ant-select-selection--multiple  .ant-select-selection__rendered ul {
+
+.ant-select-selection.ant-select-selection--multiple .ant-select-selection__rendered ul {
     padding-top: 12px;
 }
+
 .general-info-form .ant-select-selection--multiple > ul > li,
 .general-info-form .ant-select-selection--multiple .ant-select-selection__rendered > ul > li {
     height: 34px;
@@ -187,28 +239,35 @@ a:active, a:hover {
     padding: 8px 32px 8px 11px;
     line-height: 1.5;
 }
+
 .general-info-label i {
     font-size: 10px;
     color: #6b6b7b;
 }
+
 .ant-select-selection--multiple .ant-select-selection__choice__remove {
     color: #111111;
     line-height: 1.8;
     font-size: 10px;
     margin-right: 7px;
 }
+
 .ant-select-selection--multiple .ant-select-selection__placeholder {
     margin-left: 12px;
     top: 50%;
 }
+
 .ant-select-dropdown {
     width: 372px;
 }
 
-.ant-btn{
+.ant-btn {
     border-radius: 32px;
 }
 
+.ant-modal-footer {
+    border-top: none;
+}
 
 /** ----------------------------------.*
    Miscellaneous
@@ -228,14 +287,16 @@ a:active, a:hover {
 :-moz-placeholder {
     font-style: italic;
 }
+
 .display-hidden {
     display: none;
 }
+
 .display-block {
     display: block;
 }
 
-.button-disabled{
+.button-disabled {
     opacity: 0.7;
     cursor: not-allowed;
 }
@@ -247,13 +308,15 @@ a:active, a:hover {
 .mt-10 {
     margin-top: 10px;
 }
+
 .mt-20 {
     margin-top: 20px;
 }
 
-.mb-10{
+.mb-10 {
     margin-bottom: 10px;
 }
+
 .mb-0 {
     margin-bottom: 0;
 }
@@ -265,6 +328,7 @@ a:active, a:hover {
 .pull-right {
     float: right;
 }
+
 .pull-left {
     float: left;
 }
@@ -272,9 +336,11 @@ a:active, a:hover {
 .block {
     display: block;
 }
+
 .text-center {
     text-align: center;
 }
+
 .text-right {
     text-align: right;
 }
@@ -285,4 +351,8 @@ a:active, a:hover {
 
 .ant-table-column-title {
     text-transform: capitalize;
+}
+.button-container { text-align: right; }
+.button-container .ant-btn {
+    margin-left: 10px;
 }

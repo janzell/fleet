@@ -1,0 +1,7 @@
+- args:
+    sql: ALTER TABLE "public"."drivers" ALTER COLUMN "created_at" TYPE timestamp without
+      time zone;
+  type: run_sql
+- args:
+    sql: COMMENT ON COLUMN "public"."drivers"."created_at" IS 'null'
+  type: run_sql

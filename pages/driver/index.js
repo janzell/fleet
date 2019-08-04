@@ -1,13 +1,14 @@
-import {useEffect, useMemo, useState} from 'react';
-import {Row, Modal, Table, Col, Icon, Input, Tag, Alert, PageHeader, Button, Divider} from 'antd';
+import {useEffect, useState} from 'react';
+import {Row, Table, Col, Icon, Input, notification, PageHeader, Button, Divider} from 'antd';
 
 import MainLayout from '../../layout/main';
-import {Subscription} from 'react-apollo';
-import DriverModal from './driver-modal';
+import {Query} from 'react-apollo';
+import DriverDrawer from './driver-drawer';
 import ConfirmModal from './../../components/confirm-modal';
 import {withApollo} from "react-apollo";
 
-import {DRIVERS_SUBSCRIPTION, DELETE_DRIVER, GET_TOTAL_COUNT} from "./drivers-gql";
+import {GET_DRIVERS_LIST, DELETE_DRIVER, GET_TOTAL_COUNT} from "./drivers-gql";
+import columnsTitleFormatter from "../../utils/table-columns-formatter";
 
 const {Search} = Input;
 
@@ -20,113 +21,140 @@ const {Search} = Input;
  */
 const DriverList = props => {
 
+  // default values.
+  const listOptionsDefault = {limit: 15, offset: 0, order_by: [{created_at: 'desc'}, {updated_at: 'desc'}]};
+
+  // driver component states.
   const [mode, setMode] = useState('add');
   const [driver, setDriver] = useState({});
   const [modalVisibility, showModalVisibility] = useState(false);
   const [confirmVisibility, showConfirmVisibility] = useState(false);
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
-  const [listOptions, setListOptions] = useState({limit: 15, offset: 10, order_by: {created_at: 'desc'}});
+  const [listOptions, setListOptions] = useState(listOptionsDefault);
+  const [searchText, setSearchText] = useState('');
 
+  // todo: make this shit as a custom hooks.
+  const openNotificationWithIcon = (type, message, description) => {
+    notification[type]({
+      message,
+      description
+    });
+  };
 
-  // handle the edit/add mode
-  const handleEditMode = driver => {
+  // todo: convert this to custom hooks if possible.
+  const handleFormMode = driver => {
     setMode('edit');
     setDriver(driver);
     showModalVisibility(true);
   };
 
-  // show or cancel confirm modal
   const showOrCancelConfirmModal = (visible, id) => {
     setToBeDeletedId(id);
     showConfirmVisibility(visible);
   };
 
-  // cancel driver modal
   const cancelDriverModal = () => {
     setMode('add');
     setDriver({});
     showModalVisibility(false);
   };
 
-  // handle delete
+  // todo: we can make this as custom hooks for deleting resource;
   const handleDelete = async () => {
     await props.client.mutate({
       mutation: DELETE_DRIVER,
       variables: {
         id: toBeDeletedId
-      }
+      },
+      refetchQueries: [{query: GET_DRIVERS_LIST, variables: listOptions}]
     });
 
     showOrCancelConfirmModal(false, null);
+    openNotificationWithIcon('success', 'Success', 'Driver has been deleted successfully');
   };
 
-  const columns = [
-    {
-      title: 'First Name',
-      dataIndex: 'first_name',
-      key: 'first_name',
-    },
-    {
-      title: 'Last Name',
-      dataIndex: 'last_name',
-      key: 'last_name',
-    },
-    {
-      title: 'License Number',
-      dataIndex: 'license_number',
-      key: 'license_number'
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address'
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: status => (
-        <Tag color="#87d068">active</Tag>
-      )
-    },
-    {
-      title: 'Created At',
-      dataIndex: 'created_at',
-      key: 'created_at'
-    },
-    {
-      title: 'Actions',
-      dataIndex: 'actions',
-      key: 'actions',
-      render: (text, record) => (
-        <span>
-          <a href="javascript:;" onClick={() => handleEditMode(record)}>Edit</a>
-          <Divider type="vertical"/>
-          <a href="javascript:;" onClick={() => showOrCancelConfirmModal(true, record.id)}>Delete</a>
-        </span>
-      )
-    },
-  ];
+  // handles the paginate action of the table.
+  const handlePaginate = (page) => {
+    const offset = page * 15;
+    setListOptions({...listOptions, offset});
+  };
 
-  useEffect(() => {
-    props.client.query({query: GET_TOTAL_COUNT})
-      .then(res => setTotalCount(res.data.drivers_aggregate.aggregate.count));
+  const fields = ['first_name', 'last_name', 'license_number', 'address', 'contact_number', 'created_at', 'updated_at'];
+
+  // use memo?
+  const columns = columnsTitleFormatter(fields, {
+    title: 'Actions',
+    dataIndex: 'actions',
+    width: 110,
+    key: 'actions',
+    render: (text, record) => (
+      <span>
+       <a href="javascript:;" onClick={() => handleFormMode(record)}><Icon type="eye"/></a>
+        <Divider type="vertical"/>
+        <a href="javascript:;" onClick={() => handleFormMode(record)}><Icon type="edit"/></a>
+        <Divider type="vertical"/>
+        <a href="javascript:;" onClick={() => showOrCancelConfirmModal(true, record.id)}><Icon type="delete"/></a>
+      </span>
+    )
   });
 
+  const refreshResult = () => {
+    const paramValue = {_ilike: `%${searchText}%`};
+    const where = {
+      _or: [
+        {first_name: paramValue},
+        {license_number: paramValue},
+        {last_name: paramValue}
+      ]
+    };
+    setListOptions({...listOptions, ...{offset: 0, where}});
+    handleTotalCount(where);
+  };
+
+  // Search
+  const handleSearch = (text) => {
+    setSearchText(text);
+    refreshResult(text);
+  };
+
+  // Total Count
+  const handleTotalCount = (where = null) => {
+    const q = where != null ? {query: GET_TOTAL_COUNT, variables: {where}} : {query: GET_TOTAL_COUNT};
+
+    props.client.query(q)
+      .then(({data}) => setTotalCount(data.drivers_aggregate.aggregate.count));
+  };
+
+  // get the total number of drivers.
+  useEffect(() => {
+    handleTotalCount();
+  }, []);
+
+  const driverModalProps = {
+    title: (mode === 'edit') ? 'Edit Driver' : 'New Driver',
+    listOptions,
+    driver,
+    mode,
+    visible: modalVisibility,
+    onOk: () => showModalVisibility(false),
+    onCancel: () => cancelDriverModal()
+  };
+
   const DriversList = (options) => (
-    <Subscription subscription={DRIVERS_SUBSCRIPTION} variables={options} fetchPolicy="network-only">
+    <Query query={GET_DRIVERS_LIST} variables={options} fetchPolicy="network-only">
       {({data, loading, error}) => {
-        if (error) return `Error! ${error.message}`;
+        if (error) return `Error! )${error.message}`;
         return (
           <>
-            <Table loading={loading} pagination={{pageSize: 15, total: totalCount}} rowKey="id"
+            <Table loading={loading}
+                   pagination={{pageSize: 15, onChange: (page) => handlePaginate(page), total: totalCount}} rowKey="id"
                    dataSource={(!loading && data.drivers) || []}
                    columns={columns}/>
           </>
         )
       }}
-    </Subscription>
+    </Query>
   );
 
   return (
@@ -144,15 +172,14 @@ const DriverList = props => {
                     type="plus"/>Driver</Button>
                 </Col>
                 <Col offset={4} span={8}>
-                  <Search placeholder="input search text" onSearch={value => console.log(value)} enterButton/>
+                  <Search placeholder="input search text" onSearch={value => handleSearch(value)} enterButton/>
                 </Col>
               </Row>
             </PageHeader>
 
-            <Alert className="mb-10" message="Informational Notes" type="info" showIcon/>
-
             {DriversList(listOptions)}
 
+            {/* todo: we can convert this to a DeleteConfirm Modal component*/}
             <ConfirmModal
               width='500'
               visible={confirmVisibility}
@@ -164,8 +191,7 @@ const DriverList = props => {
               onOk={() => handleDelete()}
             />
 
-            <DriverModal driver={driver} mode={mode} visible={modalVisibility} onOk={() => showModalVisibility(false)}
-                         onCancel={() => cancelDriverModal()}/>
+            <DriverDrawer {...driverModalProps}/>
           </div>
         </Row>
       </div>

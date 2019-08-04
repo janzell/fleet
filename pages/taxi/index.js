@@ -2,12 +2,13 @@ import {useEffect, useMemo, useState} from 'react';
 import {Row, Modal, Table, Col, Icon, Input, Tag, Alert, PageHeader, Button, Divider} from 'antd';
 
 import MainLayout from '../../layout/main';
-import {Subscription} from 'react-apollo';
+import {Query} from 'react-apollo';
 import TaxiModal from './taxi-modal';
 import ConfirmModal from './../../components/confirm-modal';
 import {withApollo} from "react-apollo";
 
-import {TAXIS_SUBSCRIPTION, DELETE_TAXI, GET_TOTAL_COUNT} from "./taxi-gql";
+import {GET_TAXIS_LIST, DELETE_TAXI, GET_TOTAL_COUNT} from "./taxi-gql";
+import columnsTitleFormatter from "../../utils/table-columns-formatter";
 
 const {Search} = Input;
 
@@ -19,6 +20,8 @@ const {Search} = Input;
  * @constructor
  */
 const TaxiList = props => {
+  // use memo on this
+  const listOptionsDefault = {limit: 15, offset: 10, order_by: {created_at: 'desc'}};
 
   const [mode, setMode] = useState('add');
   const [taxi, setTaxi] = useState({});
@@ -26,11 +29,10 @@ const TaxiList = props => {
   const [confirmVisibility, showConfirmVisibility] = useState(false);
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
-  const [listOptions, setListOptions] = useState({limit: 15, offset: 10, order_by: {created_at: 'desc'}});
-
+  const [listOptions, setListOptions] = useState(listOptionsDefault);
 
   // handle the edit/add mode
-  const handleEditMode = taxi => {
+  const handleFormMode = taxi => {
     setMode('edit');
     setTaxi(taxi);
     showModalVisibility(true);
@@ -61,48 +63,43 @@ const TaxiList = props => {
     showOrCancelConfirmModal(false, null);
   };
 
-  const columns = [
+  // Pagination.
+  const handlePaginate = (page) => {
+    const offset = page * 15;
+    setListOptions({...listOptions, offset});
+  };
+
+  const fields = ['brand', 'model', 'plate_number', 'mileage', 'planned_maintenance', 'malfunctions', 'notes'];
+
+  // handle columns
+  const columns = columnsTitleFormatter(fields, [
     {
-      title: 'Plate Number',
-      dataIndex: 'plate_number',
-      key: 'plate_number',
-    },
-    {
-      title: 'Color',
-      dataIndex: 'color',
-      key: 'color',
-    },
-    {
-      title: 'Notes',
-      dataIndex: 'notes',
-      key: 'notes'
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
+      title: 'status',
       key: 'status',
-      render: status => (
-        <Tag color="#87d068">active</Tag>
-      )
-    },
-    {
-      title: 'Created At',
-      dataIndex: 'created_at',
-      key: 'created_at'
-    },
-    {
+      dataIndex: 'status',
+      render: status => {
+        const color = (status === 'maintenance') ? 'red' : 'green';
+        return (
+          <Tag color={color} key={status}>
+            {status.toUpperCase()}
+          </Tag>
+        )
+      }
+    }, {
       title: 'Actions',
       dataIndex: 'actions',
       key: 'actions',
+      width: 110,
       render: (text, record) => (
         <span>
-          <a href="javascript:;" onClick={() => handleEditMode(record)}>Edit</a>
-          <Divider type="vertical"/>
-          <a href="javascript:;" onClick={() => showOrCancelConfirmModal(true, record.id)}>Delete</a>
-        </span>
+       <a href="javascript:;" onClick={() => handleFormMode(record)}><Icon type="eye"/></a>
+        <Divider type="vertical"/>
+        <a href="javascript:;" onClick={() => handleFormMode(record)}><Icon type="edit"/></a>
+        <Divider type="vertical"/>
+        <a href="javascript:;" onClick={() => showOrCancelConfirmModal(true, record.id)}><Icon type="delete"/></a>
+      </span>
       )
-    },
-  ];
+    }]);
 
   useEffect(() => {
     props.client.query({query: GET_TOTAL_COUNT})
@@ -110,18 +107,18 @@ const TaxiList = props => {
   });
 
   const TaxisList = (options) => (
-    <Subscription subscription={TAXIS_SUBSCRIPTION} variables={options} fetchPolicy="network-only">
+    <Query query={GET_TAXIS_LIST} variables={options} fetchPolicy="network-only">
       {({data, loading, error}) => {
         if (error) return `Error! ${error.message}`;
         return (
           <>
-            <Table loading={loading} pagination={{pageSize: 15, total: totalCount}} rowKey="id"
+            <Table pagination={{pageSize: 15, onChange: (page) => handlePaginate(page), total: totalCount}} rowKey="id"
                    dataSource={(!loading && data.taxis) || []}
                    columns={columns}/>
           </>
         )
       }}
-    </Subscription>
+    </Query>
   );
 
   return (
@@ -160,7 +157,7 @@ const TaxiList = props => {
             />
 
             <TaxiModal taxi={taxi} mode={mode} visible={modalVisibility} onOk={() => showModalVisibility(false)}
-                         onCancel={() => cancelTaxiModal()}/>
+                       onCancel={() => cancelTaxiModal()}/>
           </div>
         </Row>
       </div>

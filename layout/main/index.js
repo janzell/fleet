@@ -8,7 +8,6 @@ const SubMenu = Menu.SubMenu;
 
 import './index.css';
 
-const menuStyles = {backgroundColor: '#373744'};
 const headerStyles = {
   background: '#fff',
   padding: 0,
@@ -17,22 +16,24 @@ const headerStyles = {
   width: '100%',
 };
 
-// const LOGO_STATE = {
-//   width: 150,
-//   display: 'block',
-// };
-// const INITIAL_LOGO_STATE = {
-//   textAlign: 'center',
-//   color: '#ce4257',
-//   fontSize: '20px',
-//   fontWeight: 'lighter',
-//   display: 'none',
-// };
+const layoutStyles = {margin: '80px 15px 0', padding: 10, minHeight: 280, overflow: 'initial'};
+
+const LOGO_STATE = {
+  width: 150,
+  display: 'block',
+};
+const INITIAL_LOGO_STATE = {
+  textAlign: 'center',
+  color: '#ce4257',
+  fontSize: '20px',
+  fontWeight: 'lighter',
+  display: 'none',
+};
 
 export default (props) => {
 
-  // let [logoStyles, setLogoStyles] = useState(LOGO_STATE);
-  //let [initialLogoStyles, setInitialLogoStyles] = useState(INITIAL_LOGO_STATE);
+  let [logoStyles, setLogoStyles] = useState(LOGO_STATE);
+  let [initialLogoStyles, setInitialLogoStyles] = useState(INITIAL_LOGO_STATE);
   let [collapsed, setCollapsed] = useState(false);
   let [siderMargin, setSiderMargin] = useState(200);
 
@@ -40,13 +41,13 @@ export default (props) => {
     setCollapsed(!collapsed);
 
     if (collapsed) {
-      // setLogoStyles({...LOGO_STATE, display: 'block'});
-      // setInitialLogoStyles({...INITIAL_LOGO_STATE, display: 'none'});
+      setLogoStyles({...LOGO_STATE, display: 'block'});
+      setInitialLogoStyles({...INITIAL_LOGO_STATE, display: 'none'});
       return setSiderMargin(200)
     }
 
-    // setLogoStyles({...LOGO_STATE, display: 'none'});
-    // setInitialLogoStyles({...INITIAL_LOGO_STATE, display: 'block'});
+    setLogoStyles({...LOGO_STATE, display: 'none'});
+    setInitialLogoStyles({...INITIAL_LOGO_STATE, display: 'block'});
     setSiderMargin(80);
   };
 
@@ -61,13 +62,11 @@ export default (props) => {
         collapsible
         collapsed={collapsed}>
         <div className="logo">
-          <h2 className="">Fleet</h2>
-          {/*<p id="initialLogo" style={initialLogoStyles}>W</p>*/}
+          <h2 style={logoStyles}>Fleet</h2>
+          <p id="initialLogo" style={initialLogoStyles}>F</p>
         </div>
-        <Menu onClick={goTo} style={menuStyles} theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-
-          {/* TODO For each this shit. */}
-          <Menu.Item key="dashboard">
+        <Menu onClick={goTo} theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+          <Menu.Item key="/dashboard">
             <Icon type="dashboard"/>
             <span className="nav-text">Dashboard</span>
           </Menu.Item>
@@ -109,18 +108,16 @@ export default (props) => {
             onClick={toggle}
           />
         </Header>
-        <Content style={{
-          margin: '80px 16px 0', padding: 24, background: '#fff', minHeight: 280, overflow: 'initial'
-        }}>
+        <Content style={layoutStyles}>
           {props.children}
         </Content>
         <Footer className="">
           <Row>
             <Col lg={24}>
-            <p className="text-right">
-              <Text underline>Fleet Management v1.0</Text><br/>
-              <span>Copyright 2019</span>
-            </p>
+              <p className="text-right">
+                <Text underline>Fleet Management v1.0</Text><br/>
+                <span>Copyright 2019</span>
+              </p>
             </Col>
           </Row>
         </Footer>

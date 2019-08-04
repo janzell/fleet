@@ -6,8 +6,6 @@ import {withApollo} from "react-apollo";
 const {TextArea} = Input;
 
 const PartsModal = props => {
-
-  // Destructor
   const {part} = props;
   const {getFieldDecorator, validateFieldsAndScroll, resetFields} = props.form;
 
@@ -45,7 +43,7 @@ const PartsModal = props => {
 
   return (
     <Modal
-      title="New "
+      title="New"
       centered
       okText="Save"
       visible={props.visible}

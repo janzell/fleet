@@ -8,6 +8,7 @@ import PartModal from './parts-modal';
 import ConfirmModal from './../../components/confirm-modal';
 
 import {withApollo} from "react-apollo";
+import columnsTitleFormatter from "../../utils/table-columns-formatter";
 
 const {Search} = Input;
 const PartList = props => {
@@ -48,6 +49,8 @@ const PartList = props => {
 
     showOrCancelConfirmModal(false, null);
   };
+
+  columnsTitleFormatter(['name', 'code', 'quantity', 'description', 'created_at'])
 
   const columns = ['name', 'code', 'quantity', 'description', 'created_at'].map(v => {
     const formattedTitle = v.split('_').reduce((g, i) => g + ' ' + i);

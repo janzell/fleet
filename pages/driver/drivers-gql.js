@@ -5,13 +5,14 @@ const driverFields = `id
     last_name
     license_number
     address
+    contact_number
     created_at
     updated_at
     `;
 
 const GET_DRIVERS_LIST = gql`
-    query getDriversList($limit: Int!, $offset: Int!) {
-        drivers(limit: $limit, order_by: {created_at: asc}, offset: $offset) {
+    query getDriversList($limit: Int!, $offset: Int!, $order_by: [drivers_order_by!], $where: drivers_bool_exp) {
+        drivers(limit: $limit,offset: $offset, order_by: $order_by, where: $where) {
             ${driverFields}
         }
     }`;
@@ -46,19 +47,19 @@ const UPDATE_DRIVER = gql`
         update_drivers(where: {id: {_eq: $id}}, _set: $driver) {
             affected_rows
             returning {
-               ${driverFields} 
+                ${driverFields}
             }
         }
     }`;
 
 const GET_TOTAL_COUNT = gql`
-    {
+     {
         drivers_aggregate {
             aggregate {
                 count
             }
         }
     }
-    `;
+`;
 
 export {GET_DRIVERS_LIST, GET_TOTAL_COUNT, DELETE_DRIVER, UPDATE_DRIVER, ADD_DRIVER, DRIVERS_SUBSCRIPTION};

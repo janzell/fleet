@@ -1,0 +1,6 @@
+- args:
+    sql: ALTER TABLE "public"."taxis" ALTER COLUMN "model" TYPE integer;
+  type: run_sql
+- args:
+    sql: COMMENT ON COLUMN "public"."taxis"."model" IS 'null'
+  type: run_sql

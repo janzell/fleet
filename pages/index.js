@@ -1,9 +1,20 @@
-import {Component} from "react";
+import routes from '../routes';
 
-export default class Logout extends Component {
-  componentDidMount() {
-    return {};
+const {Router} = routes;
+
+const Home = () => {
+  return null;
+};
+
+Home.getInitialProps = ({ res }) => {
+  if (res) {
+    res.writeHead(302, {
+      Location: '/login'
+    });
+    res.end()
+  } else {
+    Router.push('/login')
   }
+};
 
-  render() {return null;}
-}
+export default Home;

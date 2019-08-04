@@ -4,10 +4,6 @@ body {
     background: #f0f2f5;
 }
 
-.sidebar-bg-color, .ant-layout-sider{
-    background: #373744;
-}
-
 .logo {
     height: 65px;
     padding: 20px;

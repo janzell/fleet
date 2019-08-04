@@ -1,24 +1,31 @@
 import {gql} from 'apollo-boost';
 
-const driverFields = `id
+const taxiFields = `id
     plate_number 
     color
     notes
+    status
+    model
+    malfunctions
+    mileage
+    planned_maintenance
+    oil_percentage
+    brand
     created_at
     updated_at
     `;
 
 const GET_TAXIS_LIST = gql`
-    query getTaxisList($limit: Int!, $offset: Int!) {
-        taxis(limit: $limit, order_by: {created_at: asc}, offset: $offset) {
-            ${driverFields}
+    query getTaxisList($limit: Int!, $offset: Int!, $order_by: [taxis_order_by!], $where: taxis_bool_exp) {
+        taxis(limit: $limit, offset: $offset, order_by: $order_by, where: $where) {
+            ${taxiFields}
         }
     }`;
 
 const TAXIS_SUBSCRIPTION = gql`
     subscription onTaxisAdded($limit: Int, $offset: Int, $order_by: [taxis_order_by!]) {
         taxis(limit: $limit, offset: $offset, order_by: $order_by){
-            ${driverFields}
+            ${taxiFields}
         }
     }
 `;
@@ -28,7 +35,7 @@ const ADD_TAXI = gql`
         insert_taxis(objects: $driver) {
             affected_rows
             returning {
-                ${driverFields}
+                ${taxiFields}
             }
         }
     }`;
@@ -45,7 +52,7 @@ const UPDATE_TAXI = gql`
         update_taxis(where: {id: {_eq: $id}}, _set: $driver) {
             affected_rows
             returning {
-               ${driverFields} 
+                ${taxiFields}
             }
         }
     }`;

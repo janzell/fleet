@@ -1,0 +1,9 @@
+- args:
+    sql: ALTER TABLE "public"."drivers" ADD COLUMN "updated_at" date
+  type: run_sql
+- args:
+    sql: ALTER TABLE "public"."drivers" ALTER COLUMN "updated_at" DROP NOT NULL
+  type: run_sql
+- args:
+    sql: ALTER TABLE "public"."drivers" ALTER COLUMN "updated_at" SET DEFAULT now()
+  type: run_sql

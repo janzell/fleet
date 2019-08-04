@@ -1,0 +1,6 @@
+- args:
+    sql: ALTER TABLE "public"."drivers" ALTER COLUMN "updated_at" TYPE timestamp;
+  type: run_sql
+- args:
+    sql: COMMENT ON COLUMN "public"."drivers"."updated_at" IS ''
+  type: run_sql

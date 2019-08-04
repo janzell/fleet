@@ -1,0 +1,3 @@
+- args:
+    sql: ALTER TABLE "public"."taxis" DROP COLUMN "model";
+  type: run_sql
