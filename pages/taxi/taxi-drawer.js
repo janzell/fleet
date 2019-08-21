@@ -1,4 +1,4 @@
-import {Form, Input, InputNumber, Select, Slider, Row, Col, Modal} from 'antd';
+import {Form, Input, InputNumber, Select, Slider, Row, Col,notification, Drawer} from 'antd';
 import {RequiredRule} from '../../lib/form-rules';
 import {ADD_TAXI, UPDATE_TAXI} from "./taxi-gql";
 import {withApollo} from "react-apollo";
@@ -54,14 +54,13 @@ const TaxiModal = props => {
   }, [props.visible]);
 
   return (
-    <Modal
-      title="New Taxi"
-      centered
-      okText="Save"
+    <Drawer
       width={800}
-      visible={props.visible}
-      onOk={handleSave}
-      onCancel={props.onCancel}>
+      title={props.title}
+      placement="right"
+      closable={false}
+      onClose={props.onCancel}
+      visible={props.visible}>
       <Form className="ant-advanced-search-form" onSubmit={handleSave}>
         <Row gutter={6}>
           <Col lg={8}>
@@ -162,7 +161,7 @@ const TaxiModal = props => {
           </Col>
         </Row>
       </Form>
-    </Modal>
+    </Drawer>
   )
 };
 

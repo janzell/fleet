@@ -10,11 +10,12 @@ const partFields = `id
     `;
 
 const GET_PARTS_LIST = gql`
-    query getPartsList($limit: Int!, $offset: Int!) {
-        parts(limit: $limit, order_by: {created_at: asc}, offset: $offset) {
+    query getPartsList($limit: Int!, $offset: Int!, $order_by: [parts_order_by!], $where: parts_bool_exp) {
+        parts(limit: $limit,offset: $offset, order_by: $order_by, where: $where) {
             ${partFields}
         }
     }`;
+
 
 const PARTS_SUBSCRIPTION = gql`
     subscription onPartsAdded($limit: Int, $offset: Int, $order_by: [parts_order_by!]) {
@@ -51,4 +52,14 @@ const UPDATE_PART = gql`
         }
     }`;
 
-export {GET_PARTS_LIST, DELETE_PART, UPDATE_PART, ADD_PART, PARTS_SUBSCRIPTION};
+const GET_TOTAL_COUNT = gql`
+    {
+        parts_aggregate {
+            aggregate {
+                count
+            }
+        }
+    }
+`;
+
+export {GET_PARTS_LIST, DELETE_PART, UPDATE_PART, ADD_PART, PARTS_SUBSCRIPTION, GET_TOTAL_COUNT};

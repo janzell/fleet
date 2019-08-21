@@ -1,31 +1,48 @@
-import {useState} from 'react';
-import {Row, Modal, Table, Col, Icon, Input, Tag, Alert, PageHeader, Button, Divider} from 'antd';
+import {useEffect, useState} from 'react';
+import {Row, Table, Col, Icon, Input, notification, PageHeader, Button, Divider} from 'antd';
 
 import MainLayout from '../../layout/main';
-import {PARTS_SUBSCRIPTION, DELETE_PART} from "./parts-gql";
-import {Subscription} from 'react-apollo';
-import PartModal from './parts-modal';
+import {DELETE_PART, GET_PARTS_LIST, GET_TOTAL_COUNT} from "./parts-gql";
+import {Query} from 'react-apollo';
+import PartDrawer from './parts-drawer';
 import ConfirmModal from './../../components/confirm-modal';
 
 import {withApollo} from "react-apollo";
 import columnsTitleFormatter from "../../utils/table-columns-formatter";
 
 const {Search} = Input;
+
+/**
+ * @param props
+ * @return {*}
+ * @constructor
+ */
 const PartList = props => {
 
-  // States
+  const listOptionsDefault = {limit: 15, offset: 0, order_by: [{updated_at: 'desc'}, {created_at: 'desc'}]};
+
   const [mode, setMode] = useState('add');
   const [part, setPart] = useState({});
-  const [modalVisibility, showModalVisibility] = useState(false);
+  const [drawerVisibility, showDrawerVisibility] = useState(false);
   const [confirmVisibility, showConfirmVisibility] = useState(false);
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
+  const [totalCount, setTotalCount] = useState(0);
+  const [listOptions, setListOptions] = useState(listOptionsDefault);
+  const [searchText, setSearchText] = useState('');
+
+  // todo: make this shit as a custom hooks.
+  const openNotificationWithIcon = (type, message, description) => {
+    notification[type]({
+      message,
+      description
+    });
+  };
 
   // Methods
-  const handleEditMode = part => {
-    console.log(part, 'part');
+  const handleFormMode = part => {
     setMode('edit');
     setPart(part);
-    showModalVisibility(true);
+    showDrawerVisibility(true);
   };
 
   const showOrCancelConfirmModal = (visible, id) => {
@@ -33,56 +50,105 @@ const PartList = props => {
     showConfirmVisibility(visible);
   };
 
-  const cancelPartModal = () => {
+  const cancelModal = () => {
     setMode('add');
     setPart({});
-    showModalVisibility(false);
+    showDrawerVisibility(false);
   };
 
+  // todo: we can make this as custom hooks for deleting resource;
   const handleDelete = async () => {
     await props.client.mutate({
       mutation: DELETE_PART,
       variables: {
         id: toBeDeletedId
-      }
+      },
+      refetchQueries: [{query: GET_PARTS_LIST, variables: listOptions}]
     });
 
     showOrCancelConfirmModal(false, null);
+    openNotificationWithIcon('success', 'Success', 'Driver has been deleted successfully');
   };
 
-  columnsTitleFormatter(['name', 'code', 'quantity', 'description', 'created_at'])
+  // handles the paginate action of the table.
+  const handlePaginate = (page) => {
+    const offset = page * 15;
+    setListOptions({...listOptions, offset});
+  };
 
-  const columns = ['name', 'code', 'quantity', 'description', 'created_at'].map(v => {
-    const formattedTitle = v.split('_').reduce((g, i) => g + ' ' + i);
-    let fields = {title: formattedTitle, dataIndex: v, key: v};
-    if (v === 'actions') {
-      return {
-        ...fields, ...{
-          render: (text, record) => (
-            <span>
-          <a href="javascript:;" onClick={() => handleEditMode(record)}>Edit</a>
-          <Divider type="vertical"/>
-          <a href="javascript:;" onClick={() => showOrCancelConfirmModal(true, record.id)}>Delete</a>
-        </span>
-          )
-        }
-      }
-    }
-    return fields;
+  const fields = ['name', 'code', 'quantity', 'description', 'created_at'];
+
+  const columns = columnsTitleFormatter(fields, {
+    title: 'Actions',
+    dataIndex: 'actions',
+    width: 110,
+    key: 'actions',
+    render: (text, record) => (
+      <span>
+       <a href="javascript:;" onClick={() => handleFormMode(record)}><Icon type="eye"/></a>
+        <Divider type="vertical"/>
+        <a href="javascript:;" onClick={() => handleFormMode(record)}><Icon type="edit"/></a>
+        <Divider type="vertical"/>
+        <a href="javascript:;" onClick={() => showOrCancelConfirmModal(true, record.id)}><Icon type="delete"/></a>
+      </span>
+    )
   });
 
+  const refreshResult = () => {
+    const paramValue = {_ilike: `%${searchText}%`};
+    const where = {
+      _or: [
+        {name: paramValue},
+        {code: paramValue},
+      ]
+    };
+    setListOptions({...listOptions, ...{offset: 0, where}});
+    handleTotalCount(where);
+  };
+
+  // Search
+  const handleSearch = (text) => {
+    setSearchText(text);
+    refreshResult(text);
+  };
+
+  // Total Count
+  const handleTotalCount = (where = null) => {
+    const q = where != null ? {query: GET_TOTAL_COUNT, variables: {where}} : {query: GET_TOTAL_COUNT};
+
+    props.client.query(q)
+      .then(({data}) => setTotalCount(data.parts_aggregate.aggregate.count));
+  };
+
+  // Get the total number of drivers.
+  useEffect(() => {
+    handleTotalCount();
+  }, []);
+
+  const drawerProps = {
+    title: (mode === 'edit') ? 'Edit Part' : 'New Part',
+    listOptions,
+    part,
+    mode,
+    visible: drawerVisibility,
+    onOk: () => showDrawerVisibility(false),
+    onCancel: () => cancelModal()
+  };
+
   const PartsList = (options) => (
-    <Subscription subscription={PARTS_SUBSCRIPTION} variables={options} fetchPolicy="network-only">
+    <Query query={GET_PARTS_LIST} variables={options} fetchPolicy="network-only">
       {({data, loading, error}) => {
-        if (error) return `Error! ${error.message}`;
+        if (error) return `Error! )${error.message}`;
         return (
           <>
-            <Table loading={loading} pagination={{pageSize: 15}} rowKey="id" dataSource={(!loading && data.parts) || []}
+            <Table loading={loading}
+                   pagination={{pageSize: 15, onChange: (page) => handlePaginate(page), total: totalCount}} rowKey="id"
+                   dataSource={(!loading && data.parts) || []}
                    columns={columns}/>
           </>
         )
       }}
-    </Subscription>
+    </Query>
   );
 
   return (
@@ -96,18 +162,16 @@ const PartList = props => {
               </div>
               <Row className="mt-20">
                 <Col span={12}>
-                  <Button key="1" onClick={() => showModalVisibility(true)} type="primary"><Icon
+                  <Button key="1" onClick={() => showDrawerVisibility(true)} type="primary"><Icon
                     type="plus"/>Part</Button>
                 </Col>
                 <Col offset={4} span={8}>
-                  <Search placeholder="input search text" onSearch={value => console.log(value)} enterButton/>
+                  <Search placeholder="input search text" onSearch={value => handleSearch(value)} enterButton/>
                 </Col>
               </Row>
             </PageHeader>
 
-            <Alert className="mb-10" message="Informational Notes" type="info" showIcon/>
-
-            {PartsList({limit: 15, offset: 10, order_by: {created_at: 'desc'}})}
+            {PartsList(listOptions)}
 
             <ConfirmModal
               width='500'
@@ -120,8 +184,7 @@ const PartList = props => {
               onOk={() => handleDelete()}
             />
 
-            <PartModal part={part} mode={mode} visible={modalVisibility} onOk={() => showModalVisibility(false)}
-                       onCancel={() => cancelPartModal()}/>
+            <PartDrawer {...drawerProps}/>
           </div>
         </Row>
       </div>

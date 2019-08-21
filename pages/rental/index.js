@@ -15,7 +15,7 @@ const DriverList = props => {
   // States
   const [mode, setMode] = useState('add');
   const [driver, setDriver] = useState({});
-  const [modalVisibility, showModalVisibility] = useState(false);
+  const [drawerVisibility, showDrawerVisibility] = useState(false);
   const [confirmVisibility, showConfirmVisibility] = useState(false);
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
 
@@ -24,7 +24,7 @@ const DriverList = props => {
     console.log(driver, 'driver');
     setMode('edit');
     setDriver(driver);
-    showModalVisibility(true);
+    showDrawerVisibility(true);
   };
 
   const showOrCancelConfirmModal = (visible, id) => {
@@ -35,7 +35,7 @@ const DriverList = props => {
   const cancelDriverModal = () => {
     setMode('add');
     setDriver({});
-    showModalVisibility(false);
+    showDrawerVisibility(false);
   };
 
   const handleDelete = async () => {
@@ -122,7 +122,7 @@ const DriverList = props => {
               </div>
               <Row className="mt-20">
                 <Col span={12}>
-                  <Button key="1" onClick={() => showModalVisibility(true)} type="primary"><Icon
+                  <Button key="1" onClick={() => showDrawerVisibility(true)} type="primary"><Icon
                     type="plus"/>Driver</Button>
                 </Col>
                 <Col offset={4} span={8}>
@@ -146,7 +146,7 @@ const DriverList = props => {
               onOk={() => handleDelete()}
             />
 
-            <DriverModal driver={driver} mode={mode} visible={modalVisibility} onOk={() => showModalVisibility(false)}
+            <DriverModal driver={driver} mode={mode} visible={drawerVisibility} onOk={() => showDrawerVisibility(false)}
                          onCancel={() => cancelDriverModal()}/>
           </div>
         </Row>

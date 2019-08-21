@@ -1,9 +1,9 @@
-import {useEffect, useMemo, useState} from 'react';
-import {Row, Modal, Table, Col, Icon, Input, Tag, Alert, PageHeader, Button, Divider} from 'antd';
+import {useEffect, useState} from 'react';
+import {Row, Table, Col, Icon, Input, Tag, notification, PageHeader, Button, Divider} from 'antd';
 
 import MainLayout from '../../layout/main';
 import {Query} from 'react-apollo';
-import TaxiModal from './taxi-modal';
+import TaxiDrawer from './taxi-drawer';
 import ConfirmModal from './../../components/confirm-modal';
 import {withApollo} from "react-apollo";
 
@@ -20,22 +20,31 @@ const {Search} = Input;
  * @constructor
  */
 const TaxiList = props => {
-  // use memo on this
-  const listOptionsDefault = {limit: 15, offset: 10, order_by: {created_at: 'desc'}};
+
+  const listOptionsDefault = {limit: 15, offset: 0, order_by: [{updated_at: 'desc'}, {created_at: 'desc'}]};
 
   const [mode, setMode] = useState('add');
   const [taxi, setTaxi] = useState({});
-  const [modalVisibility, showModalVisibility] = useState(false);
+  const [drawerVisibility, showDrawerVisibility] = useState(false);
   const [confirmVisibility, showConfirmVisibility] = useState(false);
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
   const [listOptions, setListOptions] = useState(listOptionsDefault);
+  const [searchText, setSearchText] = useState('');
+
+  // todo: make this shit as a custom hooks.
+  const openNotificationWithIcon = (type, message, description) => {
+    notification[type]({
+      message,
+      description
+    });
+  };
 
   // handle the edit/add mode
   const handleFormMode = taxi => {
     setMode('edit');
     setTaxi(taxi);
-    showModalVisibility(true);
+    showDrawerVisibility(true);
   };
 
   // show or cancel confirm modal
@@ -45,22 +54,24 @@ const TaxiList = props => {
   };
 
   // cancel taxi modal
-  const cancelTaxiModal = () => {
+  const cancelModal = () => {
     setMode('add');
     setTaxi({});
-    showModalVisibility(false);
+    showDrawerVisibility(false);
   };
 
-  // handle delete
+  // todo: we can make this as custom hooks for deleting resource;
   const handleDelete = async () => {
     await props.client.mutate({
       mutation: DELETE_TAXI,
       variables: {
         id: toBeDeletedId
-      }
+      },
+      refetchQueries: [{query: GET_TAXIS_LIST, variables: listOptions}]
     });
 
     showOrCancelConfirmModal(false, null);
+    openNotificationWithIcon('success', 'Success', 'Driver has been deleted successfully');
   };
 
   // Pagination.
@@ -70,6 +81,25 @@ const TaxiList = props => {
   };
 
   const fields = ['brand', 'model', 'plate_number', 'mileage', 'planned_maintenance', 'malfunctions', 'notes'];
+
+  const refreshResult = () => {
+    const paramValue = {_ilike: `%${searchText}%`};
+    const where = {
+      _or: [
+        {brand: paramValue},
+        {plate_number: paramValue}
+      ]
+    };
+    setListOptions({...listOptions, ...{offset: 0, where}});
+    handleTotalCount(where);
+  };
+
+  // Search
+  const handleSearch = (text) => {
+    console.log(text);
+    setSearchText(text);
+    refreshResult(text);
+  };
 
   // handle columns
   const columns = columnsTitleFormatter(fields, [
@@ -101,10 +131,27 @@ const TaxiList = props => {
       )
     }]);
 
+  // Total Count
+  const handleTotalCount = (where = null) => {
+    const q = where != null ? {query: GET_TOTAL_COUNT, variables: {where}} : {query: GET_TOTAL_COUNT};
+
+    props.client.query(q)
+      .then(({data}) => setTotalCount(data.taxis_aggregate.aggregate.count));
+  };
+
   useEffect(() => {
-    props.client.query({query: GET_TOTAL_COUNT})
-      .then(res => setTotalCount(res.data.taxis_aggregate.aggregate.count));
-  });
+    handleTotalCount();
+  }, []);
+
+  const drawerProps = {
+    title: (mode === 'edit') ? 'Edit Taxi' : 'New Taxi',
+    listOptions,
+    taxi,
+    mode,
+    visible: drawerVisibility,
+    onOk: () => showDrawerVisibility(false),
+    onCancel: () => cancelModal()
+  };
 
   const TaxisList = (options) => (
     <Query query={GET_TAXIS_LIST} variables={options} fetchPolicy="network-only">
@@ -132,16 +179,14 @@ const TaxiList = props => {
               </div>
               <Row className="mt-20">
                 <Col span={12}>
-                  <Button key="1" onClick={() => showModalVisibility(true)} type="primary"><Icon
+                  <Button key="1" onClick={() => showDrawerVisibility(true)} type="primary"><Icon
                     type="plus"/>Taxi</Button>
                 </Col>
                 <Col offset={4} span={8}>
-                  <Search placeholder="input search text" onSearch={value => console.log(value)} enterButton/>
+                  <Search placeholder="input search text" onSearch={value => handleSearch(value)} enterButton/>
                 </Col>
               </Row>
             </PageHeader>
-
-            <Alert className="mb-10" message="Informational Notes" type="info" showIcon/>
 
             {TaxisList(listOptions)}
 
@@ -156,8 +201,7 @@ const TaxiList = props => {
               onOk={() => handleDelete()}
             />
 
-            <TaxiModal taxi={taxi} mode={mode} visible={modalVisibility} onOk={() => showModalVisibility(false)}
-                       onCancel={() => cancelTaxiModal()}/>
+            <TaxiDrawer {...drawerProps}/>
           </div>
         </Row>
       </div>

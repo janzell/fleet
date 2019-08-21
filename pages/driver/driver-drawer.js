@@ -3,6 +3,7 @@ import {RequiredRule} from '../../lib/form-rules';
 import {ADD_DRIVER, GET_DRIVERS_LIST, UPDATE_DRIVER} from "./drivers-gql";
 import {withApollo} from "react-apollo";
 import {useEffect} from "react";
+import moment from 'moment';
 
 const {TextArea} = Input;
 
@@ -10,7 +11,7 @@ const DriverDrawer = props => {
   const {driver, listOptions} = props;
   const {getFieldDecorator, validateFieldsAndScroll, resetFields} = props.form;
 
-  // todo: make this shit as a custom hooks.
+  // todo: use this as custom hooks
   const openNotificationWithIcon = (type, message, description) => {
     notification[type]({
       message,
@@ -27,7 +28,7 @@ const DriverDrawer = props => {
         const action = isEditMode ? 'Updated' : 'Added';
 
         // Append updated_at every time we update on something.
-        values.updated_at = new Date();
+        values.updated_at = moment().format('YYYY-MM-D HH:mm:ss')
 
         isEditMode
           ? mutateDriver(UPDATE_DRIVER, {id: driver.id, driver: values})

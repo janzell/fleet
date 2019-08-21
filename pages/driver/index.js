@@ -21,13 +21,11 @@ const {Search} = Input;
  */
 const DriverList = props => {
 
-  // default values.
-  const listOptionsDefault = {limit: 15, offset: 0, order_by: [{created_at: 'desc'}, {updated_at: 'desc'}]};
+  const listOptionsDefault = {limit: 15, offset: 0, order_by: [{updated_at: 'desc'}, {created_at: 'desc'}]};
 
-  // driver component states.
   const [mode, setMode] = useState('add');
   const [driver, setDriver] = useState({});
-  const [modalVisibility, showModalVisibility] = useState(false);
+  const [drawerVisibility, showDrawerVisibility] = useState(false);
   const [confirmVisibility, showConfirmVisibility] = useState(false);
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
@@ -46,7 +44,7 @@ const DriverList = props => {
   const handleFormMode = driver => {
     setMode('edit');
     setDriver(driver);
-    showModalVisibility(true);
+    showDrawerVisibility(true);
   };
 
   const showOrCancelConfirmModal = (visible, id) => {
@@ -54,10 +52,10 @@ const DriverList = props => {
     showConfirmVisibility(visible);
   };
 
-  const cancelDriverModal = () => {
+  const cancelModal = () => {
     setMode('add');
     setDriver({});
-    showModalVisibility(false);
+    showDrawerVisibility(false);
   };
 
   // todo: we can make this as custom hooks for deleting resource;
@@ -126,19 +124,19 @@ const DriverList = props => {
       .then(({data}) => setTotalCount(data.drivers_aggregate.aggregate.count));
   };
 
-  // get the total number of drivers.
+  // Get the total number of drivers.
   useEffect(() => {
     handleTotalCount();
   }, []);
 
-  const driverModalProps = {
+  const drawerProps = {
     title: (mode === 'edit') ? 'Edit Driver' : 'New Driver',
     listOptions,
     driver,
     mode,
-    visible: modalVisibility,
-    onOk: () => showModalVisibility(false),
-    onCancel: () => cancelDriverModal()
+    visible: drawerVisibility,
+    onOk: () => showDrawerVisibility(false),
+    onCancel: () => cancelModal()
   };
 
   const DriversList = (options) => (
@@ -168,7 +166,7 @@ const DriverList = props => {
               </div>
               <Row className="mt-20">
                 <Col span={12}>
-                  <Button key="1" onClick={() => showModalVisibility(true)} type="primary"><Icon
+                  <Button key="1" onClick={() => showDrawerVisibility(true)} type="primary"><Icon
                     type="plus"/>Driver</Button>
                 </Col>
                 <Col offset={4} span={8}>
@@ -191,7 +189,7 @@ const DriverList = props => {
               onOk={() => handleDelete()}
             />
 
-            <DriverDrawer {...driverModalProps}/>
+            <DriverDrawer {...drawerProps}/>
           </div>
         </Row>
       </div>
