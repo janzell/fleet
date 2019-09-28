@@ -8,22 +8,23 @@ import DriverModal from './rental-modal';
 import ConfirmModal from './../../components/confirm-modal';
 
 import {withApollo} from "react-apollo";
+import DriverDrawer from "../driver/driver-drawer";
 
 const {Search} = Input;
 const DriverList = props => {
 
   // States
   const [mode, setMode] = useState('add');
-  const [driver, setDriver] = useState({});
+  const [rental, setDriver] = useState({});
   const [drawerVisibility, showDrawerVisibility] = useState(false);
   const [confirmVisibility, showConfirmVisibility] = useState(false);
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
 
   // Methods
-  const handleEditMode = driver => {
-    console.log(driver, 'driver');
+  const handleEditMode = rental => {
+    console.log(rental, 'rental');
     setMode('edit');
-    setDriver(driver);
+    setDriver(rental);
     showDrawerVisibility(true);
   };
 
@@ -116,22 +117,20 @@ const DriverList = props => {
       <div className="page drivers">
         <Row>
           <div className="right-content">
-            <PageHeader title="Driver's List">
+            <PageHeader title="Rental's List">
               <div className="wrap">
                 <div className="content">List of drivers</div>
               </div>
               <Row className="mt-20">
                 <Col span={12}>
                   <Button key="1" onClick={() => showDrawerVisibility(true)} type="primary"><Icon
-                    type="plus"/>Driver</Button>
+                    type="plus"/>Rental</Button>
                 </Col>
                 <Col offset={4} span={8}>
                   <Search placeholder="input search text" onSearch={value => console.log(value)} enterButton/>
                 </Col>
               </Row>
             </PageHeader>
-
-            <Alert className="mb-10" message="Informational Notes" type="info" showIcon/>
 
             {DriversList({limit: 15, offset: 10, order_by: {created_at: 'desc'}})}
 
@@ -146,7 +145,7 @@ const DriverList = props => {
               onOk={() => handleDelete()}
             />
 
-            <DriverModal driver={driver} mode={mode} visible={drawerVisibility} onOk={() => showDrawerVisibility(false)}
+            <DriverModal rental={rental} mode={mode} visible={drawerVisibility} onOk={() => showDrawerVisibility(false)}
                          onCancel={() => cancelDriverModal()}/>
           </div>
         </Row>

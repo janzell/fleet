@@ -25,8 +25,10 @@ const TaxiList = props => {
 
   const [mode, setMode] = useState('add');
   const [taxi, setTaxi] = useState({});
+
   const [drawerVisibility, showDrawerVisibility] = useState(false);
   const [confirmVisibility, showConfirmVisibility] = useState(false);
+
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
   const [listOptions, setListOptions] = useState(listOptionsDefault);

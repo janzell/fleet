@@ -5,7 +5,7 @@ import {withApollo} from "react-apollo";
 
 const {TextArea} = Input;
 
-const RentalModal = props => {
+const RentalDrawer = props => {
 
   // Destructor
   const {driver} = props;
@@ -91,4 +91,4 @@ const RentalModal = props => {
   )
 };
 
-export default withApollo(Form.create()(RentalModal));
+export default withApollo(Form.create()(RentalDrawer));

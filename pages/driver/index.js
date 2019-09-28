@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {Row, Table, Col, Icon, Input, notification, PageHeader, Button, Divider} from 'antd';
+import {Row, Table, Col, Icon, Input, PageHeader, Button, Divider} from 'antd';
 
 import MainLayout from '../../layout/main';
 import {Query} from 'react-apollo';
@@ -8,7 +8,9 @@ import ConfirmModal from './../../components/confirm-modal';
 import {withApollo} from "react-apollo";
 
 import {GET_DRIVERS_LIST, DELETE_DRIVER, GET_TOTAL_COUNT} from "./drivers-gql";
+
 import columnsTitleFormatter from "../../utils/table-columns-formatter";
+import useNotificationWithIcon from '../../hooks/use-notification'
 
 const {Search} = Input;
 
@@ -31,14 +33,6 @@ const DriverList = props => {
   const [totalCount, setTotalCount] = useState(0);
   const [listOptions, setListOptions] = useState(listOptionsDefault);
   const [searchText, setSearchText] = useState('');
-
-  // todo: make this shit as a custom hooks.
-  const openNotificationWithIcon = (type, message, description) => {
-    notification[type]({
-      message,
-      description
-    });
-  };
 
   // todo: convert this to custom hooks if possible.
   const handleFormMode = driver => {
@@ -69,7 +63,7 @@ const DriverList = props => {
     });
 
     showOrCancelConfirmModal(false, null);
-    openNotificationWithIcon('success', 'Success', 'Driver has been deleted successfully');
+    useNotificationWithIcon('success', 'Success', 'Driver has been deleted successfully');
   };
 
   // handles the paginate action of the table.
