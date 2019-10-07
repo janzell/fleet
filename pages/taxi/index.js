@@ -4,11 +4,12 @@ import {Row, Table, Col, Icon, Input, Tag, notification, PageHeader, Button, Div
 import MainLayout from '../../layout/main';
 import {Query} from 'react-apollo';
 import TaxiDrawer from './taxi-drawer';
-import ConfirmModal from './../../components/confirm-modal';
 import {withApollo} from "react-apollo";
 
 import {GET_TAXIS_LIST, DELETE_TAXI, GET_TOTAL_COUNT} from "./taxi-gql";
 import columnsTitleFormatter from "../../utils/table-columns-formatter";
+import DeleteConfirmationModal from "../../components/modal/delete-confirmation-modal";
+import useColumnFormatter from "../../hooks/table/use-column-formatter";
 
 const {Search} = Input;
 
@@ -82,7 +83,7 @@ const TaxiList = props => {
     setListOptions({...listOptions, offset});
   };
 
-  const fields = ['brand', 'model', 'plate_number', 'mileage', 'planned_maintenance', 'malfunctions', 'notes'];
+  const fields = ['brand', 'model', 'plate_number', 'mileage', 'planned_maintenance', 'notes'];
 
   const refreshResult = () => {
     const paramValue = {_ilike: `%${searchText}%`};
@@ -98,40 +99,23 @@ const TaxiList = props => {
 
   // Search
   const handleSearch = (text) => {
-    console.log(text);
     setSearchText(text);
     refreshResult(text);
   };
 
-  // handle columns
-  const columns = columnsTitleFormatter(fields, [
-    {
-      title: 'status',
-      key: 'status',
-      dataIndex: 'status',
-      render: status => {
-        const color = (status === 'maintenance') ? 'red' : 'green';
-        return (
-          <Tag color={color} key={status}>
-            {status.toUpperCase()}
-          </Tag>
-        )
-      }
-    }, {
-      title: 'Actions',
-      dataIndex: 'actions',
-      key: 'actions',
-      width: 110,
-      render: (text, record) => (
-        <span>
-       <a href="javascript:;" onClick={() => handleFormMode(record)}><Icon type="eye"/></a>
-        <Divider type="vertical"/>
-        <a href="javascript:;" onClick={() => handleFormMode(record)}><Icon type="edit"/></a>
-        <Divider type="vertical"/>
-        <a href="javascript:;" onClick={() => showOrCancelConfirmModal(true, record.id)}><Icon type="delete"/></a>
-      </span>
+  const columns = useColumnFormatter(fields, handleFormMode, showOrCancelConfirmModal, [{
+    title: 'status',
+    key: 'status',
+    dataIndex: 'status',
+    render: status => {
+      const color = (status === 'maintenance') ? 'red' : 'green';
+      return (
+        <Tag color={color} key={status}>
+          {status.toUpperCase()}
+        </Tag>
       )
-    }]);
+    }
+  }]);
 
   // Total Count
   const handleTotalCount = (where = null) => {
@@ -161,7 +145,9 @@ const TaxiList = props => {
         if (error) return `Error! ${error.message}`;
         return (
           <>
-            <Table pagination={{pageSize: 15, onChange: (page) => handlePaginate(page), total: totalCount}} rowKey="id"
+            <Table pagination={{pageSize: 15, onChange: (page) => handlePaginate(page), total: totalCount}}
+                   rowKey="id"
+                   expandedRowRender={record => <p style={{margin: 0}}><u>Notes:</u> {record.notes}</p>}
                    dataSource={(!loading && data.taxis) || []}
                    columns={columns}/>
           </>
@@ -175,7 +161,7 @@ const TaxiList = props => {
       <div className="page taxis">
         <Row>
           <div className="right-content">
-            <PageHeader title="Taxi's List">
+            <PageHeader title="Taxi List">
               <div className="wrap">
                 <div className="content">List of taxis</div>
               </div>
@@ -192,16 +178,9 @@ const TaxiList = props => {
 
             {TaxisList(listOptions)}
 
-            <ConfirmModal
-              width='500'
-              visible={confirmVisibility}
-              centered
-              content="Are you sure you want to delete this record?"
-              okText='Yes'
-              cancelText='Cancel'
-              onCancel={() => showOrCancelConfirmModal(false, null)}
-              onOk={() => handleDelete()}
-            />
+            <DeleteConfirmationModal visible={confirmVisibility}
+                                     onOk={() => handleDelete()}
+                                     onCancel={() => showOrCancelConfirmModal(false, null)}/>
 
             <TaxiDrawer {...drawerProps}/>
           </div>

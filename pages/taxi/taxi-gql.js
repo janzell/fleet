@@ -31,8 +31,8 @@ const TAXIS_SUBSCRIPTION = gql`
 `;
 
 const ADD_TAXI = gql`
-    mutation addTaxi($driver: [taxis_insert_input!]!) {
-        insert_taxis(objects: $driver) {
+    mutation addTaxi($taxi: [taxis_insert_input!]!) {
+        insert_taxis(objects: $taxi) {
             affected_rows
             returning {
                 ${taxiFields}
@@ -48,8 +48,8 @@ const DELETE_TAXI = gql`
     }`;
 
 const UPDATE_TAXI = gql`
-    mutation updateTaxi($id: Int!, $driver: taxis_set_input) {
-        update_taxis(where: {id: {_eq: $id}}, _set: $driver) {
+    mutation updateTaxi($id: Int!, $taxi: taxis_set_input) {
+        update_taxis(where: {id: {_eq: $id}}, _set: $taxi) {
             affected_rows
             returning {
                 ${taxiFields}

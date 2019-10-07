@@ -4,13 +4,14 @@ import {Row, Table, Col, Icon, Input, PageHeader, Button, Divider} from 'antd';
 import MainLayout from '../../layout/main';
 import {Query} from 'react-apollo';
 import DriverDrawer from './driver-drawer';
-import ConfirmModal from './../../components/confirm-modal';
+import DeleteConfirmationModal from './../../components/modal/delete-confirmation-modal';
 import {withApollo} from "react-apollo";
 
 import {GET_DRIVERS_LIST, DELETE_DRIVER, GET_TOTAL_COUNT} from "./drivers-gql";
 
 import columnsTitleFormatter from "../../utils/table-columns-formatter";
 import useNotificationWithIcon from '../../hooks/use-notification'
+import useColumnFormatter from "../../hooks/table/use-column-formatter";
 
 const {Search} = Input;
 
@@ -24,17 +25,19 @@ const {Search} = Input;
 const DriverList = props => {
 
   const listOptionsDefault = {limit: 15, offset: 0, order_by: [{updated_at: 'desc'}, {created_at: 'desc'}]};
+  const fields = ['first_name', 'last_name', 'license_number', 'address', 'contact_number', 'created_at', 'updated_at'];
 
   const [mode, setMode] = useState('add');
   const [driver, setDriver] = useState({});
+
   const [drawerVisibility, showDrawerVisibility] = useState(false);
   const [confirmVisibility, showConfirmVisibility] = useState(false);
+
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
   const [listOptions, setListOptions] = useState(listOptionsDefault);
   const [searchText, setSearchText] = useState('');
 
-  // todo: convert this to custom hooks if possible.
   const handleFormMode = driver => {
     setMode('edit');
     setDriver(driver);
@@ -72,25 +75,6 @@ const DriverList = props => {
     setListOptions({...listOptions, offset});
   };
 
-  const fields = ['first_name', 'last_name', 'license_number', 'address', 'contact_number', 'created_at', 'updated_at'];
-
-  // use memo?
-  const columns = columnsTitleFormatter(fields, {
-    title: 'Actions',
-    dataIndex: 'actions',
-    width: 110,
-    key: 'actions',
-    render: (text, record) => (
-      <span>
-       <a href="javascript:;" onClick={() => handleFormMode(record)}><Icon type="eye"/></a>
-        <Divider type="vertical"/>
-        <a href="javascript:;" onClick={() => handleFormMode(record)}><Icon type="edit"/></a>
-        <Divider type="vertical"/>
-        <a href="javascript:;" onClick={() => showOrCancelConfirmModal(true, record.id)}><Icon type="delete"/></a>
-      </span>
-    )
-  });
-
   const refreshResult = () => {
     const paramValue = {_ilike: `%${searchText}%`};
     const where = {
@@ -109,6 +93,8 @@ const DriverList = props => {
     setSearchText(text);
     refreshResult(text);
   };
+
+  const columns = useColumnFormatter(fields, handleFormMode, showOrCancelConfirmModal);
 
   // Total Count
   const handleTotalCount = (where = null) => {
@@ -154,6 +140,8 @@ const DriverList = props => {
       <div className="page drivers">
         <Row>
           <div className="right-content">
+
+            {/* make it reusable component? */}
             <PageHeader title="Driver's List">
               <div className="wrap">
                 <div className="content">List of drivers</div>
@@ -171,17 +159,9 @@ const DriverList = props => {
 
             {DriversList(listOptions)}
 
-            {/* todo: we can convert this to a DeleteConfirm Modal component*/}
-            <ConfirmModal
-              width='500'
-              visible={confirmVisibility}
-              centered
-              content="Are you sure you want to delete this record?"
-              okText='Yes'
-              cancelText='Cancel'
-              onCancel={() => showOrCancelConfirmModal(false, null)}
-              onOk={() => handleDelete()}
-            />
+            <DeleteConfirmationModal visible={confirmVisibility}
+                                     onOk={() => handleDelete()}
+                                     onCancel={() => showOrCancelConfirmModal(false, null)}/>
 
             <DriverDrawer {...drawerProps}/>
           </div>

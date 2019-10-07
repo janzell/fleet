@@ -3,7 +3,7 @@ import {gql} from 'apollo-boost';
 const partFields = `id
     name
     code
-    quantity
+    quantity,
     description
     created_at
     updated_at

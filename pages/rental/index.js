@@ -4,11 +4,10 @@ import {Row, Modal, Table, Col, Icon, Input, Tag, Alert, PageHeader, Button, Div
 import MainLayout from '../../layout/main';
 import {DRIVERS_SUBSCRIPTION, DELETE_DRIVER} from "./rental-gql";
 import {Subscription} from 'react-apollo';
-import DriverModal from './rental-modal';
+import RentalDrawer from './rental-drawer';
 import ConfirmModal from './../../components/confirm-modal';
 
 import {withApollo} from "react-apollo";
-import DriverDrawer from "../driver/driver-drawer";
 
 const {Search} = Input;
 const DriverList = props => {
@@ -145,7 +144,7 @@ const DriverList = props => {
               onOk={() => handleDelete()}
             />
 
-            <DriverModal rental={rental} mode={mode} visible={drawerVisibility} onOk={() => showDrawerVisibility(false)}
+            <RentalDrawer rental={rental} mode={mode} visible={drawerVisibility} onOk={() => showDrawerVisibility(false)}
                          onCancel={() => cancelDriverModal()}/>
           </div>
         </Row>

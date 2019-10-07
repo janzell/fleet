@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {Row, Icon, Progress, List, Tabs, Card, Col, Avatar} from 'antd';
+import {Row, Icon,Divider, Progress, List, Tabs, Card, Col, Avatar, Timeline} from 'antd';
 import MainLayout from '../../layout/main';
 import CardItem from './card-item';
 import TinyBarChart from './charts/tiny-bar-chart';
@@ -38,21 +38,14 @@ const Dashboard = props => {
           <DashboardBarChart/>
         </Col>
         <Col span={6}>
-          <div>Ranking</div>
-          <ul>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-          </ul>
+          <h3>Latest Activity</h3>
+          <Divider />
+          <Timeline>
+            <Timeline.Item>Create a services site 2015-09-01</Timeline.Item>
+            <Timeline.Item>Solve initial network problems 2015-09-01</Timeline.Item>
+            <Timeline.Item>Technical testing 2015-09-01</Timeline.Item>
+            <Timeline.Item>Network problems being solved 2015-09-01</Timeline.Item>
+          </Timeline>
         </Col>
       </Row>
     ),
@@ -62,21 +55,14 @@ const Dashboard = props => {
           <DashboardBarChart/>
         </Col>
         <Col span={6}>
-          <div>Ranking</div>
-          <ul>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-            <li><span>Test test</span> <span>345.343</span></li>
-          </ul>
+          <h3>Latest Activity</h3>
+          <Divider />
+          <Timeline>
+            <Timeline.Item>Create a services site 2015-09-01</Timeline.Item>
+            <Timeline.Item>Solve initial network problems 2015-09-01</Timeline.Item>
+            <Timeline.Item>Technical testing 2015-09-01</Timeline.Item>
+            <Timeline.Item>Network problems being solved 2015-09-01</Timeline.Item>
+          </Timeline>
         </Col>
       </Row>
     ),
@@ -148,7 +134,7 @@ const Dashboard = props => {
 
             <Row gutter={12}>
               <Col span={12}>
-                <Card title="Sample Card Title" bordered={false}>
+                <Card title="Latest Rental" bordered={true}>
                   <List
                     itemLayout="horizontal"
                     dataSource={data}
@@ -165,7 +151,7 @@ const Dashboard = props => {
                 </Card>
               </Col>
               <Col span={12}>
-                <Card title="Sample Card Title2" bordered={false}>
+                <Card title="Monthly Report" bordered={true}>
                   <DashboardPieChart/>
                 </Card>
               </Col>

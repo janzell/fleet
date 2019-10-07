@@ -5,10 +5,11 @@ import MainLayout from '../../layout/main';
 import {DELETE_PART, GET_PARTS_LIST, GET_TOTAL_COUNT} from "./parts-gql";
 import {Query} from 'react-apollo';
 import PartDrawer from './parts-drawer';
-import ConfirmModal from './../../components/confirm-modal';
 
 import {withApollo} from "react-apollo";
 import columnsTitleFormatter from "../../utils/table-columns-formatter";
+import DeleteConfirmationModal from "../../components/modal/delete-confirmation-modal";
+import useColumnFormatter from "../../hooks/table/use-column-formatter";
 
 const {Search} = Input;
 
@@ -23,8 +24,10 @@ const PartList = props => {
 
   const [mode, setMode] = useState('add');
   const [part, setPart] = useState({});
+
   const [drawerVisibility, showDrawerVisibility] = useState(false);
   const [confirmVisibility, showConfirmVisibility] = useState(false);
+
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
   const [listOptions, setListOptions] = useState(listOptionsDefault);
@@ -77,22 +80,7 @@ const PartList = props => {
   };
 
   const fields = ['name', 'code', 'quantity', 'description', 'created_at'];
-
-  const columns = columnsTitleFormatter(fields, {
-    title: 'Actions',
-    dataIndex: 'actions',
-    width: 110,
-    key: 'actions',
-    render: (text, record) => (
-      <span>
-       <a href="javascript:;" onClick={() => handleFormMode(record)}><Icon type="eye"/></a>
-        <Divider type="vertical"/>
-        <a href="javascript:;" onClick={() => handleFormMode(record)}><Icon type="edit"/></a>
-        <Divider type="vertical"/>
-        <a href="javascript:;" onClick={() => showOrCancelConfirmModal(true, record.id)}><Icon type="delete"/></a>
-      </span>
-    )
-  });
+  const columns = useColumnFormatter(fields, handleFormMode,showOrCancelConfirmModal);
 
   const refreshResult = () => {
     const paramValue = {_ilike: `%${searchText}%`};
@@ -173,16 +161,10 @@ const PartList = props => {
 
             {PartsList(listOptions)}
 
-            <ConfirmModal
-              width='500'
-              visible={confirmVisibility}
-              centered
-              content="Are you sure you want to delete this record?"
-              okText='Yes'
-              cancelText='Cancel'
-              onCancel={() => showOrCancelConfirmModal(false, null)}
-              onOk={() => handleDelete()}
-            />
+            <DeleteConfirmationModal visible={confirmVisibility}
+                                     onOk={() => handleDelete()}
+                                     onCancel={() => showOrCancelConfirmModal(false, null)}/>
+
 
             <PartDrawer {...drawerProps}/>
           </div>

@@ -1,66 +1,65 @@
-import {Form, Input, InputNumber, Select, Slider, Row, Col,notification, Drawer} from 'antd';
-import {RequiredRule} from '../../lib/form-rules';
-import {ADD_TAXI, UPDATE_TAXI} from "./taxi-gql";
+import {Form, Input, InputNumber, Select, Slider, Row, Col, Drawer, Button, notification} from 'antd';
+
 import {withApollo} from "react-apollo";
 import {useEffect, useState} from "react";
+import TaxiPhotoUpload from './taxi-photo-upload';
+
+import {RequiredRule} from '../../lib/form-rules';
+import {ADD_TAXI, GET_TAXIS_LIST, UPDATE_TAXI} from "./taxi-gql";
+import {ADD_DRIVER, GET_DRIVERS_LIST, UPDATE_DRIVER} from "../driver/drivers-gql";
 
 const {TextArea} = Input;
 const {Option} = Select;
 
 const TaxiModal = props => {
 
-  const {taxi} = props;
+  const {client, taxi, onCancel, title, visible, listOptions} = props;
   const {getFieldDecorator, validateFieldsAndScroll, resetFields} = props.form;
 
   // States
   const [oilPercentage, setOilPercentage] = useState(0);
   const [status, setStatus] = useState('operable');
 
+  const openNotificationWithIcon = (type, message, description) => {
+    notification[type]({message, description});
+  };
+
   // todo: useCustom hooks?
   const handleSave = (e) => {
     e.preventDefault();
     validateFieldsAndScroll((err, values) => {
       if (!err) {
-        (taxi.id) ? updateTaxi(taxi.id, values) : storeTaxi(values);
+        console.log(values);
+        const isEditMode = (taxi.id);
+        const action = isEditMode ? 'Updated' : 'Added';
 
+        isEditMode
+          ? mutateTaxi(UPDATE_TAXI, {id: taxi.id, taxi: values})
+          : mutateTaxi(ADD_TAXI, {taxi: values});
+
+        openNotificationWithIcon('success', 'Success', `Taxi ${action} successfully`);
         resetFields();
-        props.onCancel();
-      }
-    });
-
-  };
-
-  const updateTaxi = async (id, data) => {
-    await props.client.mutate({
-      mutation: UPDATE_TAXI,
-      variables: {
-        id,
-        taxi: data
+        onCancel();
       }
     });
   };
 
-  const storeTaxi = async data => {
-    await props.client.mutate({
-      mutation: ADD_TAXI,
-      variables: {
-        taxi: data
-      }
-    });
+  const mutateTaxi = async (mutation, variables) => {
+    await client.mutate({mutation, variables, refetchQueries: [{query: GET_TAXIS_LIST, variables: listOptions}]});
   };
 
   useEffect(() => {
-    if (!props.visible) resetFields();
-  }, [props.visible]);
+    if (!visible) resetFields();
+  }, [visible]);
 
   return (
     <Drawer
       width={800}
-      title={props.title}
+      title={title}
       placement="right"
       closable={false}
-      onClose={props.onCancel}
-      visible={props.visible}>
+      onClose={onCancel}
+      visible={visible}>
       <Form className="ant-advanced-search-form" onSubmit={handleSave}>
         <Row gutter={6}>
           <Col lg={8}>
@@ -72,7 +71,7 @@ const TaxiModal = props => {
           </Col>
           <Col lg={8}>
             <Form.Item label="Model">
-              {getFieldDecorator('model', {rules: RequiredRule, initialValue: taxi.model})(
+              {getFieldDecorator('model', {rules: [...RequiredRule, ...[{type: 'number'}]], initialValue: taxi.model})(
                 <Input placeholder="Model"/>
               )}
             </Form.Item>
@@ -160,6 +159,16 @@ const TaxiModal = props => {
             </Form.Item>
           </Col>
         </Row>
+        <Row>
+          <Col lg={12}>
+            <TaxiPhotoUpload/>
+          </Col>
+        </Row>
+
+        <div className="button-container">
+          <Button onClick={onCancel}>Cancel</Button>
+          <Button type="primary" onClick={handleSave}>Save</Button>
+        </div>
       </Form>
     </Drawer>
   )
