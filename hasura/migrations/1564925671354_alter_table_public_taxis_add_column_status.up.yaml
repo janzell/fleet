@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."taxis" ADD COLUMN "status" text NULL DEFAULT 'operable';
-  type: run_sql

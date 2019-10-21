@@ -1,6 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."taxis" ADD COLUMN "fuel_percentage" text
-  type: run_sql
-- args:
-    sql: ALTER TABLE "public"."taxis" ALTER COLUMN "fuel_percentage" DROP NOT NULL
-  type: run_sql

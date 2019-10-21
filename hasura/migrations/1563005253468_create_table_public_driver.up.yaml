@@ -1,9 +1,0 @@
-- args:
-    sql: CREATE TABLE "public"."driver"("id" serial NOT NULL, "first_name" text NOT
-      NULL, "last_name" text NOT NULL, "created_at" date NOT NULL DEFAULT now(), "updated_at"
-      date NOT NULL DEFAULT now(), PRIMARY KEY ("id") );
-  type: run_sql
-- args:
-    name: driver
-    schema: public
-  type: add_existing_table_or_view

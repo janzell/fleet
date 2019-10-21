@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."taxis" ADD COLUMN "planned_maintenance" text NULL;
-  type: run_sql

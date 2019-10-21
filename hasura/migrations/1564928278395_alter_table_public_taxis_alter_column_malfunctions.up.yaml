@@ -1,3 +1,0 @@
-- args:
-    sql: COMMENT ON COLUMN "public"."taxis"."malfunctions" IS ''
-  type: run_sql

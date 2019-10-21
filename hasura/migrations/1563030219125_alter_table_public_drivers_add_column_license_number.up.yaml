@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."drivers" ADD COLUMN "license_number" text NOT NULL
-  type: run_sql

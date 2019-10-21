@@ -1,6 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."drivers" ALTER COLUMN "created_at" TYPE date;
-  type: run_sql
-- args:
-    sql: COMMENT ON COLUMN "public"."drivers"."created_at" IS ''
-  type: run_sql

@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."taxis" DROP COLUMN "status";
-  type: run_sql
