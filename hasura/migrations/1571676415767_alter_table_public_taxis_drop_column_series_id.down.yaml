@@ -1,0 +1,6 @@
+- args:
+    sql: ALTER TABLE "public"."taxis" ADD COLUMN "series_id" text
+  type: run_sql
+- args:
+    sql: ALTER TABLE "public"."taxis" ALTER COLUMN "series_id" DROP NOT NULL
+  type: run_sql

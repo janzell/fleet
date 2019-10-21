@@ -1,0 +1,6 @@
+- args:
+    sql: ALTER TABLE "public"."taxis" ADD COLUMN "model" int4
+  type: run_sql
+- args:
+    sql: ALTER TABLE "public"."taxis" ALTER COLUMN "model" DROP NOT NULL
+  type: run_sql

@@ -1,0 +1,4 @@
+- args:
+    sql: alter table "public"."taxis" add constraint "taxis_case_number_key" unique
+      ("case_number");
+  type: run_sql

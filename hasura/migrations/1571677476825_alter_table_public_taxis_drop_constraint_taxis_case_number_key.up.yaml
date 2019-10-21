@@ -1,0 +1,3 @@
+- args:
+    sql: alter table "public"."taxis" drop constraint "taxis_case_number_key";
+  type: run_sql

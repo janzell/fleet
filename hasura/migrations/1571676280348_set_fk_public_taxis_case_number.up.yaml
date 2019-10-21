@@ -1,0 +1,6 @@
+- args:
+    sql: "\n           alter table \"public\".\"taxis\"\n           add constraint
+      \"taxis_case_number_fkey\" \n           foreign key (\"case_number\") \n           references
+      \"public\".\"cases\"\n           (\"number\") on update restrict on delete restrict;\n
+      \     "
+  type: run_sql

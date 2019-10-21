@@ -1,0 +1,6 @@
+- args:
+    sql: ALTER TABLE "public"."year_models" ALTER COLUMN "notes" DROP NOT NULL;
+  type: run_sql
+- args:
+    sql: COMMENT ON COLUMN "public"."year_models"."notes" IS E''
+  type: run_sql

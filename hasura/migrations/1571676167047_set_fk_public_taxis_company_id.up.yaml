@@ -1,0 +1,6 @@
+- args:
+    sql: "\n           alter table \"public\".\"taxis\"\n           add constraint
+      \"taxis_company_id_fkey\" \n           foreign key (\"company_id\") \n           references
+      \"public\".\"companies\"\n           (\"id\") on update set default on delete
+      set default;\n      "
+  type: run_sql
