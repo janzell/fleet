@@ -1,6 +1,6 @@
 - args:
     sql: "\n           alter table \"public\".\"taxis\"\n           add constraint
-      \"taxis_body_number_fkey\" \n           foreign key (\"body_number\") \n           references
-      \"public\".\"body_numbers\"\n           (\"number\") on update restrict on delete
+      \"taxis_garage_fkey\" \n           foreign key (\"garage\") \n           references
+      \"public\".\"garages\"\n           (\"number\") on update restrict on delete
       restrict;\n      "
   type: run_sql

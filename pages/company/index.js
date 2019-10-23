@@ -3,13 +3,12 @@ import {Row, Table, Col, Icon, Input, PageHeader, Button} from 'antd';
 
 import MainLayout from '../../layout/main';
 import {Query} from 'react-apollo';
-import DriverDrawer from './driver-drawer';
+import CompanyDrawer from './company-drawer';
 import DeleteConfirmationModal from './../../components/modal/delete-confirmation-modal';
 import {withApollo} from "react-apollo";
 
-import {GET_DRIVERS_LIST, DELETE_DRIVER, GET_TOTAL_COUNT} from "./drivers-gql";
+import {GET_COMPANIES_LIST, DELETE_COMPANY, GET_TOTAL_COUNT} from "./company-gql";
 
-import columnsTitleFormatter from "../../utils/table-columns-formatter";
 import useNotificationWithIcon from '../../hooks/use-notification'
 import useColumnFormatter from "../../hooks/table/use-column-formatter";
 
@@ -18,10 +17,10 @@ const {Search} = Input;
 const CompanyList = props => {
 
   const listOptionsDefault = {limit: 15, offset: 0, order_by: [{updated_at: 'desc'}, {created_at: 'desc'}]};
-  const fields = ['first_name', 'last_name', 'license_number', 'address', 'contact_number', 'created_at', 'updated_at'];
+  const fields = ['name', 'address'];
 
   const [mode, setMode] = useState('add');
-  const [driver, setDriver] = useState({});
+  const [company, setCompany] = useState({});
 
   const [drawerVisibility, showDrawerVisibility] = useState(false);
   const [confirmVisibility, showConfirmVisibility] = useState(false);
@@ -31,9 +30,9 @@ const CompanyList = props => {
   const [listOptions, setListOptions] = useState(listOptionsDefault);
   const [searchText, setSearchText] = useState('');
 
-  const handleFormMode = driver => {
+  const handleFormMode = company => {
     setMode('edit');
-    setDriver(driver);
+    setCompany(company);
     showDrawerVisibility(true);
   };
 
@@ -44,22 +43,22 @@ const CompanyList = props => {
 
   const cancelModal = () => {
     setMode('add');
-    setDriver({});
+    setCompany({});
     showDrawerVisibility(false);
   };
 
   // todo: we can make this as custom hooks for deleting resource;
   const handleDelete = async () => {
     await props.client.mutate({
-      mutation: DELETE_DRIVER,
+      mutation: DELETE_COMPANY,
       variables: {
         id: toBeDeletedId
       },
-      refetchQueries: [{query: GET_DRIVERS_LIST, variables: listOptions}]
+      refetchQueries: [{query: GET_COMPANIES_LIST, variables: listOptions}]
     });
 
     showOrCancelConfirmModal(false, null);
-    useNotificationWithIcon('success', 'Success', 'Driver has been deleted successfully');
+    useNotificationWithIcon('success', 'Success', 'Company has been deleted successfully');
   };
 
   // handles the paginate action of the table.
@@ -72,9 +71,7 @@ const CompanyList = props => {
     const paramValue = {_ilike: `%${searchText}%`};
     const where = {
       _or: [
-        {first_name: paramValue},
-        {license_number: paramValue},
-        {last_name: paramValue}
+        {name: paramValue}
       ]
     };
     setListOptions({...listOptions, ...{offset: 0, where}});
@@ -94,33 +91,33 @@ const CompanyList = props => {
     const q = where != null ? {query: GET_TOTAL_COUNT, variables: {where}} : {query: GET_TOTAL_COUNT};
 
     props.client.query(q)
-      .then(({data}) => setTotalCount(data.drivers_aggregate.aggregate.count));
+      .then(({data}) => setTotalCount(data.companies_aggregate.aggregate.count));
   };
 
-  // Get the total number of drivers.
+  // Get the total number of companies.
   useEffect(() => {
     handleTotalCount();
   }, []);
 
   const drawerProps = {
-    title: (mode === 'edit') ? 'Edit Driver' : 'New Driver',
+    title: (mode === 'edit') ? 'Edit Company' : 'New Company',
     listOptions,
-    driver,
+    company,
     mode,
     visible: drawerVisibility,
     onOk: () => showDrawerVisibility(false),
     onCancel: () => cancelModal()
   };
 
-  const DriversList = (options) => (
-    <Query query={GET_DRIVERS_LIST} variables={options} fetchPolicy="network-only">
+  const CompanysList = (options) => (
+    <Query query={GET_COMPANIES_LIST} variables={options} fetchPolicy="network-only">
       {({data, loading, error}) => {
         if (error) return `Error! )${error.message}`;
         return (
           <>
             <Table loading={loading}
                    pagination={{pageSize: 15, onChange: (page) => handlePaginate(page), total: totalCount}} rowKey="id"
-                   dataSource={(!loading && data.drivers) || []}
+                   dataSource={(!loading && data.companies) || []}
                    columns={columns}/>
           </>
         )
@@ -130,19 +127,19 @@ const CompanyList = props => {
 
   return (
     <MainLayout>
-      <div className="page drivers">
+      <div className="page companies">
         <Row>
           <div className="right-content">
 
             {/* make it reusable component? */}
-            <PageHeader title="Driver's List">
+            <PageHeader title="Company's List">
               <div className="wrap">
-                <div className="content">List of drivers</div>
+                <div className="content">List of companies</div>
               </div>
               <Row className="mt-20">
                 <Col span={12}>
                   <Button key="1" onClick={() => showDrawerVisibility(true)} type="primary"><Icon
-                    type="plus"/>Driver</Button>
+                    type="plus"/>Company</Button>
                 </Col>
                 <Col offset={4} span={8}>
                   <Search placeholder="input search text" onSearch={value => handleSearch(value)} enterButton/>
@@ -150,13 +147,13 @@ const CompanyList = props => {
               </Row>
             </PageHeader>
 
-            {DriversList(listOptions)}
+            {CompanysList(listOptions)}
 
             <DeleteConfirmationModal visible={confirmVisibility}
                                      onOk={() => handleDelete()}
                                      onCancel={() => showOrCancelConfirmModal(false, null)}/>
 
-            <DriverDrawer {...drawerProps}/>
+            <CompanyDrawer {...drawerProps}/>
           </div>
         </Row>
       </div>

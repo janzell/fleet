@@ -1,16 +1,18 @@
 import {gql} from 'apollo-boost';
 
 const taxiFields = `id
-    plate_number 
-    color
-    notes
+    plate_number
+    body_number
+    engine_number
+    case_number
+    acquired_at
+    year_model
     status
-    model
-    malfunctions
-    mileage
-    planned_maintenance
-    oil_percentage
-    brand
+    notes
+    series {
+        id
+        name
+    }
     created_at
     updated_at
     `;

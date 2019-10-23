@@ -1,8 +1,9 @@
 import {Row, Col, Icon, Layout, Menu, Typography} from 'antd';
+
 import {useState} from 'react';
 import {Router} from '../../routes';
 
-const {Text} = Typography;
+const {Text, Title} = Typography;
 const {Header, Sider, Footer, Content} = Layout;
 const SubMenu = Menu.SubMenu;
 
@@ -22,6 +23,7 @@ const LOGO_STATE = {
   width: 150,
   display: 'block',
 };
+
 const INITIAL_LOGO_STATE = {
   textAlign: 'center',
   color: '#ce4257',
@@ -35,7 +37,7 @@ export default (props) => {
   let [logoStyles, setLogoStyles] = useState(LOGO_STATE);
   let [initialLogoStyles, setInitialLogoStyles] = useState(INITIAL_LOGO_STATE);
   let [collapsed, setCollapsed] = useState(false);
-  let [siderMargin, setSiderMargin] = useState(200);
+  let [sideMargin, setSideMargin] = useState(200);
 
   const toggle = () => {
     setCollapsed(!collapsed);
@@ -43,12 +45,12 @@ export default (props) => {
     if (collapsed) {
       setLogoStyles({...LOGO_STATE, display: 'block'});
       setInitialLogoStyles({...INITIAL_LOGO_STATE, display: 'none'});
-      return setSiderMargin(200)
+      return setSideMargin(200)
     }
 
     setLogoStyles({...LOGO_STATE, display: 'none'});
     setInitialLogoStyles({...INITIAL_LOGO_STATE, display: 'block'});
-    setSiderMargin(80);
+    setSideMargin(80);
   };
 
   const goTo = (e) => Router.push(e.key);
@@ -72,10 +74,30 @@ export default (props) => {
           </Menu.Item>
           <SubMenu
             key="access-control"
-            title={<span><Icon type="lock"/><span>Access Control</span></span>}>
+            title={<span><Icon type="lock"/><span>Control</span></span>}>
             <Menu.Item key="/user">
               <Icon type="user"/>
               <span className="nav-text">Users</span>
+            </Menu.Item>
+            <Menu.Item key="/company">
+              <Icon type="bank" />
+              <span className="nav-text">Companies</span>
+            </Menu.Item>
+            <Menu.Item key="/series">
+              <Icon type="car" />
+              <span className="nav-text">Series</span>
+            </Menu.Item>
+            <Menu.Item key="/body-number">
+              <Icon type="number" />
+              <span className="nav-text">Body Numbers</span>
+            </Menu.Item>
+            <Menu.Item key="/garage">
+              <Icon type="car" />
+              <span className="nav-text">Garages</span>
+            </Menu.Item>
+            <Menu.Item key="/year-model">
+              <Icon type="calendar" />
+              <span className="nav-text">Year Model</span>
             </Menu.Item>
           </SubMenu>
           <Menu.Item key="/rental">
@@ -100,13 +122,21 @@ export default (props) => {
           </Menu.Item></Menu>
       </Sider>
 
-      <Layout style={{marginLeft: siderMargin}}>
+      <Layout style={{marginLeft: sideMargin}}>
         <Header style={headerStyles}>
-          <Icon
-            className="trigger"
-            type={collapsed ? 'menu-unfold' : 'menu-fold'}
-            onClick={toggle}
-          />
+          <Row type="flex" justify="end">
+            <Col span={12}>
+              <Icon
+                className="trigger"
+                type={collapsed ? 'menu-unfold' : 'menu-fold'}
+                onClick={toggle}
+              />
+              <Title level={4} style={{marginLeft: '20px', display: 'inline-block'}}>Hello, Mark Jobs</Title>
+            </Col>
+            <Col offset={8} span={4}>
+            <Icon type="bell"/>
+            </Col>
+          </Row>
         </Header>
         <Content style={layoutStyles}>
           {props.children}
