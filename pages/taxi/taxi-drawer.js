@@ -1,24 +1,29 @@
-import {Form, Input, InputNumber, Select, Slider, Row, Col, Drawer, Button, notification} from 'antd';
+import moment from 'moment';
+import {Form, Input, Select, DatePicker, Row, Col, Drawer, Button, notification} from 'antd';
 
-import {withApollo} from "react-apollo";
+import {withApollo, Query} from "react-apollo";
 import {useEffect, useState} from "react";
-import TaxiPhotoUpload from './taxi-photo-upload';
 
 import {RequiredRule} from '../../lib/form-rules';
 import {ADD_TAXI, GET_TAXIS_LIST, UPDATE_TAXI} from "./taxi-gql";
-import {ADD_DRIVER, GET_DRIVERS_LIST, UPDATE_DRIVER} from "../driver/drivers-gql";
+import {ALL_BODY_NUMBERS} from './../body-number/body-numbers-gql'
 
 const {TextArea} = Input;
 const {Option} = Select;
 
-const TaxiModal = props => {
+const TaxiDrawer = props => {
 
   const {client, taxi, onCancel, title, visible, listOptions} = props;
   const {getFieldDecorator, validateFieldsAndScroll, resetFields} = props.form;
 
   // States
-  const [oilPercentage, setOilPercentage] = useState(0);
   const [status, setStatus] = useState('operable');
+  const [crIssueAt, setCrIssuedAt] = useState();
+  const [orIssueAt, setOrIssuedAt] = useState();
+  const [acquiredAt, setAcquiredAt] = useState();
+  const [bodyNumber, onBodyNumberSelected] = useState();
+
+  const dateFormat = 'YYYY/MM/DD';
 
   const openNotificationWithIcon = (type, message, description) => {
     notification[type]({message, description});
@@ -27,9 +32,9 @@ const TaxiModal = props => {
   // todo: useCustom hooks?
   const handleSave = (e) => {
     e.preventDefault();
+
     validateFieldsAndScroll((err, values) => {
       if (!err) {
-        console.log(values);
         const isEditMode = (taxi.id);
         const action = isEditMode ? 'Updated' : 'Added';
 
@@ -48,13 +53,33 @@ const TaxiModal = props => {
     await client.mutate({mutation, variables, refetchQueries: [{query: GET_TAXIS_LIST, variables: listOptions}]});
   };
 
+  // todo: transfer this.
+  const BodyNumberList = (defaultValue) => {
+    return (
+    <Query query={ALL_BODY_NUMBERS}>
+      {({loading, error, data}) => {
+        if (loading) return "Loading...";
+        if (error) return `Error! ${error.message}`;
+  
+        return (
+          <Select showSearch={true} name="body_number" defaultValue={defaultValue}>
+            {data.body_numbers.map( (item, index) => (
+              <Option key={index} value={item.number}>{item.number}</Option>
+            ))}
+          </Select>
+        )
+      }}
+    </Query>
+    )
+  }
+
   useEffect(() => {
     if (!visible) resetFields();
   }, [visible]);
 
   return (
     <Drawer
-      width={800}
+      width={"50%"}
       title={title}
       placement="right"
       closable={false}
@@ -62,95 +87,150 @@ const TaxiModal = props => {
       visible={visible}>
       <Form className="ant-advanced-search-form" onSubmit={handleSave}>
         <Row gutter={6}>
-          <Col lg={8}>
-            <Form.Item label="Brand">
-              {getFieldDecorator('brand', {rules: RequiredRule, initialValue: taxi.brand})(
-                <Input placeholder="Brand"/>
+          <Col lg={6}>
+            <Form.Item label="Body Number">
+              {/* {getFieldDecorator('body_number', {validateTrigger: ["onChange", "onBlur"],initialValue: taxi.body_number,rules: RequiredRule}) ( */}
+                {BodyNumberList(taxi.body_number)}
+              {/* )} */}
+            </Form.Item>
+          </Col>
+          <Col lg={6}>
+            <Form.Item label="Case Number">
+              {getFieldDecorator('case_number', {rules: [...RequiredRule], initialValue: taxi.case_number})(
+                <Input placeholder="##-##-####"/>
               )}
             </Form.Item>
           </Col>
-          <Col lg={8}>
-            <Form.Item label="Model">
-              {getFieldDecorator('model', {rules: [...RequiredRule, ...[{type: 'number'}]], initialValue: taxi.model})(
-                <Input placeholder="Model"/>
-              )}
-            </Form.Item>
-          </Col>
-          <Col lg={8}>
+          <Col lg={6}>
             <Form.Item label="Plate Number">
               {getFieldDecorator('plate_number', {rules: RequiredRule, initialValue: taxi.plate_number})(
-                <Input placeholder="Plate  Number"/>
+                <Input placeholder="###-###"/>
+              )}
+            </Form.Item>
+          </Col>
+          <Col lg={6}>
+            <Form.Item label="Engine Number">
+              {getFieldDecorator('engine_number', {rules: RequiredRule, initialValue: taxi.engine_number})(
+                <Input placeholder="#####-#######"/>
               )}
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={8}>
-          <Col lg={8}>
-            <Form.Item label="Color">
-              {getFieldDecorator('color', {rules: RequiredRule, initialValue: taxi.color})(
-                <Input placeholder="Color"/>
+        <Row gutter={6}>
+          <Col lg={6}>
+            <Form.Item label="Chassis Number">
+              {getFieldDecorator('chassis_number', {rules: RequiredRule, initialValue: taxi.engine_number})(
+                <Input placeholder="#####-#######"/>
               )}
             </Form.Item>
           </Col>
-          <Col lg={16}>
-            <Form.Item label="Oil Percentage">
-              <Col lg={12}>
-                <Slider
-                  min={1}
-                  max={100}
-                  onChange={setOilPercentage}
-                  value={typeof oilPercentage === 'number' ? oilPercentage : 0}
-                />
-              </Col>
-              <Col lg={12}>
-                <InputNumber
-                  min={1}
-                  max={20}
-                  style={{marginLeft: 16}}
-                  value={oilPercentage}
-                  onChange={setOilPercentage}
-                />
-                &nbsp;%
-              </Col>
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Row gutter={12}>
-          <Col lg={8}>
+          <Col lg={6}>
             <Form.Item label="Status">
-              <Select defaultValue="operable" style={{width: 120}} onChange={setStatus}>
-                <Option value="operable">Operable</Option>
-                <Option value="maintenance">Maintenance</Option>
-                <Option value="jack">Jack (100)</Option>
-                <Option value="lucy">Lucy (101)</Option>
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col lg={8}>
-            <Form.Item label="Mileage">
-              {getFieldDecorator('mileage', {initialValue: taxi.mileage})(
-                <InputNumber placeholder="Mileage"/>
+              {getFieldDecorator('status', {validateTrigger: ["onChange", "onBlur"],initialValue: taxi.status,rules: RequiredRule})(
+                <Select>
+                  <Option value="RENT_TO_OWN">RENT_TO_OWN</Option>
+                  <Option value="STRAIGTH">STRAIGTH</Option>
+                  <Option value="24_HOURS">24_HOURS</Option>
+                </Select>
               )}
             </Form.Item>
           </Col>
-
-          <Col lg={8}>
-            <Form.Item label="Planned Maintenance">
-              {getFieldDecorator('planned_maintenance', {initialValue: taxi.planned_maintenance})(
-                <InputNumber placeholder="Planned Maintenance"/>
+          <Col lg={6}>
+            <Form.Item label="CR Number">
+              {getFieldDecorator('cr_number', {rules: RequiredRule, initialValue: taxi.cr_number})(
+                <Input placeholder="########-##"/>
+              )}
+            </Form.Item>
+          </Col>
+          <Col lg={6}>
+            <Form.Item label="CR Date issued">
+                <DatePicker defaultValue={moment(taxi.cr_issued_at, dateFormat)} onChange={setCrIssuedAt}/>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={6}>
+          <Col lg={6}>
+            <Form.Item label="OR Number">
+              {getFieldDecorator('or_number', {rules: RequiredRule, initialValue: taxi.or_number})(
+                <Input placeholder="########-##"/>
+              )}
+            </Form.Item>
+          </Col>
+          <Col lg={6}>
+            <Form.Item label="OR Date issued">
+              <DatePicker defaultValue={moment(taxi.or_issued_at, dateFormat)} onChange={setOrIssuedAt}/>
+            </Form.Item>
+          </Col>
+          <Col lg={6}>
+            <Form.Item label="Acquired Date">
+              <DatePicker defaultValue={moment(taxi.acquired_at, dateFormat)} onChange={setAcquiredAt}/>
+            </Form.Item>
+          </Col>
+          <Col lg={6}>
+            <Form.Item label="Sticker">
+              {getFieldDecorator('sticker', {rules: RequiredRule, initialValue: taxi.sticker})(
+                <Input placeholder="Sticker"/>
               )}
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={12}>
-          <Col lg={12}>
-            <Form.Item label="Malfunctions">
-              {getFieldDecorator('malfunctions', {initialValue: taxi.malfunctions})(
-                <TextArea placeholder="Malfunctions"/>
+        <Row gutter={6}>
+          <Col lg={6}>
+            <Form.Item label="MV File Number">
+              {getFieldDecorator('mv_file_number', {rules: RequiredRule, initialValue: taxi.mv_file_number})(
+                <Input placeholder="7649-15996220720"/>
               )}
             </Form.Item>
           </Col>
+          <Col lg={6}>
+            <Form.Item label="Private Number">
+              {getFieldDecorator('private_number', {rules: RequiredRule, initialValue: taxi.private_number})(
+                <Input placeholder="7649-15996220720"/>
+              )}
+            </Form.Item>
+          </Col>
+          <Col lg={6}>
+            <Form.Item label="Temporary Plate Number">
+              {getFieldDecorator('temporary_plate_number', {rules: RequiredRule, initialValue: taxi.temporary_plate_number})(
+                <Input placeholder="Temporary Plate Number"/>
+              )}
+            </Form.Item>
+          </Col>
+          <Col lg={6}>
+            <Form.Item label="Year Model">
+              {getFieldDecorator('year_model', {rules: RequiredRule, initialValue: taxi.year_model})(
+                <Input placeholder="Year Model"/>
+              )}
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={6}>
+          <Col lg={6}>
+            <Form.Item label="Garage">
+              {getFieldDecorator('garage_id', {initialValue: taxi.garage_id})(
+                <Input placeholder="Garage"/>
+              )}
+            </Form.Item>
+          </Col>
+          <Col lg={6}>
+            <Form.Item label="Company">
+              {getFieldDecorator('company_id', {initialValue: taxi.company_id})(
+                <Input placeholder="Company"/>
+              )}
+            </Form.Item>
+          </Col>
+          <Col lg={6}>
+            <Form.Item label="Series">
+              
+              <Select defaultValue={taxi.series_id} onChange={setStatus}>
+                <Option value="operable">Series</Option>
+              </Select>
+
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={12}>
           <Col lg={12}>
             <Form.Item label="Notes">
               {getFieldDecorator('notes', {initialValue: taxi.notes})(
@@ -158,13 +238,7 @@ const TaxiModal = props => {
               )}
             </Form.Item>
           </Col>
-        </Row>
-        <Row>
-          <Col lg={12}>
-            <TaxiPhotoUpload/>
-          </Col>
-        </Row>
-
+       </Row>
         <div className="button-container">
           <Button onClick={onCancel}>Cancel</Button>
           <Button type="primary" onClick={handleSave}>Save</Button>
@@ -174,4 +248,4 @@ const TaxiModal = props => {
   )
 };
 
-export default withApollo(Form.create()(TaxiModal));
+export default withApollo(Form.create()(TaxiDrawer));

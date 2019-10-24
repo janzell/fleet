@@ -7,6 +7,14 @@ const bodyNumberFields = `
     updated_at
     `;
 
+const ALL_BODY_NUMBERS = gql`
+query getAllBodyNumbers {
+    body_numbers {
+        ${bodyNumberFields}
+    }
+}
+    `;
+
 const GET_BODY_NUMBER_LIST = gql`
     query getBodyNumberList($limit: Int!, $offset: Int!, $order_by: [body_numbers_order_by!], $where: body_numbers_bool_exp) {
         body_numbers(limit: $limit,offset: $offset, order_by: $order_by, where: $where) {
@@ -59,4 +67,4 @@ const GET_TOTAL_COUNT = gql`
     }
 `;
 
-export {GET_BODY_NUMBER_LIST, GET_TOTAL_COUNT, DELETE_BODY_NUMBER, UPDATE_BODY_NUMBER, ADD_BODY_NUMBER, BODY_NUMBER_SUBSCRIPTION};
+export {GET_BODY_NUMBER_LIST, GET_TOTAL_COUNT, DELETE_BODY_NUMBER, UPDATE_BODY_NUMBER, ADD_BODY_NUMBER, BODY_NUMBER_SUBSCRIPTION, ALL_BODY_NUMBERS};

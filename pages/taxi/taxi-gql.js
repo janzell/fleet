@@ -8,11 +8,20 @@ const taxiFields = `id
     acquired_at
     year_model
     status
+    sticker
+    acquired_at
+    or_number
+    or_issued_at
+    cr_number
+    cr_issued_at
     notes
     series {
         id
         name
     }
+    mv_file_number
+    private_number
+    temporary_plate_number
     created_at
     updated_at
     `;
