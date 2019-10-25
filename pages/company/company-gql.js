@@ -7,6 +7,14 @@ const companyFields = `id
     updated_at
     `;
 
+const ALL_COMPANIES =  gql`
+    query getAllCompanies {
+        companies {
+            ${companyFields}
+        }
+    }
+`;
+
 const GET_COMPANIES_LIST = gql`
     query getCompanyList($limit: Int!, $offset: Int!, $order_by: [companies_order_by!], $where: companies_bool_exp) {
         companies(limit: $limit,offset: $offset, order_by: $order_by, where: $where) {
@@ -50,7 +58,7 @@ const UPDATE_COMPANY = gql`
     }`;
 
 const GET_TOTAL_COUNT = gql`
-     {
+    {
         companies_aggregate {
             aggregate {
                 count
@@ -59,4 +67,4 @@ const GET_TOTAL_COUNT = gql`
     }
 `;
 
-export {GET_COMPANIES_LIST, GET_TOTAL_COUNT, DELETE_COMPANY, UPDATE_COMPANY, ADD_COMPANY, COMPANY_SUBSCRIPTION};
+export {GET_COMPANIES_LIST, GET_TOTAL_COUNT, DELETE_COMPANY, UPDATE_COMPANY, ADD_COMPANY, COMPANY_SUBSCRIPTION, ALL_COMPANIES};

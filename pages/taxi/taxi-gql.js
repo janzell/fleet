@@ -15,7 +15,18 @@ const taxiFields = `id
     cr_number
     cr_issued_at
     notes
+    series_id
     series {
+        id
+        name
+    }
+    garage_id
+    garage {
+        id
+        name
+    }
+    company_id
+    company {
         id
         name
     }

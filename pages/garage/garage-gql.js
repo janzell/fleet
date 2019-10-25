@@ -7,6 +7,14 @@ const garageFields = `id
     updated_at
     `;
 
+const ALL_GARAGE =  gql`
+    query getAllGarages {
+        garages {
+            ${garageFields}
+        }
+    }
+`;
+
 const GET_GARAGE_LIST = gql`
     query getGarageList($limit: Int!, $offset: Int!, $order_by: [garages_order_by!], $where: garages_bool_exp) {
         garages(limit: $limit,offset: $offset, order_by: $order_by, where: $where) {
@@ -50,7 +58,7 @@ const UPDATE_GARAGE = gql`
     }`;
 
 const GET_TOTAL_COUNT = gql`
-     {
+    {
         garages_aggregate {
             aggregate {
                 count
@@ -59,4 +67,4 @@ const GET_TOTAL_COUNT = gql`
     }
 `;
 
-export {GET_GARAGE_LIST, GET_TOTAL_COUNT, DELETE_GARAGE, UPDATE_GARAGE, ADD_GARAGE, GARAGE_SUBSCRIPTION};
+export {GET_GARAGE_LIST, GET_TOTAL_COUNT, DELETE_GARAGE, UPDATE_GARAGE, ADD_GARAGE, GARAGE_SUBSCRIPTION, ALL_GARAGE};

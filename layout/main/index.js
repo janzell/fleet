@@ -34,10 +34,11 @@ const INITIAL_LOGO_STATE = {
 
 export default (props) => {
 
-  let [logoStyles, setLogoStyles] = useState(LOGO_STATE);
-  let [initialLogoStyles, setInitialLogoStyles] = useState(INITIAL_LOGO_STATE);
-  let [collapsed, setCollapsed] = useState(false);
-  let [sideMargin, setSideMargin] = useState(200);
+  const [logoStyles, setLogoStyles] = useState(LOGO_STATE);
+  const [initialLogoStyles, setInitialLogoStyles] = useState(INITIAL_LOGO_STATE);
+  const [collapsed, setCollapsed] = useState(false);
+  const [sideMargin, setSideMargin] = useState(200);
+  const [activeNav, setActiveNav] = useState([]);
 
   const toggle = () => {
     setCollapsed(!collapsed);
@@ -53,7 +54,10 @@ export default (props) => {
     setSideMargin(80);
   };
 
-  const goTo = (e) => Router.push(e.key);
+  const goTo = (e) => {
+    setActiveNav([e.key]);
+    Router.push(e.key);
+  }
 
   return (
     <Layout>
@@ -67,13 +71,13 @@ export default (props) => {
           <h2 style={logoStyles}>Fleet</h2>
           <p id="initialLogo" style={initialLogoStyles}>F</p>
         </div>
-        <Menu onClick={goTo} theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+        <Menu inlineIndent={15} onClick={goTo} theme="dark" mode="inline" selectedKeys={activeNav}>
           <Menu.Item key="/dashboard">
             <Icon type="dashboard"/>
             <span className="nav-text">Dashboard</span>
           </Menu.Item>
           <SubMenu
-            key="access-control"
+            key="control"
             title={<span><Icon type="lock"/><span>Control</span></span>}>
             <Menu.Item key="/user">
               <Icon type="user"/>
@@ -86,6 +90,10 @@ export default (props) => {
             <Menu.Item key="/series">
               <Icon type="car" />
               <span className="nav-text">Series</span>
+            </Menu.Item>
+            <Menu.Item key="/case-number">
+              <Icon type="number" />
+              <span className="nav-text">Case Numbers</span>
             </Menu.Item>
             <Menu.Item key="/body-number">
               <Icon type="number" />

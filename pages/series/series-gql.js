@@ -7,6 +7,14 @@ const seriesFields = `id
     updated_at
     `;
 
+const ALL_SERIES =  gql`
+    query getAllSeries {
+        series {
+            ${seriesFields}
+        }
+    }
+`;
+
 const GET_SERIES_LIST = gql`
     query getSeriesList($limit: Int!, $offset: Int!, $order_by: [series_order_by!], $where: series_bool_exp) {
         series(limit: $limit,offset: $offset, order_by: $order_by, where: $where) {
@@ -50,7 +58,7 @@ const UPDATE_SERIES = gql`
     }`;
 
 const GET_TOTAL_COUNT = gql`
-     {
+    {
         series_aggregate {
             aggregate {
                 count
@@ -59,4 +67,4 @@ const GET_TOTAL_COUNT = gql`
     }
 `;
 
-export {GET_SERIES_LIST, GET_TOTAL_COUNT, DELETE_SERIES, UPDATE_SERIES, ADD_SERIES, SERIES_SUBSCRIPTION};
+export {GET_SERIES_LIST, GET_TOTAL_COUNT, DELETE_SERIES, UPDATE_SERIES, ADD_SERIES, SERIES_SUBSCRIPTION, ALL_SERIES};

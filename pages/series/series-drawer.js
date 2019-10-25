@@ -32,11 +32,11 @@ const SeriesDrawer = props => {
           ? mutateSeries(UPDATE_SERIES, {id: series.id, series: values})
           : mutateSeries(ADD_SERIES, {series: values});
 
-        result.then( res => {
+        result.then(res => {
           openNotificationWithIcon('success', 'Success', `Series ${action} successfully`);
           resetFields();
           onCancel();
-        }).catch( err => {
+        }).catch(err => {
           openNotificationWithIcon('error', 'Error', `Series ${action} failed. Reason: ${err.message}`);
         });
       }
@@ -44,7 +44,11 @@ const SeriesDrawer = props => {
   };
 
   const mutateSeries = async (mutation, variables) => {
-      return await client.mutate({mutation, variables, refetchQueries: [{query: GET_SERIES_LIST, variables: listOptions}]});
+    return await client.mutate({
+      mutation,
+      variables,
+      refetchQueries: [{query: GET_SERIES_LIST, variables: listOptions}]
+    });
   };
 
   useEffect(() => {

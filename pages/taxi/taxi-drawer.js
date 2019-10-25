@@ -6,7 +6,13 @@ import {useEffect, useState} from "react";
 
 import {RequiredRule} from '../../lib/form-rules';
 import {ADD_TAXI, GET_TAXIS_LIST, UPDATE_TAXI} from "./taxi-gql";
-import {ALL_BODY_NUMBERS} from './../body-number/body-numbers-gql'
+
+// TODO: TO BE TRANSFERRED INTO COMPONENTS
+import {ALL_BODY_NUMBERS} from './../body-number/body-numbers-gql';
+import {ALL_CASE_NUMBERS} from './../case-number/case-numbers-gql';
+import {ALL_GARAGE} from "../garage/garage-gql";
+import {ALL_COMPANIES} from '../company/company-gql';
+import {ALL_SERIES} from '../series/series-gql';
 
 const {TextArea} = Input;
 const {Option} = Select;
@@ -16,12 +22,10 @@ const TaxiDrawer = props => {
   const {client, taxi, onCancel, title, visible, listOptions} = props;
   const {getFieldDecorator, validateFieldsAndScroll, resetFields} = props.form;
 
-  // States
-  const [status, setStatus] = useState('operable');
-  const [crIssueAt, setCrIssuedAt] = useState();
-  const [orIssueAt, setOrIssuedAt] = useState();
-  const [acquiredAt, setAcquiredAt] = useState();
-  const [bodyNumber, onBodyNumberSelected] = useState();
+  const [setStatus] = useState();
+  const [setCrIssuedAt] = useState();
+  const [setOrIssuedAt] = useState();
+  const [setAcquiredAt] = useState();
 
   const dateFormat = 'YYYY/MM/DD';
 
@@ -29,7 +33,7 @@ const TaxiDrawer = props => {
     notification[type]({message, description});
   };
 
-  // todo: useCustom hooks?
+  // TODO: use custom hooks
   const handleSave = (e) => {
     e.preventDefault();
 
@@ -38,40 +42,142 @@ const TaxiDrawer = props => {
         const isEditMode = (taxi.id);
         const action = isEditMode ? 'Updated' : 'Added';
 
-        isEditMode
+        const result = isEditMode
           ? mutateTaxi(UPDATE_TAXI, {id: taxi.id, taxi: values})
           : mutateTaxi(ADD_TAXI, {taxi: values});
 
-        openNotificationWithIcon('success', 'Success', `Taxi ${action} successfully`);
-        resetFields();
-        onCancel();
+        result.then(res => {
+          openNotificationWithIcon('success', 'Success', `Taxi ${action} successfully`);
+          resetFields();
+          onCancel();
+        }).catch(err => {
+          openNotificationWithIcon('error', 'Error', `Taxi ${action} failed. Reason: ${err.message}`);
+        });
       }
     });
   };
 
   const mutateTaxi = async (mutation, variables) => {
-    await client.mutate({mutation, variables, refetchQueries: [{query: GET_TAXIS_LIST, variables: listOptions}]});
+    return await client.mutate({
+      mutation,
+      variables,
+      refetchQueries: [{query: GET_TAXIS_LIST, variables: listOptions}]
+    });
   };
 
-  // todo: transfer this.
-  const BodyNumberList = (defaultValue) => {
+  // TODO: compose a new component
+  const CaseNumberList = (taxi) => {
     return (
-    <Query query={ALL_BODY_NUMBERS}>
-      {({loading, error, data}) => {
-        if (loading) return "Loading...";
-        if (error) return `Error! ${error.message}`;
-  
-        return (
-          <Select showSearch={true} name="body_number" defaultValue={defaultValue}>
-            {data.body_numbers.map( (item, index) => (
-              <Option key={index} value={item.number}>{item.number}</Option>
-            ))}
-          </Select>
-        )
-      }}
-    </Query>
+      <Query query={ALL_CASE_NUMBERS}>
+        {({loading, error, data}) => {
+          if (error) return 'error';
+          if (loading) return 'loading';
+          return (
+            <Form.Item label="Case Number">
+              {getFieldDecorator('case_number', {rules: [...RequiredRule], initialValue: taxi.case_number})(
+                <Select showSearch={true}>
+                  {data.case_numbers.map((item, index) => (
+                    <Option key={index} value={item.number}>{item.number}</Option>
+                  ))}
+                </Select>
+              )}
+            </Form.Item>
+          )
+        }}
+      </Query>
     )
-  }
+  };
+
+  // TODO: compose a new component
+  const BodyNumberList = (taxi) => {
+    return (
+      <Query query={ALL_BODY_NUMBERS}>
+        {({loading, error, data}) => {
+          if (error) return 'error';
+          if (loading) return 'loading';
+          return (
+            <Form.Item label="Body Number">
+              {getFieldDecorator('body_number', {rules: [...RequiredRule], initialValue: taxi.body_number})(
+                <Select showSearch={true}>
+                  {data.body_numbers.map((item, index) => (
+                    <Option key={index} value={item.number}>{item.number}</Option>
+                  ))}
+                </Select>
+              )}
+            </Form.Item>
+          )
+        }}
+      </Query>
+    )
+  };
+
+  const GarageList = (taxi) => {
+    return (
+      <Query query={ALL_GARAGE}>
+        {({loading, error, data}) => {
+          if (error) return 'error';
+          if (loading) return 'loading';
+          return (
+            <Form.Item label="Garage">
+              {getFieldDecorator('garage_id', {rules: [{required: true}], initialValue: taxi.garage_id})(
+                <Select showSearch={true}>
+                  {data.garages.map((item, index) => (
+                    <Option key={index} value={item.id}>{item.name}</Option>
+                  ))}
+                </Select>
+              )}
+            </Form.Item>
+          )
+        }}
+      </Query>
+    )
+  };
+
+
+  const CompanyList = (taxi) => {
+    return (
+      <Query query={ALL_COMPANIES}>
+        {({loading, error, data}) => {
+          if (error) return 'error';
+          if (loading) return 'loading';
+          return (
+            <Form.Item label="Company">
+              {getFieldDecorator('company_id', {rules: [{required: true}], initialValue: taxi.company_id})(
+                <Select showSearch={true}>
+                  {data.companies.map((item, index) => (
+                    <Option key={index} value={item.id}>{item.name}</Option>
+                  ))}
+                </Select>
+              )}
+            </Form.Item>
+          )
+        }}
+      </Query>
+    )
+  };
+
+
+  const SeriesList = (taxi) => {
+    return (
+      <Query query={ALL_SERIES}>
+        {({loading, error, data}) => {
+          if (error) return 'error';
+          if (loading) return 'loading';
+          return (
+            <Form.Item label="Series">
+              {getFieldDecorator('series_id', {rules: [{required: true}], initialValue: taxi.series_id})(
+                <Select showSearch={true}>
+                  {data.series.map((item, index) => (
+                    <Option key={index} value={item.id}>{item.name}</Option>
+                  ))}
+                </Select>
+              )}
+            </Form.Item>
+          )
+        }}
+      </Query>
+    )
+  };
 
   useEffect(() => {
     if (!visible) resetFields();
@@ -88,18 +194,10 @@ const TaxiDrawer = props => {
       <Form className="ant-advanced-search-form" onSubmit={handleSave}>
         <Row gutter={6}>
           <Col lg={6}>
-            <Form.Item label="Body Number">
-              {/* {getFieldDecorator('body_number', {validateTrigger: ["onChange", "onBlur"],initialValue: taxi.body_number,rules: RequiredRule}) ( */}
-                {BodyNumberList(taxi.body_number)}
-              {/* )} */}
-            </Form.Item>
+            {BodyNumberList(taxi)}
           </Col>
           <Col lg={6}>
-            <Form.Item label="Case Number">
-              {getFieldDecorator('case_number', {rules: [...RequiredRule], initialValue: taxi.case_number})(
-                <Input placeholder="##-##-####"/>
-              )}
-            </Form.Item>
+            {CaseNumberList(taxi)}
           </Col>
           <Col lg={6}>
             <Form.Item label="Plate Number">
@@ -126,7 +224,11 @@ const TaxiDrawer = props => {
           </Col>
           <Col lg={6}>
             <Form.Item label="Status">
-              {getFieldDecorator('status', {validateTrigger: ["onChange", "onBlur"],initialValue: taxi.status,rules: RequiredRule})(
+              {getFieldDecorator('status', {
+                validateTrigger: ["onChange", "onBlur"],
+                initialValue: taxi.status,
+                rules: RequiredRule
+              })(
                 <Select>
                   <Option value="RENT_TO_OWN">RENT_TO_OWN</Option>
                   <Option value="STRAIGTH">STRAIGTH</Option>
@@ -144,7 +246,7 @@ const TaxiDrawer = props => {
           </Col>
           <Col lg={6}>
             <Form.Item label="CR Date issued">
-                <DatePicker defaultValue={moment(taxi.cr_issued_at, dateFormat)} onChange={setCrIssuedAt}/>
+              <DatePicker defaultValue={moment(taxi.cr_issued_at || 'now', dateFormat)} onChange={setCrIssuedAt}/>
             </Form.Item>
           </Col>
         </Row>
@@ -191,7 +293,10 @@ const TaxiDrawer = props => {
           </Col>
           <Col lg={6}>
             <Form.Item label="Temporary Plate Number">
-              {getFieldDecorator('temporary_plate_number', {rules: RequiredRule, initialValue: taxi.temporary_plate_number})(
+              {getFieldDecorator('temporary_plate_number', {
+                rules: RequiredRule,
+                initialValue: taxi.temporary_plate_number
+              })(
                 <Input placeholder="Temporary Plate Number"/>
               )}
             </Form.Item>
@@ -207,27 +312,13 @@ const TaxiDrawer = props => {
 
         <Row gutter={6}>
           <Col lg={6}>
-            <Form.Item label="Garage">
-              {getFieldDecorator('garage_id', {initialValue: taxi.garage_id})(
-                <Input placeholder="Garage"/>
-              )}
-            </Form.Item>
+            {GarageList(taxi)}
           </Col>
           <Col lg={6}>
-            <Form.Item label="Company">
-              {getFieldDecorator('company_id', {initialValue: taxi.company_id})(
-                <Input placeholder="Company"/>
-              )}
-            </Form.Item>
+            {CompanyList(taxi)}
           </Col>
           <Col lg={6}>
-            <Form.Item label="Series">
-              
-              <Select defaultValue={taxi.series_id} onChange={setStatus}>
-                <Option value="operable">Series</Option>
-              </Select>
-
-            </Form.Item>
+            { SeriesList(taxi)}
           </Col>
         </Row>
         <Row gutter={12}>
@@ -238,7 +329,7 @@ const TaxiDrawer = props => {
               )}
             </Form.Item>
           </Col>
-       </Row>
+        </Row>
         <div className="button-container">
           <Button onClick={onCancel}>Cancel</Button>
           <Button type="primary" onClick={handleSave}>Save</Button>

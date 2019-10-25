@@ -69,7 +69,8 @@ const LoginForm = (props) => {
             path: "/"
           });
 
-          return Router.push('/dashboard');
+          return Router.replace('/dashboard');
+          // window.location.reload('/dashboard');
         } catch (error) {
           authError();
         }

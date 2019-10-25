@@ -89,10 +89,7 @@ const DriverList = props => {
   };
 
   // Search
-  const handleSearch = (text) => {
-    setSearchText(text);
-    refreshResult(text);
-  };
+  const handleSearch = (text) => setSearchText(text);
 
   const columns = useColumnFormatter(fields, handleFormMode, showOrCancelConfirmModal);
 
@@ -105,9 +102,8 @@ const DriverList = props => {
   };
 
   // Get the total number of drivers.
-  useEffect(() => {
-    handleTotalCount();
-  }, []);
+  useEffect(() => refreshResult(), [searchText]);
+  useEffect(() => handleTotalCount(), []);
 
   const drawerProps = {
     title: (mode === 'edit') ? 'Edit Driver' : 'New Driver',
@@ -142,7 +138,7 @@ const DriverList = props => {
           <div className="right-content">
 
             {/* make it reusable component? */}
-            <PageHeader title="Driver's List">
+            <PageHeader title="Driver">
               <div className="wrap">
                 <div className="content">List of drivers</div>
               </div>

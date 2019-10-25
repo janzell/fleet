@@ -102,7 +102,7 @@ const DriverDrawer = props => {
         <Row>
           <Col lg={12}>
             <Form.Item label="Driver License Photo">
-                <DriverUpload/>
+              <DriverUpload/>
             </Form.Item>
           </Col>
         </Row>

@@ -12,13 +12,6 @@ import useColumnFormatter from "../../hooks/table/use-column-formatter";
 
 const {Search} = Input;
 
-/**
- * Taxi List Component.
- *
- * @param props
- * @return {*}
- * @constructor
- */
 const TaxiList = props => {
 
   const listOptionsDefault = {limit: 15, offset: 0, order_by: [{updated_at: 'desc'}, {created_at: 'desc'}]};
@@ -32,7 +25,7 @@ const TaxiList = props => {
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
   const [listOptions, setListOptions] = useState(listOptionsDefault);
-  const [searchText, setSearchText] = useState('');
+  const [searchText, handleSearch] = useState('');
 
   // todo: make this shit as a custom hooks.
   const openNotificationWithIcon = (type, message, description) => {
@@ -73,33 +66,23 @@ const TaxiList = props => {
     });
 
     showOrCancelConfirmModal(false, null);
-    openNotificationWithIcon('success', 'Success', 'Driver has been deleted successfully');
+    openNotificationWithIcon('success', 'Success', 'Taxi record has been deleted successfully');
   };
 
-  // Pagination.
-  const handlePaginate = (page) => {
-    const offset = page * 15;
-    setListOptions({...listOptions, offset});
-  };
+  const handlePaginate = page => setListOptions({...listOptions, ...{offset: page * 15}});
 
-  const fields = ['body_number', 'case_number', 'plate_number', 'acquired_at', 'engine_number', 'year_model', 'series.name'];
+  const fields = ['body_number', 'case_number', 'plate_number', 'acquired_at', 'engine_number', 'year_model', 'series.name', 'created_at', 'updated_at'];
 
   const refreshResult = () => {
     const paramValue = {_ilike: `%${searchText}%`};
     const where = {
       _or: [
-        {brand: paramValue},
+        {body_number: paramValue},
         {plate_number: paramValue}
       ]
     };
     setListOptions({...listOptions, ...{offset: 0, where}});
     handleTotalCount(where);
-  };
-
-  // Search
-  const handleSearch = (text) => {
-    setSearchText(text);
-    refreshResult(text);
   };
 
   const columns = useColumnFormatter(fields, handleFormMode, showOrCancelConfirmModal, [{
@@ -124,9 +107,8 @@ const TaxiList = props => {
       .then(({data}) => setTotalCount(data.taxis_aggregate.aggregate.count));
   };
 
-  useEffect(() => {
-    handleTotalCount();
-  }, []);
+  useEffect(() => refreshResult(), [searchText]);
+  useEffect(() => handleTotalCount(), []);
 
   const drawerProps = {
     title: (mode === 'edit') ? 'Edit Taxi' : 'New Taxi',
@@ -160,7 +142,7 @@ const TaxiList = props => {
       <div className="page taxis">
         <Row>
           <div className="right-content">
-            <PageHeader title="Taxi List">
+            <PageHeader title="Taxi">
               <div className="wrap">
                 <div className="content">List of taxis</div>
               </div>
@@ -170,7 +152,8 @@ const TaxiList = props => {
                     type="plus"/>Taxi</Button>
                 </Col>
                 <Col offset={4} span={8}>
-                  <Search placeholder="input search text" onSearch={value => handleSearch(value)} enterButton/>
+                  <Search placeholder="search for body number or plate number" onSearch={value => handleSearch(value)}
+                          enterButton/>
                 </Col>
               </Row>
             </PageHeader>

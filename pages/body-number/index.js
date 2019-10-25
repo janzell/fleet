@@ -17,7 +17,7 @@ const {Search} = Input;
 const BodyNumberList = props => {
 
   const listOptionsDefault = {limit: 15, offset: 0, order_by: [{updated_at: 'desc'}, {created_at: 'desc'}]};
-  const fields = ['number', 'notes'];
+  const fields = ['number', 'notes', 'created_at', 'updated_at'];
 
   const [mode, setMode] = useState('add');
   const [bodyNumber, setBodyNumber] = useState({});
@@ -47,7 +47,7 @@ const BodyNumberList = props => {
     showDrawerVisibility(false);
   };
 
-  // todo: we can make this as custom hooks for deleting resource;
+  // TODO: delete
   const handleDelete = async () => {
     await props.client.mutate({
       mutation: DELETE_BODY_NUMBER,
@@ -61,7 +61,7 @@ const BodyNumberList = props => {
     useNotificationWithIcon('success', 'Success', 'BodyNumber has been deleted successfully');
   };
 
-  // handles the paginate action of the table.
+  // Paginate
   const handlePaginate = (page) => {
     const offset = page * 15;
     setListOptions({...listOptions, offset});
@@ -79,14 +79,12 @@ const BodyNumberList = props => {
   };
 
   // Search
-  const handleSearch = (text) => {
-    setSearchText(text);
-    refreshResult(text);
-  };
+  const handleSearch = text => setSearchText(text);
 
+  // Fields
   const columns = useColumnFormatter(fields, handleFormMode, showOrCancelConfirmModal);
 
-  // Total Count
+  // Count
   const handleTotalCount = (where = null) => {
     const q = where != null ? {query: GET_TOTAL_COUNT, variables: {where}} : {query: GET_TOTAL_COUNT};
 
@@ -94,10 +92,9 @@ const BodyNumberList = props => {
       .then(({data}) => setTotalCount(data.body_numbers_aggregate.aggregate.count));
   };
 
-  // Get the total number of bodyNumber.
-  useEffect(() => {
-    handleTotalCount();
-  }, []);
+  // Effects
+  useEffect(() => refreshResult(), [searchText]);
+  useEffect(() => handleTotalCount(), []);
 
   const drawerProps = {
     title: (mode === 'edit') ? 'Edit Body Number' : 'New Body Number',
@@ -116,7 +113,8 @@ const BodyNumberList = props => {
         return (
           <>
             <Table loading={loading}
-                   pagination={{pageSize: 15, onChange: (page) => handlePaginate(page), total: totalCount}} rowKey="number"
+                   pagination={{pageSize: 15, onChange: (page) => handlePaginate(page), total: totalCount}}
+                   rowKey="number"
                    dataSource={(!loading && data.body_numbers) || []}
                    columns={columns}/>
           </>
@@ -132,7 +130,7 @@ const BodyNumberList = props => {
           <div className="right-content">
 
             {/* make it reusable component? */}
-            <PageHeader title="Body Numbers List">
+            <PageHeader title="Body Numbers">
               <div className="wrap">
                 <div className="content">List of body numbers</div>
               </div>

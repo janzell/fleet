@@ -47,7 +47,7 @@ const UPDATE_PART = gql`
         update_parts(where: {id: {_eq: $id}}, _set: $part) {
             affected_rows
             returning {
-               ${partFields} 
+                ${partFields}
             }
         }
     }`;

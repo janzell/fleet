@@ -17,7 +17,7 @@ const {Search} = Input;
 const GarageList = props => {
 
   const listOptionsDefault = {limit: 15, offset: 0, order_by: [{updated_at: 'desc'}, {created_at: 'desc'}]};
-  const fields = ['name', 'address'];
+  const fields = ['name', 'address', 'created_at', 'updated_at'];
 
   const [mode, setMode] = useState('add');
   const [garage, setGarage] = useState({});
@@ -79,10 +79,7 @@ const GarageList = props => {
   };
 
   // Search
-  const handleSearch = (text) => {
-    setSearchText(text);
-    refreshResult(text);
-  };
+  const handleSearch = (text) => setSearchText(text)
 
   const columns = useColumnFormatter(fields, handleFormMode, showOrCancelConfirmModal);
 
@@ -94,10 +91,9 @@ const GarageList = props => {
       .then(({data}) => setTotalCount(data.garages_aggregate.aggregate.count));
   };
 
-  // Get the total number of garage.
-  useEffect(() => {
-    handleTotalCount();
-  }, []);
+  // effects
+  useEffect(() => refreshResult(), [searchText]);
+  useEffect(() => handleTotalCount(), []);
 
   const drawerProps = {
     title: (mode === 'edit') ? 'Edit Garage' : 'New Garage',
@@ -132,7 +128,7 @@ const GarageList = props => {
           <div className="right-content">
 
             {/* make it reusable component? */}
-            <PageHeader title="Garages List">
+            <PageHeader title="Garages">
               <div className="wrap">
                 <div className="content">List of garages</div>
               </div>

@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {Row, Icon,Divider, Progress, List, Tabs, Card, Col, Avatar, Timeline} from 'antd';
+import {Row, Icon, Divider, Progress, List, Tabs, Card, Col, Avatar, Timeline} from 'antd';
 import MainLayout from '../../layout/main';
 import CardItem from './card-item';
 import TinyBarChart from './charts/tiny-bar-chart';
@@ -39,7 +39,7 @@ const Dashboard = props => {
         </Col>
         <Col span={6}>
           <h3>Latest Activity</h3>
-          <Divider />
+          <Divider/>
           <Timeline>
             <Timeline.Item>Create a services site 2015-09-01</Timeline.Item>
             <Timeline.Item>Solve initial network problems 2015-09-01</Timeline.Item>
@@ -56,7 +56,7 @@ const Dashboard = props => {
         </Col>
         <Col span={6}>
           <h3>Latest Activity</h3>
-          <Divider />
+          <Divider/>
           <Timeline>
             <Timeline.Item>Create a services site 2015-09-01</Timeline.Item>
             <Timeline.Item>Solve initial network problems 2015-09-01</Timeline.Item>
@@ -141,7 +141,7 @@ const Dashboard = props => {
                     renderItem={item => (
                       <List.Item>
                         <List.Item.Meta
-                          avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                          avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>}
                           title={<a href="https://ant.design">{item.title}</a>}
                           description="Ant Design, a design language for background applications, is refined by Ant UED Team"
                         />

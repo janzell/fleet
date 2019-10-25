@@ -17,7 +17,7 @@ const {Search} = Input;
 const SeriesList = props => {
 
   const listOptionsDefault = {limit: 15, offset: 0, order_by: [{updated_at: 'desc'}, {created_at: 'desc'}]};
-  const fields = ['name', 'notes'];
+  const fields = ['name', 'notes', 'created_at', 'updated_at'];
 
   const [mode, setMode] = useState('add');
   const [series, setSeries] = useState({});
@@ -79,10 +79,7 @@ const SeriesList = props => {
   };
 
   // Search
-  const handleSearch = (text) => {
-    setSearchText(text);
-    refreshResult(text);
-  };
+  const handleSearch = (text) => setSearchText(text);
 
   const columns = useColumnFormatter(fields, handleFormMode, showOrCancelConfirmModal);
 
@@ -95,9 +92,8 @@ const SeriesList = props => {
   };
 
   // Get the total number of series.
-  useEffect(() => {
-    handleTotalCount();
-  }, []);
+  useEffect(() => refreshResult(), [searchText]);
+  useEffect(() => handleTotalCount(), []);
 
   const drawerProps = {
     title: (mode === 'edit') ? 'Edit Series' : 'New Series',
@@ -130,7 +126,7 @@ const SeriesList = props => {
       <div className="page series">
         <Row>
           <div className="right-content">
-            <PageHeader title="Series's List">
+            <PageHeader title="Series">
               <div className="wrap">
                 <div className="content">List of series</div>
               </div>

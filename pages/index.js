@@ -6,7 +6,7 @@ const Home = () => {
   return null;
 };
 
-Home.getInitialProps = ({ res }) => {
+Home.getInitialProps = ({res}) => {
   if (res) {
     res.writeHead(302, {
       Location: '/login'

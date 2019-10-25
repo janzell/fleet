@@ -17,7 +17,7 @@ const {Search} = Input;
 const YearModelList = props => {
 
   const listOptionsDefault = {limit: 15, offset: 0, order_by: [{updated_at: 'desc'}, {created_at: 'desc'}]};
-  const fields = ['name', 'notes'];
+  const fields = ['name', 'notes', 'created_at', 'updated_at'];
 
   const [mode, setMode] = useState('add');
   const [yearModel, setYearModel] = useState({});
@@ -52,7 +52,7 @@ const YearModelList = props => {
     await props.client.mutate({
       mutation: DELETE_YEAR_MODEL,
       variables: {
-        number: toBeDeletedId
+        name: toBeDeletedId
       },
       refetchQueries: [{query: GET_YEAR_MODEL_LIST, variables: listOptions}]
     });
@@ -71,7 +71,7 @@ const YearModelList = props => {
     const paramValue = {_ilike: `%${searchText}%`};
     const where = {
       _or: [
-        {number: paramValue},
+        {name: paramValue},
       ]
     };
     setListOptions({...listOptions, ...{offset: 0, where}});
@@ -79,10 +79,7 @@ const YearModelList = props => {
   };
 
   // Search
-  const handleSearch = (text) => {
-    setSearchText(text);
-    refreshResult(text);
-  };
+  const handleSearch = (text) => setSearchText(text);
 
   const columns = useColumnFormatter(fields, handleFormMode, showOrCancelConfirmModal);
 
@@ -95,9 +92,8 @@ const YearModelList = props => {
   };
 
   // Get the total number of yearModel.
-  useEffect(() => {
-    handleTotalCount();
-  }, []);
+  useEffect(() => refreshResult(), [searchText]);
+  useEffect(() => handleTotalCount(), []);
 
   const drawerProps = {
     title: (mode === 'edit') ? 'Edit Year Model' : 'New Year Model',
@@ -116,7 +112,8 @@ const YearModelList = props => {
         return (
           <>
             <Table loading={loading}
-                   pagination={{pageSize: 15, onChange: (page) => handlePaginate(page), total: totalCount}} rowKey="name"
+                   pagination={{pageSize: 15, onChange: (page) => handlePaginate(page), total: totalCount}}
+                   rowKey="name"
                    dataSource={(!loading && data.year_models) || []}
                    columns={columns}/>
           </>
@@ -127,12 +124,12 @@ const YearModelList = props => {
 
   return (
     <MainLayout>
-      <div className="page body-numbers">
+      <div className="page year-models">
         <Row>
           <div className="right-content">
 
             {/* make it reusable component? */}
-            <PageHeader title="Year Models List">
+            <PageHeader title="Year Models">
               <div className="wrap">
                 <div className="content">List of year models</div>
               </div>

@@ -46,7 +46,7 @@ const UPDATE_DRIVER = gql`
         update_drivers(where: {id: {_eq: $id}}, _set: $driver) {
             affected_rows
             returning {
-               ${driverFields} 
+                ${driverFields}
             }
         }
     }`;

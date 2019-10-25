@@ -80,7 +80,7 @@ const PartList = props => {
   };
 
   const fields = ['name', 'code', 'quantity', 'description', 'created_at'];
-  const columns = useColumnFormatter(fields, handleFormMode,showOrCancelConfirmModal);
+  const columns = useColumnFormatter(fields, handleFormMode, showOrCancelConfirmModal);
 
   const refreshResult = () => {
     const paramValue = {_ilike: `%${searchText}%`};
@@ -95,10 +95,7 @@ const PartList = props => {
   };
 
   // Search
-  const handleSearch = (text) => {
-    setSearchText(text);
-    refreshResult(text);
-  };
+  const handleSearch = (text) => setSearchText(text);
 
   // Total Count
   const handleTotalCount = (where = null) => {
@@ -108,10 +105,9 @@ const PartList = props => {
       .then(({data}) => setTotalCount(data.parts_aggregate.aggregate.count));
   };
 
-  // Get the total number of drivers.
-  useEffect(() => {
-    handleTotalCount();
-  }, []);
+
+  useEffect(() => refreshResult(), [searchText]);
+  useEffect(() => handleTotalCount(), []);
 
   const drawerProps = {
     title: (mode === 'edit') ? 'Edit Part' : 'New Part',
@@ -144,7 +140,7 @@ const PartList = props => {
       <div className="page parts">
         <Row>
           <div className="right-content">
-            <PageHeader title="Part's List">
+            <PageHeader title="Part">
               <div className="wrap">
                 <div className="content">List of parts</div>
               </div>

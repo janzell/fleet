@@ -53,7 +53,7 @@ const UPDATE_DRIVER = gql`
     }`;
 
 const GET_TOTAL_COUNT = gql`
-     {
+    {
         drivers_aggregate {
             aggregate {
                 count

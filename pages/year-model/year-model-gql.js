@@ -50,7 +50,7 @@ const UPDATE_YEAR_MODEL = gql`
     }`;
 
 const GET_TOTAL_COUNT = gql`
-     {
+    {
         year_models_aggregate {
             aggregate {
                 count
@@ -59,4 +59,11 @@ const GET_TOTAL_COUNT = gql`
     }
 `;
 
-export {GET_YEAR_MODEL_LIST, GET_TOTAL_COUNT, DELETE_YEAR_MODEL, UPDATE_YEAR_MODEL, ADD_YEAR_MODEL, YEAR_MODEL_SUBSCRIPTION};
+export {
+  GET_YEAR_MODEL_LIST,
+  GET_TOTAL_COUNT,
+  DELETE_YEAR_MODEL,
+  UPDATE_YEAR_MODEL,
+  ADD_YEAR_MODEL,
+  YEAR_MODEL_SUBSCRIPTION
+};

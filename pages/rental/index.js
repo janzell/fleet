@@ -103,7 +103,8 @@ const DriverList = props => {
         if (error) return `Error! ${error.message}`;
         return (
           <>
-            <Table loading={loading} pagination={{pageSize: 15}} rowKey="id" dataSource={ (!loading && data.drivers) || []}
+            <Table loading={loading} pagination={{pageSize: 15}} rowKey="id"
+                   dataSource={(!loading && data.drivers) || []}
                    columns={columns}/>
           </>
         )
@@ -116,7 +117,7 @@ const DriverList = props => {
       <div className="page drivers">
         <Row>
           <div className="right-content">
-            <PageHeader title="Rental's List">
+            <PageHeader title="Rental">
               <div className="wrap">
                 <div className="content">List of drivers</div>
               </div>
@@ -144,8 +145,9 @@ const DriverList = props => {
               onOk={() => handleDelete()}
             />
 
-            <RentalDrawer rental={rental} mode={mode} visible={drawerVisibility} onOk={() => showDrawerVisibility(false)}
-                         onCancel={() => cancelDriverModal()}/>
+            <RentalDrawer rental={rental} mode={mode} visible={drawerVisibility}
+                          onOk={() => showDrawerVisibility(false)}
+                          onCancel={() => cancelDriverModal()}/>
           </div>
         </Row>
       </div>
