@@ -2,10 +2,11 @@ import {withApollo} from "react-apollo";
 import {useEffect} from "react";
 import moment from 'moment';
 
-import {Form, Input, Button, Row, Col, notification, Drawer} from 'antd';
+import {Form, Input, Button, Row, Col, Drawer} from 'antd';
 
 import {RequiredRule} from '../../lib/form-rules';
 import {ADD_YEAR_MODEL, GET_YEAR_MODEL_LIST, UPDATE_YEAR_MODEL} from "./year-model-gql";
+import {errorNotification, successNotification} from "../../hooks/use-notification";
 
 const {TextArea} = Input;
 
@@ -13,10 +14,6 @@ const YearModelDrawer = props => {
   const {client, yearModel, listOptions, title, onCancel, visible} = props;
   const {getFieldDecorator, validateFieldsAndScroll, resetFields} = props.form;
 
-  // todo: use this as custom hooks
-  const openNotificationWithIcon = (type, message, description) => {
-    notification[type]({message, description});
-  };
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -28,19 +25,23 @@ const YearModelDrawer = props => {
 
         values.updated_at = moment().format('YYYY-MM-D HH:mm:ss');
 
-        isEditMode
+        const result = isEditMode
           ? mutateYearModel(UPDATE_YEAR_MODEL, {name: yearModel.name, year_models: values})
           : mutateYearModel(ADD_YEAR_MODEL, {year_models: values});
 
-        openNotificationWithIcon('success', 'Success', `YearModel was successfully ${action}.`);
-        resetFields();
-        onCancel();
+        result.then(() => {
+          successNotification(`Year model was successfully ${action}.`);
+          resetFields();
+          onCancel();
+        }).catch(err => {
+          errorNotification(`Year model ${action} failed. Reason: ${err.message}`);
+        });
       }
     });
   };
 
   const mutateYearModel = async (mutation, variables) => {
-    await client.mutate({mutation, variables, refetchQueries: [{query: GET_YEAR_MODEL_LIST, variables: listOptions}]});
+    return await client.mutate({mutation, variables, refetchQueries: [{query: GET_YEAR_MODEL_LIST, variables: listOptions}]});
   };
 
   useEffect(() => {

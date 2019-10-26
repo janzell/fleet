@@ -48,8 +48,8 @@ const PartList = props => {
     showDrawerVisibility(true);
   };
 
-  const showOrCancelConfirmModal = (visible, id) => {
-    setToBeDeletedId(id);
+  const showOrCancelConfirmModal = (visible, part) => {
+    setToBeDeletedId(part.id);
     showConfirmVisibility(visible);
   };
 

@@ -1,18 +1,17 @@
+import {useEffect} from 'react';
 import {withApollo} from "react-apollo";
-import {useEffect} from "react";
 import moment from 'moment';
-
-import {Form, Input, Button, Row, Col, Drawer} from 'antd';
+import {Form, Button, Input, Row, Col, Drawer} from 'antd';
 
 import {RequiredRule} from '../../lib/form-rules';
-import {ADD_GARAGE, GET_GARAGE_LIST, UPDATE_GARAGE} from "./garage-gql";
+import {GET_USERS_LIST, UPDATE_USER, ADD_USER} from "./user-gql";
 
 import {errorNotification, successNotification} from "../../hooks/use-notification";
 
-const {TextArea} = Input;
 
-const GarageDrawer = props => {
-  const {client, garage, listOptions, title, onCancel, visible} = props;
+const UserDrawer = props => {
+
+  const {client, user, listOptions, title, onCancel, visible} = props;
   const {getFieldDecorator, validateFieldsAndScroll, resetFields} = props.form;
 
   const handleSave = (e) => {
@@ -20,32 +19,28 @@ const GarageDrawer = props => {
 
     validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const isEditMode = (garage.number);
+        const isEditMode = (user.id);
         const action = isEditMode ? 'updated' : 'added';
 
         values.updated_at = moment().format('YYYY-MM-D HH:mm:ss');
 
         const result = isEditMode
-          ? mutateGarage(UPDATE_GARAGE, {number: garage.number, garages: values})
-          : mutateGarage(ADD_GARAGE, {garages: values});
+          ? mutateUser(UPDATE_USER, {id: user.id, user: values})
+          : mutateUser(ADD_USER, {user: values});
 
         result.then(() => {
-          successNotification(`Garage was successfully ${action}.`);
+          successNotification(`User was successfully ${action}.`);
           resetFields();
           onCancel();
         }).catch(err => {
-          errorNotification(`Garage ${action} failed. Reason: ${err.message}`);
+          errorNotification(`User ${action} failed. Reason: ${err.message}`);
         });
       }
     });
   };
 
-  const mutateGarage = async (mutation, variables) => {
-    return await client.mutate({
-      mutation,
-      variables,
-      refetchQueries: [{query: GET_GARAGE_LIST, variables: listOptions}]
-    });
+  const mutateUser = async (mutation, variables) => {
+    return await client.mutate({mutation, variables, refetchQueries: [{query: GET_USERS_LIST, variables: listOptions}]});
   };
 
   useEffect(() => {
@@ -63,24 +58,30 @@ const GarageDrawer = props => {
       visible={visible}>
       <Form className="ant-advanced-search-form" onSubmit={handleSave}>
         <Row gutter={12}>
-          <Col>
-            <Form.Item label="Name">
-              {getFieldDecorator('name', {rules: RequiredRule, initialValue: garage.name})(
-                <Input placeholder="Name"/>
+          <Col lg={12}>
+            <Form.Item label="First Name">
+              {getFieldDecorator('first_name', {rules: RequiredRule, initialValue: user.first_name})(
+                <Input placeholder="First Name"/>
+              )}
+            </Form.Item>
+          </Col>
+          <Col lg={12}>
+            <Form.Item label="Last Name">
+              {getFieldDecorator('last_name', {rules: RequiredRule, initialValue: user.last_name})(
+                <Input placeholder="Last Name"/>
               )}
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={12}>
-          <Col lg={24}>
-            <Form.Item label="Address">
-              {getFieldDecorator('address', {initialValue: garage.address})(
-                <TextArea placeholder="Address"/>
+          <Col lg={12}>
+            <Form.Item label="Email">
+              {getFieldDecorator('email', {rules: RequiredRule, initialValue: user.email})(
+                <Input placeholder="Email"/>
               )}
             </Form.Item>
           </Col>
         </Row>
-
         <div className="button-container">
           <Button onClick={onCancel}>Cancel</Button>
           <Button type="primary" onClick={handleSave}>Save</Button>
@@ -90,4 +91,4 @@ const GarageDrawer = props => {
   )
 };
 
-export default withApollo(Form.create()(GarageDrawer));
+export default withApollo(Form.create()(UserDrawer));

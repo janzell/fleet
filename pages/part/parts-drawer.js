@@ -1,22 +1,17 @@
-import {Form, Input, Row, Button, notification, Col, Drawer} from 'antd';
+import {Form, Input, Row, Button, Col, Drawer} from 'antd';
+
 import {RequiredRule} from '../../lib/form-rules';
 import {ADD_PART, UPDATE_PART, GET_PARTS_LIST} from "./parts-gql";
+
 import {withApollo} from "react-apollo";
+
+import {errorNotification, successNotification} from "../../hooks/use-notification";
 
 const {TextArea} = Input;
 
 const PartsDrawer = props => {
-  const {part, listOptions} = props;
-  console.log(part);
+  const {part, listOptions, onCancel} = props;
   const {getFieldDecorator, validateFieldsAndScroll, resetFields} = props.form;
-
-  // todo: use this as custom hooks
-  const openNotificationWithIcon = (type, message, description) => {
-    notification[type]({
-      message,
-      description
-    });
-  };
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -25,19 +20,23 @@ const PartsDrawer = props => {
         const isEditMode = (part.id);
         const action = isEditMode ? 'Updated' : 'Added';
 
-        isEditMode
+        const result = isEditMode
           ? mutatePart(UPDATE_PART, {id: part.id, driver: values})
           : mutatePart(ADD_PART, {part: values});
 
-        openNotificationWithIcon('success', 'Success', `Part ${action} successfully`);
-        resetFields();
-        props.onCancel();
+        result.then(() => {
+          successNotification(`Parts was successfully ${action}.`);
+          resetFields();
+          onCancel();
+        }).catch(err => {
+          errorNotification(`Parts ${action} failed. Reason: ${err.message}`);
+        });
       }
     });
   };
 
   const mutatePart = async (mutation, variables) => {
-    await props.client.mutate({
+    return await props.client.mutate({
       mutation,
       variables,
       refetchQueries: [{query: GET_PARTS_LIST, variables: listOptions}]

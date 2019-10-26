@@ -7,7 +7,7 @@ const garageFields = `id
     updated_at
     `;
 
-const ALL_GARAGE =  gql`
+const ALL_GARAGE = gql`
     query getAllGarages {
         garages {
             ${garageFields}

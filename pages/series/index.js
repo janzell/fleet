@@ -9,7 +9,7 @@ import {withApollo} from "react-apollo";
 
 import {GET_SERIES_LIST, DELETE_SERIES, GET_TOTAL_COUNT} from "./series-gql";
 
-import useNotificationWithIcon from '../../hooks/use-notification'
+import {successNotification} from '../../hooks/use-notification'
 import useColumnFormatter from "../../hooks/table/use-column-formatter";
 
 const {Search} = Input;
@@ -36,8 +36,8 @@ const SeriesList = props => {
     showDrawerVisibility(true);
   };
 
-  const showOrCancelConfirmModal = (visible, id) => {
-    setToBeDeletedId(id);
+  const showOrCancelConfirmModal = (visible, series) => {
+    setToBeDeletedId(series.id);
     showConfirmVisibility(visible);
   };
 
@@ -57,8 +57,8 @@ const SeriesList = props => {
       refetchQueries: [{query: GET_SERIES_LIST, variables: listOptions}]
     });
 
-    showOrCancelConfirmModal(false, null);
-    useNotificationWithIcon('success', 'Success', 'Series has been deleted successfully');
+    showOrCancelConfirmModal(false, toBeDeletedId);
+    successNotification('Series has been deleted successfully');
   };
 
   // handles the paginate action of the table.

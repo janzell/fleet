@@ -2,21 +2,18 @@ import {withApollo} from "react-apollo";
 import {useEffect} from "react";
 import moment from 'moment';
 
-import {Form, Input, Button, Row, Col, notification, Drawer} from 'antd';
+import {Form, Input, Button, Row, Col, Drawer} from 'antd';
 
 import {RequiredRule} from '../../lib/form-rules';
 import {ADD_BODY_NUMBER, GET_BODY_NUMBER_LIST, UPDATE_BODY_NUMBER} from "./body-numbers-gql";
+
+import {errorNotification, successNotification} from '../../hooks/use-notification';
 
 const {TextArea} = Input;
 
 const BodyNumberDrawer = props => {
   const {client, bodyNumber, listOptions, title, onCancel, visible} = props;
   const {getFieldDecorator, validateFieldsAndScroll, resetFields} = props.form;
-
-  // todo: use this as custom hooks
-  const openNotificationWithIcon = (type, message, description) => {
-    notification[type]({message, description});
-  };
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -28,23 +25,30 @@ const BodyNumberDrawer = props => {
 
         values.updated_at = moment().format('YYYY-MM-D HH:mm:ss');
 
-        isEditMode
+        const result = isEditMode
           ? mutateBodyNumber(UPDATE_BODY_NUMBER, {number: bodyNumber.number, body_numbers: values})
           : mutateBodyNumber(ADD_BODY_NUMBER, {body_numbers: values});
 
-        openNotificationWithIcon('success', 'Success', `BodyNumber was successfully ${action}.`);
-        resetFields();
-        onCancel();
+        result.then(() => {
+          successNotification(`Body number was successfully ${action}.`);
+          resetFields();
+          onCancel();
+        }).catch(err => {
+          errorNotification(`Body number ${action} failed. Reason: ${err.message}`);
+        });
       }
     });
   };
 
   const mutateBodyNumber = async (mutation, variables) => {
-    await client.mutate({mutation, variables, refetchQueries: [{query: GET_BODY_NUMBER_LIST, variables: listOptions}]});
+    return await client.mutate({
+      mutation,
+      variables,
+      refetchQueries: [{query: GET_BODY_NUMBER_LIST, variables: listOptions}]
+    });
   };
 
   useEffect(() => {
-    // Reset the form fields when there's a change on the visible props.
     if (!visible) resetFields();
   }, [visible]);
 

@@ -8,6 +8,7 @@ import DriverUpload from './driver-upload';
 
 import {RequiredRule} from '../../lib/form-rules';
 import {ADD_DRIVER, GET_DRIVERS_LIST, UPDATE_DRIVER} from "./drivers-gql";
+import {errorNotification, successNotification} from "../../hooks/use-notification";
 
 const {TextArea} = Input;
 
@@ -30,19 +31,27 @@ const DriverDrawer = props => {
 
         values.updated_at = moment().format('YYYY-MM-D HH:mm:ss');
 
-        isEditMode
+        const result = isEditMode
           ? mutateDriver(UPDATE_DRIVER, {id: driver.id, driver: values})
           : mutateDriver(ADD_DRIVER, {driver: values});
 
-        openNotificationWithIcon('success', 'Success', `Driver ${action} successfully`);
-        resetFields();
-        onCancel();
+        result.then(() => {
+          successNotification(`Driver was successfully ${action}.`);
+          resetFields();
+          onCancel();
+        }).catch(err => {
+          errorNotification(`Driver ${action} failed. Reason: ${err.message}`);
+        });
       }
     });
   };
 
   const mutateDriver = async (mutation, variables) => {
-    await client.mutate({mutation, variables, refetchQueries: [{query: GET_DRIVERS_LIST, variables: listOptions}]});
+    return await client.mutate({
+      mutation,
+      variables,
+      refetchQueries: [{query: GET_DRIVERS_LIST, variables: listOptions}]
+    });
   };
 
   useEffect(() => {

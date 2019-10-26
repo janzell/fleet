@@ -2,21 +2,18 @@ import {withApollo} from "react-apollo";
 import {useEffect} from "react";
 import moment from 'moment';
 
-import {Form, Input, Button, Row, Col, notification, Drawer} from 'antd';
+import {Form, Input, Button, Row, Col, Drawer} from 'antd';
 
 import {RequiredRule} from '../../lib/form-rules';
 import {ADD_SERIES, GET_SERIES_LIST, UPDATE_SERIES} from "./series-gql";
+
+import {errorNotification, successNotification} from "../../hooks/use-notification";
 
 const {TextArea} = Input;
 
 const SeriesDrawer = props => {
   const {client, series, listOptions, title, onCancel, visible} = props;
   const {getFieldDecorator, validateFieldsAndScroll, resetFields} = props.form;
-
-  // todo: use this as custom hooks
-  const openNotificationWithIcon = (type, message, description) => {
-    notification[type]({message, description});
-  };
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -32,12 +29,12 @@ const SeriesDrawer = props => {
           ? mutateSeries(UPDATE_SERIES, {id: series.id, series: values})
           : mutateSeries(ADD_SERIES, {series: values});
 
-        result.then(res => {
-          openNotificationWithIcon('success', 'Success', `Series ${action} successfully`);
+        result.then(() => {
+          successNotification(`Series was successfully ${action}.`);
           resetFields();
           onCancel();
         }).catch(err => {
-          openNotificationWithIcon('error', 'Error', `Series ${action} failed. Reason: ${err.message}`);
+          errorNotification(`Series ${action} failed. Reason: ${err.message}`);
         });
       }
     });

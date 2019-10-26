@@ -9,7 +9,7 @@ import {withApollo} from "react-apollo";
 
 import {GET_YEAR_MODEL_LIST, DELETE_YEAR_MODEL, GET_TOTAL_COUNT} from "./year-model-gql";
 
-import useNotificationWithIcon from '../../hooks/use-notification'
+import {successNotification} from '../../hooks/use-notification'
 import useColumnFormatter from "../../hooks/table/use-column-formatter";
 
 const {Search} = Input;
@@ -36,8 +36,8 @@ const YearModelList = props => {
     showDrawerVisibility(true);
   };
 
-  const showOrCancelConfirmModal = (visible, id) => {
-    setToBeDeletedId(id);
+  const showOrCancelConfirmModal = (visible, yearModel) => {
+    setToBeDeletedId(yearModel.name);
     showConfirmVisibility(visible);
   };
 
@@ -58,7 +58,7 @@ const YearModelList = props => {
     });
 
     showOrCancelConfirmModal(false, null);
-    useNotificationWithIcon('success', 'Success', 'Year model has been deleted successfully');
+    successNotification('Year model has been deleted successfully');
   };
 
   // handles the paginate action of the table.

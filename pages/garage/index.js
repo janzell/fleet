@@ -9,7 +9,7 @@ import {withApollo} from "react-apollo";
 
 import {GET_GARAGE_LIST, DELETE_GARAGE, GET_TOTAL_COUNT} from "./garage-gql";
 
-import useNotificationWithIcon from '../../hooks/use-notification'
+import {successNotification} from '../../hooks/use-notification'
 import useColumnFormatter from "../../hooks/table/use-column-formatter";
 
 const {Search} = Input;
@@ -36,8 +36,8 @@ const GarageList = props => {
     showDrawerVisibility(true);
   };
 
-  const showOrCancelConfirmModal = (visible, id) => {
-    setToBeDeletedId(id);
+  const showOrCancelConfirmModal = (visible, garage) => {
+    setToBeDeletedId(garage.id);
     showConfirmVisibility(visible);
   };
 
@@ -58,7 +58,7 @@ const GarageList = props => {
     });
 
     showOrCancelConfirmModal(false, null);
-    useNotificationWithIcon('success', 'Success', 'Garage has been deleted successfully');
+    successNotification('Garage has been deleted successfully');
   };
 
   // handles the paginate action of the table.

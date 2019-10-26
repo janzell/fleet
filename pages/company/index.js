@@ -9,7 +9,7 @@ import {withApollo} from "react-apollo";
 
 import {GET_COMPANIES_LIST, DELETE_COMPANY, GET_TOTAL_COUNT} from "./company-gql";
 
-import useNotificationWithIcon from '../../hooks/use-notification'
+import {successNotification} from '../../hooks/use-notification'
 import useColumnFormatter from "../../hooks/table/use-column-formatter";
 
 const {Search} = Input;
@@ -36,8 +36,8 @@ const CompanyList = props => {
     showDrawerVisibility(true);
   };
 
-  const showOrCancelConfirmModal = (visible, id) => {
-    setToBeDeletedId(id);
+  const showOrCancelConfirmModal = (visible, company) => {
+    setToBeDeletedId(company.id);
     showConfirmVisibility(visible);
   };
 
@@ -58,7 +58,7 @@ const CompanyList = props => {
     });
 
     showOrCancelConfirmModal(false, null);
-    useNotificationWithIcon('success', 'Success', 'Company has been deleted successfully');
+    successNotification('Company has been deleted successfully');
   };
 
   // TODO:

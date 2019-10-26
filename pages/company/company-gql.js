@@ -7,7 +7,7 @@ const companyFields = `id
     updated_at
     `;
 
-const ALL_COMPANIES =  gql`
+const ALL_COMPANIES = gql`
     query getAllCompanies {
         companies {
             ${companyFields}
@@ -67,4 +67,12 @@ const GET_TOTAL_COUNT = gql`
     }
 `;
 
-export {GET_COMPANIES_LIST, GET_TOTAL_COUNT, DELETE_COMPANY, UPDATE_COMPANY, ADD_COMPANY, COMPANY_SUBSCRIPTION, ALL_COMPANIES};
+export {
+  GET_COMPANIES_LIST,
+  GET_TOTAL_COUNT,
+  DELETE_COMPANY,
+  UPDATE_COMPANY,
+  ADD_COMPANY,
+  COMPANY_SUBSCRIPTION,
+  ALL_COMPANIES
+};

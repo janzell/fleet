@@ -1,13 +1,16 @@
-import {Row, Col, Icon, Layout, Menu, Typography} from 'antd';
+import {Row, Col, Icon, Layout, Menu} from 'antd';
 
 import {useState} from 'react';
 import {Router} from '../../routes';
 
-const {Text, Title} = Typography;
-const {Header, Sider, Footer, Content} = Layout;
-const SubMenu = Menu.SubMenu;
+const {Header, Sider, Content} = Layout;
+
+import TopBar from "./top-bar";
+import ControlSubMenuList from  './control-submenu';
+import FooterBlock from './footer';
 
 import './index.css';
+
 
 const headerStyles = {
   background: '#fff',
@@ -17,14 +20,19 @@ const headerStyles = {
   width: '100%',
 };
 
-const layoutStyles = {margin: '80px 15px 0', padding: 10, minHeight: 280, overflow: 'initial'};
+const layoutStyles = {
+  margin: '80px 15px 0',
+  padding: 10,
+  minHeight: 280,
+  overflow: 'initial'
+};
 
-const LOGO_STATE = {
+const logoState = {
   width: 150,
   display: 'block',
 };
 
-const INITIAL_LOGO_STATE = {
+const defaultLogoState = {
   textAlign: 'center',
   color: '#ce4257',
   fontSize: '20px',
@@ -34,8 +42,8 @@ const INITIAL_LOGO_STATE = {
 
 export default (props) => {
 
-  const [logoStyles, setLogoStyles] = useState(LOGO_STATE);
-  const [initialLogoStyles, setInitialLogoStyles] = useState(INITIAL_LOGO_STATE);
+  const [logoStyles, setLogoStyles] = useState(logoState);
+  const [initialLogoStyles, setInitialLogoStyles] = useState(defaultLogoState);
   const [collapsed, setCollapsed] = useState(false);
   const [sideMargin, setSideMargin] = useState(200);
   const [activeNav, setActiveNav] = useState([]);
@@ -44,20 +52,29 @@ export default (props) => {
     setCollapsed(!collapsed);
 
     if (collapsed) {
-      setLogoStyles({...LOGO_STATE, display: 'block'});
-      setInitialLogoStyles({...INITIAL_LOGO_STATE, display: 'none'});
+      setLogoStyles({...logoState, display: 'block'});
+      setInitialLogoStyles({...defaultLogoState, display: 'none'});
       return setSideMargin(200)
     }
 
-    setLogoStyles({...LOGO_STATE, display: 'none'});
-    setInitialLogoStyles({...INITIAL_LOGO_STATE, display: 'block'});
+    setLogoStyles({...logoState, display: 'none'});
+    setInitialLogoStyles({...defaultLogoState, display: 'block'});
     setSideMargin(80);
   };
 
   const goTo = (e) => {
     setActiveNav([e.key]);
     Router.push(e.key);
-  }
+  };
+
+  const Logo = () => {
+    return (
+      <div className="logo">
+        <h2 style={logoStyles}>Fleet</h2>
+        <p id="initialLogo" style={initialLogoStyles}>F</p>
+      </div>
+    )
+  };
 
   return (
     <Layout>
@@ -67,47 +84,17 @@ export default (props) => {
         trigger={null}
         collapsible
         collapsed={collapsed}>
-        <div className="logo">
-          <h2 style={logoStyles}>Fleet</h2>
-          <p id="initialLogo" style={initialLogoStyles}>F</p>
-        </div>
+
+        <Logo/>
+
         <Menu inlineIndent={15} onClick={goTo} theme="dark" mode="inline" selectedKeys={activeNav}>
           <Menu.Item key="/dashboard">
             <Icon type="dashboard"/>
             <span className="nav-text">Dashboard</span>
           </Menu.Item>
-          <SubMenu
-            key="control"
-            title={<span><Icon type="lock"/><span>Control</span></span>}>
-            <Menu.Item key="/user">
-              <Icon type="user"/>
-              <span className="nav-text">Users</span>
-            </Menu.Item>
-            <Menu.Item key="/company">
-              <Icon type="bank" />
-              <span className="nav-text">Companies</span>
-            </Menu.Item>
-            <Menu.Item key="/series">
-              <Icon type="car" />
-              <span className="nav-text">Series</span>
-            </Menu.Item>
-            <Menu.Item key="/case-number">
-              <Icon type="number" />
-              <span className="nav-text">Case Numbers</span>
-            </Menu.Item>
-            <Menu.Item key="/body-number">
-              <Icon type="number" />
-              <span className="nav-text">Body Numbers</span>
-            </Menu.Item>
-            <Menu.Item key="/garage">
-              <Icon type="car" />
-              <span className="nav-text">Garages</span>
-            </Menu.Item>
-            <Menu.Item key="/year-model">
-              <Icon type="calendar" />
-              <span className="nav-text">Year Model</span>
-            </Menu.Item>
-          </SubMenu>
+
+          <ControlSubMenuList/>
+
           <Menu.Item key="/rental">
             <Icon type="schedule"/>
             <span className="nav-text">Rentals</span>
@@ -131,6 +118,7 @@ export default (props) => {
       </Sider>
 
       <Layout style={{marginLeft: sideMargin}}>
+
         <Header style={headerStyles}>
           <Row type="flex" justify="end">
             <Col span={12}>
@@ -139,26 +127,21 @@ export default (props) => {
                 type={collapsed ? 'menu-unfold' : 'menu-fold'}
                 onClick={toggle}
               />
-              <Title level={4} style={{marginLeft: '20px', display: 'inline-block'}}>Hello, Mark Jobs</Title>
+
+              <TopBar/>
             </Col>
             <Col offset={8} span={4}>
-            <Icon type="bell"/>
+              <Icon type="bell"/>
             </Col>
           </Row>
         </Header>
+
         <Content style={layoutStyles}>
           {props.children}
-        </Content>
-        <Footer className="">
-          <Row>
-            <Col lg={24}>
-              <p className="text-right">
-                <Text underline>Fleet Management v1.0</Text><br/>
-                <span>Copyright 2019</span>
-              </p>
-            </Col>
-          </Row>
-        </Footer>
+        </ Content>
+
+        <FooterBlock/>
+
       </Layout>
     </Layout>
   )

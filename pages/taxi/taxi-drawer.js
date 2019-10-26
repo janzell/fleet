@@ -1,5 +1,5 @@
 import moment from 'moment';
-import {Form, Input, Select, DatePicker, Row, Col, Drawer, Button, notification} from 'antd';
+import {Form, Input, Select, DatePicker, Row, Col, Drawer, Button} from 'antd';
 
 import {withApollo, Query} from "react-apollo";
 import {useEffect, useState} from "react";
@@ -13,6 +13,9 @@ import {ALL_CASE_NUMBERS} from './../case-number/case-numbers-gql';
 import {ALL_GARAGE} from "../garage/garage-gql";
 import {ALL_COMPANIES} from '../company/company-gql';
 import {ALL_SERIES} from '../series/series-gql';
+import {ALL_YEAR_MODELS} from '../year-model/year-model-gql';
+
+import {errorNotification, successNotification} from "../../hooks/use-notification";
 
 const {TextArea} = Input;
 const {Option} = Select;
@@ -22,16 +25,11 @@ const TaxiDrawer = props => {
   const {client, taxi, onCancel, title, visible, listOptions} = props;
   const {getFieldDecorator, validateFieldsAndScroll, resetFields} = props.form;
 
-  const [setStatus] = useState();
   const [setCrIssuedAt] = useState();
   const [setOrIssuedAt] = useState();
   const [setAcquiredAt] = useState();
 
   const dateFormat = 'YYYY/MM/DD';
-
-  const openNotificationWithIcon = (type, message, description) => {
-    notification[type]({message, description});
-  };
 
   // TODO: use custom hooks
   const handleSave = (e) => {
@@ -46,12 +44,12 @@ const TaxiDrawer = props => {
           ? mutateTaxi(UPDATE_TAXI, {id: taxi.id, taxi: values})
           : mutateTaxi(ADD_TAXI, {taxi: values});
 
-        result.then(res => {
-          openNotificationWithIcon('success', 'Success', `Taxi ${action} successfully`);
+        result.then(() => {
+          successNotification(`Taxi was successfully ${action}.`);
           resetFields();
           onCancel();
         }).catch(err => {
-          openNotificationWithIcon('error', 'Error', `Taxi ${action} failed. Reason: ${err.message}`);
+          errorNotification(`Taxi ${action} failed. Reason: ${err.message}`);
         });
       }
     });
@@ -101,6 +99,28 @@ const TaxiDrawer = props => {
                 <Select showSearch={true}>
                   {data.body_numbers.map((item, index) => (
                     <Option key={index} value={item.number}>{item.number}</Option>
+                  ))}
+                </Select>
+              )}
+            </Form.Item>
+          )
+        }}
+      </Query>
+    )
+  };
+
+  const YearModelList = (taxi) => {
+    return (
+      <Query query={ALL_YEAR_MODELS}>
+        {({loading, error, data}) => {
+          if (error) return 'error';
+          if (loading) return 'loading';
+          return (
+            <Form.Item label="Year Model">
+              {getFieldDecorator('year_model', {rules: [...RequiredRule], initialValue: taxi.year_model})(
+                <Select showSearch={true}>
+                  {data.year_models.map((item, index) => (
+                    <Option key={index} value={item.name}>{item.name}</Option>
                   ))}
                 </Select>
               )}
@@ -302,11 +322,7 @@ const TaxiDrawer = props => {
             </Form.Item>
           </Col>
           <Col lg={6}>
-            <Form.Item label="Year Model">
-              {getFieldDecorator('year_model', {rules: RequiredRule, initialValue: taxi.year_model})(
-                <Input placeholder="Year Model"/>
-              )}
-            </Form.Item>
+            {YearModelList(taxi)}
           </Col>
         </Row>
 
@@ -318,7 +334,7 @@ const TaxiDrawer = props => {
             {CompanyList(taxi)}
           </Col>
           <Col lg={6}>
-            { SeriesList(taxi)}
+            {SeriesList(taxi)}
           </Col>
         </Row>
         <Row gutter={12}>

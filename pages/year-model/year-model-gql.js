@@ -7,6 +7,16 @@ const yearModelFields = `
     updated_at
     `;
 
+
+const ALL_YEAR_MODELS = gql`
+    query getAllYearModels {
+        year_models {
+            ${yearModelFields}
+        }
+    }
+`;
+
+
 const GET_YEAR_MODEL_LIST = gql`
     query getYearModelList($limit: Int!, $offset: Int!, $order_by: [year_models_order_by!], $where: year_models_bool_exp) {
         year_models(limit: $limit,offset: $offset, order_by: $order_by, where: $where) {
@@ -65,5 +75,6 @@ export {
   DELETE_YEAR_MODEL,
   UPDATE_YEAR_MODEL,
   ADD_YEAR_MODEL,
-  YEAR_MODEL_SUBSCRIPTION
+  YEAR_MODEL_SUBSCRIPTION,
+  ALL_YEAR_MODELS
 };

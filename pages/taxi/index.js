@@ -1,14 +1,18 @@
 import {useEffect, useState} from 'react';
-import {Row, Table, Col, Icon, Input, Tag, notification, PageHeader, Button} from 'antd';
+import {Row, Table, Col, Icon, Input, Tag, PageHeader, Button} from 'antd';
 
 import MainLayout from '../../layout/main';
+
 import {Query} from 'react-apollo';
 import TaxiDrawer from './taxi-drawer';
 import {withApollo} from "react-apollo";
 
 import {GET_TAXIS_LIST, DELETE_TAXI, GET_TOTAL_COUNT} from "./taxi-gql";
+
 import DeleteConfirmationModal from "../../components/modal/delete-confirmation-modal";
 import useColumnFormatter from "../../hooks/table/use-column-formatter";
+
+import {successNotification} from '../../hooks/use-notification'
 
 const {Search} = Input;
 
@@ -27,13 +31,6 @@ const TaxiList = props => {
   const [listOptions, setListOptions] = useState(listOptionsDefault);
   const [searchText, handleSearch] = useState('');
 
-  // todo: make this shit as a custom hooks.
-  const openNotificationWithIcon = (type, message, description) => {
-    notification[type]({
-      message,
-      description
-    });
-  };
 
   // handle the edit/add mode
   const handleFormMode = taxi => {
@@ -43,8 +40,8 @@ const TaxiList = props => {
   };
 
   // show or cancel confirm modal
-  const showOrCancelConfirmModal = (visible, id) => {
-    setToBeDeletedId(id);
+  const showOrCancelConfirmModal = (visible, taxi) => {
+    setToBeDeletedId(taxi.id);
     showConfirmVisibility(visible);
   };
 
@@ -65,13 +62,11 @@ const TaxiList = props => {
       refetchQueries: [{query: GET_TAXIS_LIST, variables: listOptions}]
     });
 
-    showOrCancelConfirmModal(false, null);
-    openNotificationWithIcon('success', 'Success', 'Taxi record has been deleted successfully');
+    showOrCancelConfirmModal(false, toBeDeletedId);
+    successNotification('Taxi record has been deleted successfully');
   };
 
   const handlePaginate = page => setListOptions({...listOptions, ...{offset: page * 15}});
-
-  const fields = ['body_number', 'case_number', 'plate_number', 'acquired_at', 'engine_number', 'year_model', 'series.name', 'created_at', 'updated_at'];
 
   const refreshResult = () => {
     const paramValue = {_ilike: `%${searchText}%`};
@@ -85,6 +80,7 @@ const TaxiList = props => {
     handleTotalCount(where);
   };
 
+  const fields = ['body_number', 'case_number', 'plate_number', 'acquired_at', 'engine_number', 'year_model', 'series.name', 'created_at', 'updated_at'];
   const columns = useColumnFormatter(fields, handleFormMode, showOrCancelConfirmModal, [{
     title: 'status',
     key: 'status',

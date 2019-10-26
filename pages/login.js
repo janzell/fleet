@@ -1,4 +1,4 @@
-import {Button, Col, Form, Icon, Input, Row, Spin} from 'antd';
+import {Button, Col, Form, Icon, Input, Row, Spin, Alert} from 'antd';
 import Head from 'next/head';
 import {useState} from 'react';
 import {setCookie} from 'nookies';
@@ -7,6 +7,7 @@ import {login, authMe} from '../lib/authenticate';
 
 import routes from '../routes';
 import {GlobalContext, globalInitialState} from "../context/global-context"
+
 import {getCookie} from "../lib/session";
 
 const FormItem = Form.Item;
@@ -15,20 +16,24 @@ const {Router, Link} = routes;
 // Spinner
 const SpinnerIcon = <Icon type="loading" style={{fontSize: 35}} spin/>;
 
+
+const backgroundStyle = {
+  background: 'url("./static/background-login.svg") scroll 0 0'
+};
+
 /**
  * Login Form.
  * @param props
  */
 const LoginForm = (props) => {
-  let [errMsg, setErrMsg] = useState('');
-  let [loginFailed, setLoginFailed] = useState(false);
-  let [spinner, setSpinner] = useState(false);
-  let [globalState, setGlobalState] = useState(globalInitialState);
+
+  const [errMsg, setErrMsg] = useState('');
+  const [loginFailed, setLoginFailed] = useState(false);
+  const [spinner, setSpinner] = useState(false);
+  const [globalState, setGlobalState] = useState(globalInitialState);
+
   const {getFieldDecorator, validateFieldsAndScroll, resetFields} = props.form;
 
-  /**
-   * Handle submit.
-   */
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -43,7 +48,7 @@ const LoginForm = (props) => {
           setTimeout(() => {
             setSpinner(false);
             setLoginFailed(true);
-            setErrMsg('Invalid credentials');
+            setErrMsg('Login failed! Invalid credential.');
           }, 1000);
         };
 
@@ -52,24 +57,26 @@ const LoginForm = (props) => {
           // from the service api.
           let authenticate = await login({...values});
 
-          // we're string the token to cookie with maximum days of =
+          const expiration = (10 * 365 * 24 * 60 * 60);
+
+          // we're string the token to cookie with maximum days of
           if (authenticate) {
-            setCookie({}, 'token', authenticate.token, {maxAge: 24 * 60 * 60, path: "/"});
+            setCookie({}, 'token', authenticate.token, {maxAge: expiration, path: "/"});
           }
 
           // using the token, try to get the user information and store it on the cookies.
           const user = await authMe();
 
-          if (!user) return authError();
+          if (!user) {
+            return authError();
+          }
 
           setGlobalState({...globalInitialState, user});
 
-          setCookie({}, 'userData', JSON.stringify(user), {
-            maxAge: 365 * 24 * 60 * 60,
-            path: "/"
-          });
+          setCookie({}, 'userData', JSON.stringify(user), {maxAge: expiration, path: "/"});
 
           return Router.replace('/dashboard');
+
           // window.location.reload('/dashboard');
         } catch (error) {
           authError();
@@ -78,9 +85,16 @@ const LoginForm = (props) => {
     });
   };
 
+  const formCentered = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100vh'
+  };
+
   return (
     <GlobalContext.Provider value={{globalState, setGlobalState}}>
-      <div className="authenticate">
+      <div className="authenticate" style={backgroundStyle}>
 
         <Head>
           <title>Fleet | Login</title>
@@ -88,15 +102,18 @@ const LoginForm = (props) => {
         </Head>
 
         <Row>
-          <Col className="rm-bg">
+          <Col className="rm-bg" style={formCentered}>
             <Spin indicator={SpinnerIcon} spinning={spinner}>
-              <div className="container-400 container-centered" style={{marginTop: '20vh'}}>
+
+              <div className="container-400 container-centered">
+
                 <h2 className='page-title text-center'>Fleet Management</h2>
+
                 <Form className='signup-modal-form clearfix' onSubmit={handleSubmit}>
                   <Col className='column-wrap mt-20' span={24}>
-                    {/*{loginFailed ? (*/}
-                    {/*  <AlertMsg message={errMsg} type='error' className='text-centered' />*/}
-                    {/*) : null}*/}
+                    {loginFailed ? (
+                      <Alert message={errMsg} type='error' className='text-centered' style={{marginBottom: '10px'}}/>
+                    ) : null}
                     <p className='signup-modal-label'>Email Address</p>
                     <FormItem className='m-email'>
                       {getFieldDecorator('email', {
@@ -117,9 +134,10 @@ const LoginForm = (props) => {
                     </FormItem>
                   </Col>
                   <Col className='column-wrap mt-20' span={24}>
-                    <Button type='primary' htmlType='submit'>LOG IN</Button>
+                    <Button type='primary' htmlType='submit'>Login</Button>
                   </Col>
                 </Form>
+
               </div>
             </Spin>
           </Col>
@@ -128,5 +146,6 @@ const LoginForm = (props) => {
     </GlobalContext.Provider>
   )
 };
+
 
 export default Form.create()(LoginForm);

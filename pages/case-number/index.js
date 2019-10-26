@@ -9,7 +9,7 @@ import {withApollo} from "react-apollo";
 
 import {GET_CASE_NUMBER_LIST, DELETE_CASE_NUMBER, GET_TOTAL_COUNT} from "./case-numbers-gql";
 
-import useNotificationWithIcon from '../../hooks/use-notification'
+import {successNotification} from '../../hooks/use-notification'
 import useColumnFormatter from "../../hooks/table/use-column-formatter";
 
 const {Search} = Input;
@@ -58,7 +58,7 @@ const CaseNumberList = props => {
     });
 
     showOrCancelConfirmModal(false, null);
-    useNotificationWithIcon('success', 'Success', 'CaseNumber has been deleted successfully');
+    successNotification('Case Number has been deleted successfully');
   };
 
   // handles the paginate action of the table.

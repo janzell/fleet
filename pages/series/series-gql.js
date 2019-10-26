@@ -7,7 +7,7 @@ const seriesFields = `id
     updated_at
     `;
 
-const ALL_SERIES =  gql`
+const ALL_SERIES = gql`
     query getAllSeries {
         series {
             ${seriesFields}

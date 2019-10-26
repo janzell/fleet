@@ -9,7 +9,7 @@ import {withApollo} from "react-apollo";
 
 import {GET_BODY_NUMBER_LIST, DELETE_BODY_NUMBER, GET_TOTAL_COUNT} from "./body-numbers-gql";
 
-import useNotificationWithIcon from '../../hooks/use-notification'
+import {errorNotification, successNotification} from '../../hooks/use-notification'
 import useColumnFormatter from "../../hooks/table/use-column-formatter";
 
 const {Search} = Input;
@@ -36,8 +36,8 @@ const BodyNumberList = props => {
     showDrawerVisibility(true);
   };
 
-  const showOrCancelConfirmModal = (visible, id) => {
-    setToBeDeletedId(id);
+  const showOrCancelConfirmModal = (visible, record) => {
+    setToBeDeletedId(record.number);
     showConfirmVisibility(visible);
   };
 
@@ -47,9 +47,9 @@ const BodyNumberList = props => {
     showDrawerVisibility(false);
   };
 
-  // TODO: delete
+  // TODO: new custom hook
   const handleDelete = async () => {
-    await props.client.mutate({
+    const result = await props.client.mutate({
       mutation: DELETE_BODY_NUMBER,
       variables: {
         number: toBeDeletedId
@@ -57,8 +57,13 @@ const BodyNumberList = props => {
       refetchQueries: [{query: GET_BODY_NUMBER_LIST, variables: listOptions}]
     });
 
-    showOrCancelConfirmModal(false, null);
-    useNotificationWithIcon('success', 'Success', 'BodyNumber has been deleted successfully');
+
+    if (result) {
+      showOrCancelConfirmModal(false, toBeDeletedId);
+      successNotification('Body Number has been deleted successfully');
+    } else {
+      errorNotification(`Failed to deleted body number.`)
+    }
   };
 
   // Paginate
@@ -66,6 +71,7 @@ const BodyNumberList = props => {
     const offset = page * 15;
     setListOptions({...listOptions, offset});
   };
+
 
   const refreshResult = () => {
     const paramValue = {_ilike: `%${searchText}%`};

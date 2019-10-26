@@ -1,23 +1,18 @@
+import moment from 'moment';
 import {withApollo} from "react-apollo";
 import {useEffect} from "react";
-import moment from 'moment';
 
-import {Form, Input, Button, Row, Col, notification, Drawer} from 'antd';
-
+import {Form, Input, Button, Row, Col, Drawer} from 'antd';
 
 import {RequiredRule} from '../../lib/form-rules';
 import {ADD_COMPANY, GET_COMPANIES_LIST, UPDATE_COMPANY} from "./company-gql";
+import {errorNotification, successNotification} from "../../hooks/use-notification";
 
 const {TextArea} = Input;
 
 const CompanyDrawer = props => {
   const {client, company, listOptions, title, onCancel, visible} = props;
   const {getFieldDecorator, validateFieldsAndScroll, resetFields} = props.form;
-
-  // todo: use this as custom hooks
-  const openNotificationWithIcon = (type, message, description) => {
-    notification[type]({message, description});
-  };
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -29,19 +24,27 @@ const CompanyDrawer = props => {
 
         values.updated_at = moment().format('YYYY-MM-D HH:mm:ss');
 
-        isEditMode
+        const result = isEditMode
           ? mutateCompany(UPDATE_COMPANY, {id: company.id, company: values})
           : mutateCompany(ADD_COMPANY, {company: values});
 
-        openNotificationWithIcon('success', 'Success', `Company ${action} successfully`);
-        resetFields();
-        onCancel();
+        result.then(() => {
+          successNotification(`Company was successfully ${action}.`);
+          resetFields();
+          onCancel();
+        }).catch(err => {
+          errorNotification(`Company ${action} failed. Reason: ${err.message}`);
+        });
       }
     });
   };
 
   const mutateCompany = async (mutation, variables) => {
-    await client.mutate({mutation, variables, refetchQueries: [{query: GET_COMPANIES_LIST, variables: listOptions}]});
+    return await client.mutate({
+      mutation,
+      variables,
+      refetchQueries: [{query: GET_COMPANIES_LIST, variables: listOptions}]
+    });
   };
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {Row, Table, Col, Icon, Input, PageHeader, Button, Divider} from 'antd';
+import {Row, Table, Col, Icon, Input, PageHeader, Button} from 'antd';
 
 import MainLayout from '../../layout/main';
 import {Query} from 'react-apollo';
@@ -9,8 +9,7 @@ import {withApollo} from "react-apollo";
 
 import {GET_DRIVERS_LIST, DELETE_DRIVER, GET_TOTAL_COUNT} from "./drivers-gql";
 
-import columnsTitleFormatter from "../../utils/table-columns-formatter";
-import useNotificationWithIcon from '../../hooks/use-notification'
+import {successNotification} from '../../hooks/use-notification'
 import useColumnFormatter from "../../hooks/table/use-column-formatter";
 
 const {Search} = Input;
@@ -44,8 +43,8 @@ const DriverList = props => {
     showDrawerVisibility(true);
   };
 
-  const showOrCancelConfirmModal = (visible, id) => {
-    setToBeDeletedId(id);
+  const showOrCancelConfirmModal = (visible, driver) => {
+    setToBeDeletedId(driver.id);
     showConfirmVisibility(visible);
   };
 
@@ -66,7 +65,7 @@ const DriverList = props => {
     });
 
     showOrCancelConfirmModal(false, null);
-    useNotificationWithIcon('success', 'Success', 'Driver has been deleted successfully');
+    successNotification('Driver has been deleted successfully');
   };
 
   // handles the paginate action of the table.

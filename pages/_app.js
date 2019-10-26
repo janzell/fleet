@@ -1,7 +1,9 @@
 import React from 'react';
 import App, {Container} from 'next/app';
 import {ApolloProvider} from 'react-apollo';
+
 import withApolloClient from '../lib/with-apollo-client';
+
 import withNProgress from "next-nprogress";
 
 import '../css/core.css';

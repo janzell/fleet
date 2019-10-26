@@ -13,7 +13,7 @@ export default function useColumnFormatter(fields, handleFormMode, showOrCancelC
         <Divider type="vertical"/>
         <a href="javascript:;" onClick={() => handleFormMode(record)}><Icon type="edit"/></a>
         <Divider type="vertical"/>
-        <a href="javascript:;" onClick={() => showOrCancelConfirmModal(true, record.id)}><Icon type="delete"/></a>
+        <a href="javascript:;" onClick={() => showOrCancelConfirmModal(true, record)}><Icon type="delete"/></a>
       </span>
     )
   }];

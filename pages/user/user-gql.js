@@ -1,54 +1,65 @@
 import {gql} from 'apollo-boost';
 
-const driverFields = `id
+const userFields = `id
     first_name
     last_name
-    license_number
-    address
+    email
     created_at
     updated_at
     `;
 
-const GET_DRIVERS_LIST = gql`
-    query getDriversList($limit: Int!, $offset: Int!) {
-        drivers(limit: $limit, order_by: {created_at: asc}, offset: $offset) {
-            ${driverFields}
+
+const GET_USERS_LIST = gql`
+    query getUsersList($limit: Int!, $offset: Int!, $order_by: [users_order_by!], $where: users_bool_exp) {
+        users(limit: $limit, offset: $offset, order_by: $order_by, where: $where) {
+            ${userFields}
         }
     }`;
 
-const DRIVERS_SUBSCRIPTION = gql`
-    subscription onDriversAdded($limit: Int, $offset: Int, $order_by: [drivers_order_by!]) {
-        drivers(limit: $limit, offset: $offset, order_by: $order_by){
-            ${driverFields}
+const USERS_SUBSCRIPTION = gql`
+    subscription onUsersAdded($limit: Int, $offset: Int, $order_by: [users_order_by!]) {
+        users(limit: $limit, offset: $offset, order_by: $order_by){
+            ${userFields}
         }
     }
 `;
 
-const ADD_DRIVER = gql`
-    mutation addDriver($driver: [drivers_insert_input!]!) {
-        insert_drivers(objects: $driver) {
+const ADD_USER = gql`
+    mutation addUser($user: [users_insert_input!]!) {
+        insert_users(objects: $user) {
             affected_rows
             returning {
-                ${driverFields}
+                ${userFields}
             }
         }
     }`;
 
-const DELETE_DRIVER = gql`
-    mutation deleteDriver($id: Int!) {
-        delete_drivers(where: {id: {_eq: $id}}) {
+const DELETE_USER = gql`
+    mutation deleteUser($id: Int!) {
+        delete_users(where: {id: {_eq: $id}}) {
             affected_rows
         }
     }`;
 
-const UPDATE_DRIVER = gql`
-    mutation updateDriver($id: Int!, $driver: drivers_set_input) {
-        update_drivers(where: {id: {_eq: $id}}, _set: $driver) {
+
+const UPDATE_USER = gql`
+    mutation updateUser($id: Int!, $user: users_set_input) {
+        update_users(where: {id: {_eq: $id}}, _set: $user) {
             affected_rows
             returning {
-                ${driverFields}
+                ${userFields}
             }
         }
     }`;
 
-export {GET_DRIVERS_LIST, DELETE_DRIVER, UPDATE_DRIVER, ADD_DRIVER, DRIVERS_SUBSCRIPTION};
+const GET_TOTAL_COUNT = gql`
+    {
+        users_aggregate {
+            aggregate {
+                count
+            }
+        }
+    }
+`;
+
+export {GET_TOTAL_COUNT, GET_USERS_LIST, DELETE_USER, UPDATE_USER, ADD_USER, USERS_SUBSCRIPTION};

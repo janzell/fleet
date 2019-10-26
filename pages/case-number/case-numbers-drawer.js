@@ -1,23 +1,20 @@
-import React, {useState} from 'react';
-import {withApollo} from "react-apollo";
-import {useEffect} from "react";
 import moment from 'moment';
 
-import {Form, Input, Button, Row, Col, notification, DatePicker, Drawer} from 'antd';
+import {withApollo} from "react-apollo";
+import {useEffect} from "react";
+
+import {Form, Input, Button, Row, Col, DatePicker, Drawer} from 'antd';
 
 import {RequiredRule} from '../../lib/form-rules';
 import {ADD_CASE_NUMBER, GET_CASE_NUMBER_LIST, UPDATE_CASE_NUMBER} from "./case-numbers-gql";
+
+import {errorNotification, successNotification} from '../../hooks/use-notification';
 
 const {TextArea} = Input;
 
 const CaseNumberDrawer = props => {
   const {client, caseNumber, listOptions, title, onCancel, visible} = props;
   const {getFieldDecorator, validateFieldsAndScroll, resetFields} = props.form;
-
-  // todo: use this as custom hooks
-  const openNotificationWithIcon = (type, message, description) => {
-    notification[type]({message, description});
-  };
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -29,13 +26,17 @@ const CaseNumberDrawer = props => {
 
         values.updated_at = moment().format('YYYY-MM-D HH:mm:ss');
 
-        isEditMode
+        const result = isEditMode
           ? mutateCaseNumber(UPDATE_CASE_NUMBER, {number: caseNumber.number, case_numbers: values})
           : mutateCaseNumber(ADD_CASE_NUMBER, {case_numbers: values});
 
-        openNotificationWithIcon('success', 'Success', `Case number was successfully ${action}.`);
-        resetFields();
-        onCancel();
+        result.then(() => {
+          successNotification(`Case number was successfully ${action}.`);
+          resetFields();
+          onCancel();
+        }).catch(err => {
+          errorNotification(`Case number ${action} failed. Reason: ${err.message}`);
+        });
       }
     });
   };

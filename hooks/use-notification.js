@@ -1,9 +1,6 @@
 import {notification} from "antd";
 
-function useNotificationWithIcon(type, message, description) {
-  notification[type]({
-    message,
-    description
-  });
-}
-export default useNotificationWithIcon;
+const successNotification = (description) => notification['success']({message: 'Success', description});
+const errorNotification = (description) => notification['error']({message: 'Error', description});
+
+export {successNotification, errorNotification};
