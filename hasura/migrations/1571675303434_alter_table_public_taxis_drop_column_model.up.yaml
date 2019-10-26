@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."taxis" DROP COLUMN "model" CASCADE
-  type: run_sql

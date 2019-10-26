@@ -13,22 +13,22 @@ $$;
 CREATE TABLE public.body_numbers (
     number text NOT NULL,
     notes text,
-    created_at date DEFAULT now() NOT NULL,
-    updated_at date DEFAULT now() NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
-CREATE TABLE public.cases (
+CREATE TABLE public.case_numbers (
     number text NOT NULL,
     expired_at date NOT NULL,
     notes text,
-    created_at date DEFAULT now() NOT NULL,
-    updated_at date DEFAULT now() NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 CREATE TABLE public.companies (
     id integer NOT NULL,
     name text NOT NULL,
     address text NOT NULL,
-    created_at date DEFAULT now() NOT NULL,
-    updated_at date DEFAULT now() NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 CREATE SEQUENCE public.companies_id_seq
     AS integer
@@ -132,9 +132,10 @@ CREATE SEQUENCE public.rental_id_seq
 ALTER SEQUENCE public.rental_id_seq OWNED BY public.rentals.id;
 CREATE TABLE public.series (
     name text NOT NULL,
-    created_at date DEFAULT now() NOT NULL,
-    updated_at date DEFAULT now() NOT NULL,
-    id integer NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
+    id integer NOT NULL,
+    notes text
 );
 CREATE SEQUENCE public.series_id_seq
     AS integer
@@ -159,9 +160,8 @@ CREATE TABLE public.taxis (
     id integer NOT NULL,
     plate_number text NOT NULL,
     notes text NOT NULL,
-    created_at date DEFAULT now() NOT NULL,
-    updated_at date DEFAULT now() NOT NULL,
-    model integer,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
     status text DEFAULT 'operable'::text,
     body_number text NOT NULL,
     engine_number text NOT NULL,
@@ -172,14 +172,14 @@ CREATE TABLE public.taxis (
     mv_file_number text NOT NULL,
     private_number text NOT NULL,
     sticker text NOT NULL,
-    series text NOT NULL,
     acquired_at date DEFAULT now() NOT NULL,
     temporary_plate_number text,
     or_number text NOT NULL,
     or_issued_at date DEFAULT now() NOT NULL,
     case_number text NOT NULL,
     garage_id integer NOT NULL,
-    company_id integer NOT NULL
+    company_id integer NOT NULL,
+    series_id integer
 );
 COMMENT ON COLUMN public.taxis.cr_number IS 'certificate of registration';
 COMMENT ON COLUMN public.taxis.cr_issued_at IS 'certificate of registration date';
@@ -210,7 +210,7 @@ CREATE SEQUENCE public.users_id_seq
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 CREATE TABLE public.year_models (
     name text NOT NULL,
-    notes text NOT NULL,
+    notes text,
     created_at timestamp with time zone DEFAULT now(),
     updated_at timestamp with time zone DEFAULT now()
 );
@@ -227,9 +227,9 @@ ALTER TABLE ONLY public.taxis ALTER COLUMN id SET DEFAULT nextval('public.taxi_i
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 ALTER TABLE ONLY public.body_numbers
     ADD CONSTRAINT body_numbers_pkey PRIMARY KEY (number);
-ALTER TABLE ONLY public.cases
+ALTER TABLE ONLY public.case_numbers
     ADD CONSTRAINT cases_number_key UNIQUE (number);
-ALTER TABLE ONLY public.cases
+ALTER TABLE ONLY public.case_numbers
     ADD CONSTRAINT cases_pkey PRIMARY KEY (number);
 ALTER TABLE ONLY public.companies
     ADD CONSTRAINT companies_pkey PRIMARY KEY (id);
@@ -262,8 +262,6 @@ ALTER TABLE ONLY public.taxis
 ALTER TABLE ONLY public.taxis
     ADD CONSTRAINT taxis_body_number_key UNIQUE (body_number);
 ALTER TABLE ONLY public.taxis
-    ADD CONSTRAINT taxis_case_number_key UNIQUE (case_number);
-ALTER TABLE ONLY public.taxis
     ADD CONSTRAINT taxis_chassis_number_key UNIQUE (chassis_number);
 ALTER TABLE ONLY public.taxis
     ADD CONSTRAINT taxis_engine_number_key UNIQUE (engine_number);
@@ -277,3 +275,13 @@ CREATE TRIGGER set_public_garages_updated_at BEFORE UPDATE ON public.garages FOR
 COMMENT ON TRIGGER set_public_garages_updated_at ON public.garages IS 'trigger to set value of column "updated_at" to current timestamp on row update';
 CREATE TRIGGER set_public_year_models_updated_at BEFORE UPDATE ON public.year_models FOR EACH ROW EXECUTE PROCEDURE public.set_current_timestamp_updated_at();
 COMMENT ON TRIGGER set_public_year_models_updated_at ON public.year_models IS 'trigger to set value of column "updated_at" to current timestamp on row update';
+ALTER TABLE ONLY public.taxis
+    ADD CONSTRAINT taxis_body_number_fkey FOREIGN KEY (body_number) REFERENCES public.body_numbers(number) ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE ONLY public.taxis
+    ADD CONSTRAINT taxis_case_number_fkey FOREIGN KEY (case_number) REFERENCES public.case_numbers(number) ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE ONLY public.taxis
+    ADD CONSTRAINT taxis_company_id_fkey FOREIGN KEY (company_id) REFERENCES public.companies(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE ONLY public.taxis
+    ADD CONSTRAINT taxis_garage_id_fkey FOREIGN KEY (garage_id) REFERENCES public.garages(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE ONLY public.taxis
+    ADD CONSTRAINT taxis_series_id_fkey FOREIGN KEY (series_id) REFERENCES public.series(id) ON UPDATE CASCADE ON DELETE RESTRICT;

@@ -91,6 +91,34 @@
       insert_permissions: []
       object_relationships: []
       select_permissions: []
+      table: case_numbers
+      update_permissions: []
+    - array_relationships: []
+      delete_permissions: []
+      event_triggers: []
+      insert_permissions: []
+      object_relationships:
+      - comment: null
+        name: body
+        using:
+          foreign_key_constraint_on: body_number
+      - comment: null
+        name: case
+        using:
+          foreign_key_constraint_on: case_number
+      - comment: null
+        name: company
+        using:
+          foreign_key_constraint_on: company_id
+      - comment: null
+        name: garage
+        using:
+          foreign_key_constraint_on: garage_id
+      - comment: null
+        name: series
+        using:
+          foreign_key_constraint_on: series_id
+      select_permissions: []
       table: taxis
       update_permissions: []
     - array_relationships: []
@@ -100,14 +128,6 @@
       object_relationships: []
       select_permissions: []
       table: migrations
-      update_permissions: []
-    - array_relationships: []
-      delete_permissions: []
-      event_triggers: []
-      insert_permissions: []
-      object_relationships: []
-      select_permissions: []
-      table: cases
       update_permissions: []
     - array_relationships: []
       delete_permissions: []
