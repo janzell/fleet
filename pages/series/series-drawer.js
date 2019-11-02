@@ -5,7 +5,7 @@ import moment from 'moment';
 import {Form, Input, Button, Row, Col, Drawer} from 'antd';
 
 import {RequiredRule} from '../../lib/form-rules';
-import {ADD_SERIES, GET_SERIES_LIST, UPDATE_SERIES} from "./series-gql";
+import {ADD_SERIES, GET_SERIES_LIST, UPDATE_SERIES} from "./../../queries/series-gql";
 
 import {errorNotification, successNotification} from "../../hooks/use-notification";
 

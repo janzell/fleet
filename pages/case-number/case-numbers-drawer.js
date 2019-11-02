@@ -6,7 +6,7 @@ import {useEffect} from "react";
 import {Form, Input, Button, Row, Col, DatePicker, Drawer} from 'antd';
 
 import {RequiredRule} from '../../lib/form-rules';
-import {ADD_CASE_NUMBER, GET_CASE_NUMBER_LIST, UPDATE_CASE_NUMBER} from "./case-numbers-gql";
+import {ADD_CASE_NUMBER, GET_CASE_NUMBER_LIST, UPDATE_CASE_NUMBER} from "./../../queries/case-numbers-gql";
 
 import {errorNotification, successNotification} from '../../hooks/use-notification';
 

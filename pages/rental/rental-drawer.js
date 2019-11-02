@@ -1,6 +1,6 @@
 import {Form, Input, Row, Col, Modal} from 'antd';
 import {RequiredRule} from '../../lib/form-rules';
-import {ADD_DRIVER, UPDATE_DRIVER} from "./rental-gql";
+import {ADD_DRIVER, UPDATE_DRIVER} from "./../../queries/rental-gql";
 import {withApollo} from "react-apollo";
 
 const {TextArea} = Input;

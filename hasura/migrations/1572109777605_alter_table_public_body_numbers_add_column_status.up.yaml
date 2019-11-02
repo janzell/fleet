@@ -1,0 +1,4 @@
+- args:
+    sql: ALTER TABLE "public"."body_numbers" ADD COLUMN "status" body_number_status
+      NULL;
+  type: run_sql

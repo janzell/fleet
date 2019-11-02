@@ -1,16 +1,16 @@
 import {useEffect, useState} from 'react';
-import {Row, Table, Col, Icon, Input, PageHeader, Button} from 'antd';
+import {Row, Col, Icon, Input, PageHeader, Button} from 'antd';
 
 import MainLayout from '../../layout/main';
-import {Query} from 'react-apollo';
 import CaseNumberDrawer from './case-numbers-drawer';
 import DeleteConfirmationModal from '../../components/modal/delete-confirmation-modal';
 import {withApollo} from "react-apollo";
 
-import {GET_CASE_NUMBER_LIST, DELETE_CASE_NUMBER, GET_TOTAL_COUNT} from "./case-numbers-gql";
+import {GET_CASE_NUMBER_LIST, DELETE_CASE_NUMBER, GET_TOTAL_COUNT} from "./../../queries/case-numbers-gql";
 
 import {successNotification} from '../../hooks/use-notification'
 import useColumnFormatter from "../../hooks/table/use-column-formatter";
+import ResourceQueryList from "../../components/resource-query-list";
 
 const {Search} = Input;
 
@@ -105,22 +105,6 @@ const CaseNumberList = props => {
     onCancel: () => cancelModal()
   };
 
-  const CaseNumberList = (options) => (
-    <Query query={GET_CASE_NUMBER_LIST} variables={options} fetchPolicy="network-only">
-      {({data, loading, error}) => {
-        if (error) return `Error! )${error.message}`;
-        return (
-          <>
-            <Table loading={loading}
-                   pagination={{pageSize: 15, onChange: (page) => handlePaginate(page), total: totalCount}}
-                   rowKey="number"
-                   dataSource={(!loading && data.case_numbers) || []}
-                   columns={columns}/>
-          </>
-        )
-      }}
-    </Query>
-  );
 
   return (
     <MainLayout>
@@ -144,7 +128,14 @@ const CaseNumberList = props => {
               </Row>
             </PageHeader>
 
-            {CaseNumberList(listOptions)}
+            <ResourceQueryList {...{
+              columns,
+              query: GET_CASE_NUMBER_LIST,
+              listOptions,
+              handlePaginate,
+              totalCount,
+              resource: 'case_numbers'
+            }}/>
 
             <DeleteConfirmationModal visible={confirmVisibility}
                                      onOk={() => handleDelete()}

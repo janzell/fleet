@@ -5,7 +5,7 @@ import moment from 'moment';
 import {Form, Input, Button, Row, Col, Drawer} from 'antd';
 
 import {RequiredRule} from '../../lib/form-rules';
-import {ADD_BODY_NUMBER, GET_BODY_NUMBER_LIST, UPDATE_BODY_NUMBER} from "./body-numbers-gql";
+import {ADD_BODY_NUMBER, GET_BODY_NUMBER_LIST, UPDATE_BODY_NUMBER} from "./../../queries/body-numbers-gql";
 
 import {errorNotification, successNotification} from '../../hooks/use-notification';
 

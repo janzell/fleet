@@ -1,16 +1,16 @@
 import {useEffect, useState} from 'react';
-import {Row, Table, Col, Icon, Input, PageHeader, Button} from 'antd';
+import {Row, Col, Icon, Input, PageHeader, Button} from 'antd';
 
 import MainLayout from '../../layout/main';
-import {Query} from 'react-apollo';
 import DriverDrawer from './driver-drawer';
 import DeleteConfirmationModal from './../../components/modal/delete-confirmation-modal';
 import {withApollo} from "react-apollo";
 
-import {GET_DRIVERS_LIST, DELETE_DRIVER, GET_TOTAL_COUNT} from "./drivers-gql";
+import {GET_DRIVERS_LIST, DELETE_DRIVER, GET_TOTAL_COUNT} from "./../../queries/drivers-gql";
 
 import {successNotification} from '../../hooks/use-notification'
 import useColumnFormatter from "../../hooks/table/use-column-formatter";
+import ResourceQueryList from "../../components/resource-query-list";
 
 const {Search} = Input;
 
@@ -114,22 +114,6 @@ const DriverList = props => {
     onCancel: () => cancelModal()
   };
 
-  const DriversList = (options) => (
-    <Query query={GET_DRIVERS_LIST} variables={options} fetchPolicy="network-only">
-      {({data, loading, error}) => {
-        if (error) return `Error! )${error.message}`;
-        return (
-          <>
-            <Table loading={loading}
-                   pagination={{pageSize: 15, onChange: (page) => handlePaginate(page), total: totalCount}} rowKey="id"
-                   dataSource={(!loading && data.drivers) || []}
-                   columns={columns}/>
-          </>
-        )
-      }}
-    </Query>
-  );
-
   return (
     <MainLayout>
       <div className="page drivers">
@@ -152,7 +136,15 @@ const DriverList = props => {
               </Row>
             </PageHeader>
 
-            {DriversList(listOptions)}
+
+            <ResourceQueryList {...{
+              columns,
+              query: GET_DRIVERS_LIST,
+              listOptions,
+              handlePaginate,
+              totalCount,
+              resource: 'drivers'
+            }}/>
 
             <DeleteConfirmationModal visible={confirmVisibility}
                                      onOk={() => handleDelete()}

@@ -1,21 +1,20 @@
 import moment from 'moment';
 import {Form, Input, Select, DatePicker, Row, Col, Drawer, Button} from 'antd';
 
-import {withApollo, Query} from "react-apollo";
+import {withApollo} from "react-apollo";
 import {useEffect, useState} from "react";
 
 import {RequiredRule} from '../../lib/form-rules';
-import {ADD_TAXI, GET_TAXIS_LIST, UPDATE_TAXI} from "./taxi-gql";
-
-// TODO: TO BE TRANSFERRED INTO COMPONENTS
-import {ALL_BODY_NUMBERS} from './../body-number/body-numbers-gql';
-import {ALL_CASE_NUMBERS} from './../case-number/case-numbers-gql';
-import {ALL_GARAGE} from "../garage/garage-gql";
-import {ALL_COMPANIES} from '../company/company-gql';
-import {ALL_SERIES} from '../series/series-gql';
-import {ALL_YEAR_MODELS} from '../year-model/year-model-gql';
+import {ADD_TAXI, GET_TAXIS_LIST, UPDATE_TAXI} from "../../queries/taxi-gql";
 
 import {errorNotification, successNotification} from "../../hooks/use-notification";
+
+import CompanyList from '../../components/form/company-list';
+import GarageList from '../../components/form/garage-list';
+import SeriesList from '../../components/form/series-list';
+import YearModelList from '../../components/form/year-model-list';
+import CaseNumberList from '../../components/form/case-number-list';
+import BodyNumberList from '../../components/form/body-number-list';
 
 const {TextArea} = Input;
 const {Option} = Select;
@@ -63,142 +62,6 @@ const TaxiDrawer = props => {
     });
   };
 
-  // TODO: compose a new component
-  const CaseNumberList = (taxi) => {
-    return (
-      <Query query={ALL_CASE_NUMBERS}>
-        {({loading, error, data}) => {
-          if (error) return 'error';
-          if (loading) return 'loading';
-          return (
-            <Form.Item label="Case Number">
-              {getFieldDecorator('case_number', {rules: [...RequiredRule], initialValue: taxi.case_number})(
-                <Select showSearch={true}>
-                  {data.case_numbers.map((item, index) => (
-                    <Option key={index} value={item.number}>{item.number}</Option>
-                  ))}
-                </Select>
-              )}
-            </Form.Item>
-          )
-        }}
-      </Query>
-    )
-  };
-
-  // TODO: compose a new component
-  const BodyNumberList = (taxi) => {
-    return (
-      <Query query={ALL_BODY_NUMBERS}>
-        {({loading, error, data}) => {
-          if (error) return 'error';
-          if (loading) return 'loading';
-          return (
-            <Form.Item label="Body Number">
-              {getFieldDecorator('body_number', {rules: [...RequiredRule], initialValue: taxi.body_number})(
-                <Select showSearch={true}>
-                  {data.body_numbers.map((item, index) => (
-                    <Option key={index} value={item.number}>{item.number}</Option>
-                  ))}
-                </Select>
-              )}
-            </Form.Item>
-          )
-        }}
-      </Query>
-    )
-  };
-
-  const YearModelList = (taxi) => {
-    return (
-      <Query query={ALL_YEAR_MODELS}>
-        {({loading, error, data}) => {
-          if (error) return 'error';
-          if (loading) return 'loading';
-          return (
-            <Form.Item label="Year Model">
-              {getFieldDecorator('year_model', {rules: [...RequiredRule], initialValue: taxi.year_model})(
-                <Select showSearch={true}>
-                  {data.year_models.map((item, index) => (
-                    <Option key={index} value={item.name}>{item.name}</Option>
-                  ))}
-                </Select>
-              )}
-            </Form.Item>
-          )
-        }}
-      </Query>
-    )
-  };
-
-  const GarageList = (taxi) => {
-    return (
-      <Query query={ALL_GARAGE}>
-        {({loading, error, data}) => {
-          if (error) return 'error';
-          if (loading) return 'loading';
-          return (
-            <Form.Item label="Garage">
-              {getFieldDecorator('garage_id', {rules: [{required: true}], initialValue: taxi.garage_id})(
-                <Select showSearch={true}>
-                  {data.garages.map((item, index) => (
-                    <Option key={index} value={item.id}>{item.name}</Option>
-                  ))}
-                </Select>
-              )}
-            </Form.Item>
-          )
-        }}
-      </Query>
-    )
-  };
-
-
-  const CompanyList = (taxi) => {
-    return (
-      <Query query={ALL_COMPANIES}>
-        {({loading, error, data}) => {
-          if (error) return 'error';
-          if (loading) return 'loading';
-          return (
-            <Form.Item label="Company">
-              {getFieldDecorator('company_id', {rules: [{required: true}], initialValue: taxi.company_id})(
-                <Select showSearch={true}>
-                  {data.companies.map((item, index) => (
-                    <Option key={index} value={item.id}>{item.name}</Option>
-                  ))}
-                </Select>
-              )}
-            </Form.Item>
-          )
-        }}
-      </Query>
-    )
-  };
-
-
-  const SeriesList = (taxi) => {
-    return (
-      <Query query={ALL_SERIES}>
-        {({loading, error, data}) => {
-          if (error) return 'error';
-          if (loading) return 'loading';
-          return (
-            <Form.Item label="Series">
-              {getFieldDecorator('series_id', {rules: [{required: true}], initialValue: taxi.series_id})(
-                <Select showSearch={true}>
-                  {data.series.map((item, index) => (
-                    <Option key={index} value={item.id}>{item.name}</Option>
-                  ))}
-                </Select>
-              )}
-            </Form.Item>
-          )
-        }}
-      </Query>
-    )
-  };
-
   useEffect(() => {
     if (!visible) resetFields();
   }, [visible]);
@@ -214,10 +77,10 @@ const TaxiDrawer = props => {
       <Form className="ant-advanced-search-form" onSubmit={handleSave}>
         <Row gutter={6}>
           <Col lg={6}>
-            {BodyNumberList(taxi)}
+            <BodyNumberList {...props}/>
           </Col>
           <Col lg={6}>
-            {CaseNumberList(taxi)}
+            <CaseNumberList {...props}/>
           </Col>
           <Col lg={6}>
             <Form.Item label="Plate Number">
@@ -251,7 +114,7 @@ const TaxiDrawer = props => {
               })(
                 <Select>
                   <Option value="RENT_TO_OWN">RENT_TO_OWN</Option>
-                  <Option value="STRAIGTH">STRAIGTH</Option>
+                  <Option value="STRAIGHT">STRAIGHT</Option>
                   <Option value="24_HOURS">24_HOURS</Option>
                 </Select>
               )}
@@ -322,19 +185,19 @@ const TaxiDrawer = props => {
             </Form.Item>
           </Col>
           <Col lg={6}>
-            {YearModelList(taxi)}
+            <YearModelList {...props}/>
           </Col>
         </Row>
 
         <Row gutter={6}>
           <Col lg={6}>
-            {GarageList(taxi)}
+            <GarageList {...props}/>
           </Col>
           <Col lg={6}>
-            {CompanyList(taxi)}
+            <CompanyList {...props}/>
           </Col>
           <Col lg={6}>
-            {SeriesList(taxi)}
+            <SeriesList {...props}/>
           </Col>
         </Row>
         <Row gutter={12}>

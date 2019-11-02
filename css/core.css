@@ -352,7 +352,11 @@ a:active, a:hover {
 .ant-table-column-title {
     text-transform: capitalize;
 }
-.button-container { text-align: right; }
+
+.button-container {
+    text-align: right;
+}
+
 .button-container .ant-btn {
     margin-left: 10px;
 }

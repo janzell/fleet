@@ -5,7 +5,7 @@ import moment from 'moment';
 import {Form, Input, Button, Row, Col, Drawer} from 'antd';
 
 import {RequiredRule} from '../../lib/form-rules';
-import {ADD_YEAR_MODEL, GET_YEAR_MODEL_LIST, UPDATE_YEAR_MODEL} from "./year-model-gql";
+import {ADD_YEAR_MODEL, GET_YEAR_MODEL_LIST, UPDATE_YEAR_MODEL} from "./../../queries/year-model-gql";
 import {errorNotification, successNotification} from "../../hooks/use-notification";
 
 const {TextArea} = Input;
@@ -41,7 +41,11 @@ const YearModelDrawer = props => {
   };
 
   const mutateYearModel = async (mutation, variables) => {
-    return await client.mutate({mutation, variables, refetchQueries: [{query: GET_YEAR_MODEL_LIST, variables: listOptions}]});
+    return await client.mutate({
+      mutation,
+      variables,
+      refetchQueries: [{query: GET_YEAR_MODEL_LIST, variables: listOptions}]
+    });
   };
 
   useEffect(() => {

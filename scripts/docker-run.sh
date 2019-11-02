@@ -28,14 +28,14 @@ echo -e "\nConnecting to [LOCAL] postgres"
 echo -e "Connecting to database: postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@postgres/$POSTGRES_DB \n"
 
 echo "Docker container ID:"
-docker run -d -p 8080:8080 \
+docker run -d -p 8080:9001 \
        --name fleet-hasura \
        --link fleet-postgres:postgres \
        -e HASURA_GRAPHQL_DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@postgres/$POSTGRES_DB \
        -e HASURA_GRAPHQL_ENABLE_CONSOLE=true \
        -e HASURA_GRAPHQL_ENABLE_TELEMETRY=false \
        -e HASURA_GRAPHQL_CORS_DOMAIN="*" \
-       -e HASURA_GRAPHQL_ADMIN_SECRET=cleanfuel2019 \
+       -e HASURA_GRAPHQL_ADMIN_SECRET=fleet78!Cs \
        -e HASURA_GRAPHQL_JWT_SECRET="{\"type\":\"HS256\",\"key\":\"gKWxz7NlJlFvQfHjuGTG37s43IQzbizRSn7GooIhiw0bLdcBr7TqDANGf2pHUs0p\"}" \
        hasura/graphql-engine:v1.0.0-beta.2
 else
@@ -47,7 +47,7 @@ echo -e "postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/$POSTGRES_D
 #       -e HASURA_GRAPHQL_ACCESS_KEY=1qaz2wsx3edc \
 
 echo "Docker container ID:"
-docker run -d -p 8080:8080 \
+docker run -d -p 8080:9001 \
        --name fleet-hasura \
        -e HASURA_GRAPHQL_DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/$POSTGRES_DB \
        -e HASURA_GRAPHQL_ENABLE_CONSOLE=true \

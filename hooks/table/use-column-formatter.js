@@ -1,7 +1,7 @@
 import columnsTitleFormatter from "../../utils/table-columns-formatter";
 import {Divider, Icon} from "antd";
 
-export default function useColumnFormatter(fields, handleFormMode, showOrCancelConfirmModal, overrides =  []) {
+export default function useColumnFormatter(fields, handleFormMode, showOrCancelConfirmModal, overrides = []) {
   let overridesList = [{
     title: 'Actions',
     dataIndex: 'actions',

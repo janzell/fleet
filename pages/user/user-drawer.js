@@ -4,7 +4,7 @@ import moment from 'moment';
 import {Form, Button, Input, Row, Col, Drawer} from 'antd';
 
 import {RequiredRule} from '../../lib/form-rules';
-import {GET_USERS_LIST, UPDATE_USER, ADD_USER} from "./user-gql";
+import {GET_USERS_LIST, UPDATE_USER, ADD_USER} from "./../../queries/user-gql";
 
 import {errorNotification, successNotification} from "../../hooks/use-notification";
 
@@ -40,7 +40,11 @@ const UserDrawer = props => {
   };
 
   const mutateUser = async (mutation, variables) => {
-    return await client.mutate({mutation, variables, refetchQueries: [{query: GET_USERS_LIST, variables: listOptions}]});
+    return await client.mutate({
+      mutation,
+      variables,
+      refetchQueries: [{query: GET_USERS_LIST, variables: listOptions}]
+    });
   };
 
   useEffect(() => {

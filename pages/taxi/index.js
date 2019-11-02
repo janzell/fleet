@@ -1,18 +1,19 @@
 import {useEffect, useState} from 'react';
-import {Row, Table, Col, Icon, Input, Tag, PageHeader, Button} from 'antd';
+import {Row, Col, Icon, Input, Tag, PageHeader, Button} from 'antd';
 
 import MainLayout from '../../layout/main';
 
-import {Query} from 'react-apollo';
 import TaxiDrawer from './taxi-drawer';
 import {withApollo} from "react-apollo";
 
-import {GET_TAXIS_LIST, DELETE_TAXI, GET_TOTAL_COUNT} from "./taxi-gql";
+import {GET_TAXIS_LIST, DELETE_TAXI, GET_TOTAL_COUNT} from "./../../queries/taxi-gql";
 
 import DeleteConfirmationModal from "../../components/modal/delete-confirmation-modal";
-import useColumnFormatter from "../../hooks/table/use-column-formatter";
 
+import useColumnFormatter from "../../hooks/table/use-column-formatter";
 import {successNotification} from '../../hooks/use-notification'
+
+import ResourceQueryList from '../../components/resource-query-list';
 
 const {Search} = Input;
 
@@ -52,7 +53,7 @@ const TaxiList = props => {
     showDrawerVisibility(false);
   };
 
-  // todo: we can make this as custom hooks for deleting resource;
+  // delete a resource
   const handleDelete = async () => {
     await props.client.mutate({
       mutation: DELETE_TAXI,
@@ -66,8 +67,10 @@ const TaxiList = props => {
     successNotification('Taxi record has been deleted successfully');
   };
 
+  // pagination
   const handlePaginate = page => setListOptions({...listOptions, ...{offset: page * 15}});
 
+  // refresh result.
   const refreshResult = () => {
     const paramValue = {_ilike: `%${searchText}%`};
     const where = {
@@ -80,6 +83,7 @@ const TaxiList = props => {
     handleTotalCount(where);
   };
 
+  // table fields
   const fields = ['body_number', 'case_number', 'plate_number', 'acquired_at', 'engine_number', 'year_model', 'series.name', 'created_at', 'updated_at'];
   const columns = useColumnFormatter(fields, handleFormMode, showOrCancelConfirmModal, [{
     title: 'status',
@@ -95,7 +99,6 @@ const TaxiList = props => {
     }
   }]);
 
-  // Total Count
   const handleTotalCount = (where = null) => {
     const q = where != null ? {query: GET_TOTAL_COUNT, variables: {where}} : {query: GET_TOTAL_COUNT};
 
@@ -116,22 +119,6 @@ const TaxiList = props => {
     onCancel: () => cancelModal()
   };
 
-  const TaxisList = (options) => (
-    <Query query={GET_TAXIS_LIST} variables={options} fetchPolicy="network-only">
-      {({data, loading, error}) => {
-        if (error) return `Error! ${error.message}`;
-        return (
-          <>
-            <Table pagination={{pageSize: 15, onChange: (page) => handlePaginate(page), total: totalCount}}
-                   rowKey="id"
-                   expandedRowRender={record => <p style={{margin: 0}}><u>Notes:</u> {record.notes}</p>}
-                   dataSource={(!loading && data.taxis) || []}
-                   columns={columns}/>
-          </>
-        )
-      }}
-    </Query>
-  );
 
   return (
     <MainLayout>
@@ -154,7 +141,7 @@ const TaxiList = props => {
               </Row>
             </PageHeader>
 
-            {TaxisList(listOptions)}
+            <ResourceQueryList {...{columns, query: GET_TAXIS_LIST, listOptions, handlePaginate, totalCount, resource: 'taxis'}}/>
 
             <DeleteConfirmationModal visible={confirmVisibility}
                                      onOk={() => handleDelete()}

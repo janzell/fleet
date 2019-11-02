@@ -1,7 +1,7 @@
 import {Form, Input, Row, Button, Col, Drawer} from 'antd';
 
 import {RequiredRule} from '../../lib/form-rules';
-import {ADD_PART, UPDATE_PART, GET_PARTS_LIST} from "./parts-gql";
+import {ADD_PART, UPDATE_PART, GET_PARTS_LIST} from "./../../queries/parts-gql";
 
 import {withApollo} from "react-apollo";
 

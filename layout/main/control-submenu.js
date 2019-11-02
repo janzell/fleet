@@ -15,9 +15,9 @@ const items = [
 const ControlSubMenuList = (props) => {
   return (
     <SubMenu {...props}
-      key="control"
-      title={<span><Icon type="lock"/><span>Control</span></span>}>
-      {items.map( menu => {
+             key="control"
+             title={<span><Icon type="lock"/><span>Control</span></span>}>
+      {items.map(menu => {
           return (
             <Menu.Item key={menu.key}>
               <Icon type={menu.icon}/>

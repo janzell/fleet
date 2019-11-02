@@ -8,21 +8,22 @@ body {
     height: 65px;
     padding: 20px;
 }
+
 .logo h2 {
     color: #FFF;
 }
 
 .anticon-menu-fold,
-.anticon-menu-unfold{
+.anticon-menu-unfold {
     font-size: 20px;
     margin-left: 15px;
 }
+
 .ant-menu.ant-menu-dark .ant-menu-item-selected,
 .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected,
 .ant-menu-item-active,
 .ant-layout-sider-zero-width-trigger,
-.ant-layout-sider-zero-width-trigger:hover
-{
+.ant-layout-sider-zero-width-trigger:hover {
     background: #da566a;
 }
 

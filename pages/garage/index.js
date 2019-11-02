@@ -1,16 +1,16 @@
 import {useEffect, useState} from 'react';
-import {Row, Table, Col, Icon, Input, PageHeader, Button} from 'antd';
+import {Row, Col, Icon, Input, PageHeader, Button} from 'antd';
 
 import MainLayout from '../../layout/main';
-import {Query} from 'react-apollo';
 import GarageDrawer from './garage-drawer';
 import DeleteConfirmationModal from '../../components/modal/delete-confirmation-modal';
 import {withApollo} from "react-apollo";
 
-import {GET_GARAGE_LIST, DELETE_GARAGE, GET_TOTAL_COUNT} from "./garage-gql";
+import {GET_GARAGE_LIST, DELETE_GARAGE, GET_TOTAL_COUNT} from "./../../queries/garage-gql";
 
 import {successNotification} from '../../hooks/use-notification'
 import useColumnFormatter from "../../hooks/table/use-column-formatter";
+import ResourceQueryList from "../../components/resource-query-list";
 
 const {Search} = Input;
 
@@ -105,22 +105,6 @@ const GarageList = props => {
     onCancel: () => cancelModal()
   };
 
-  const GarageList = (options) => (
-    <Query query={GET_GARAGE_LIST} variables={options} fetchPolicy="network-only">
-      {({data, loading, error}) => {
-        if (error) return `Error! )${error.message}`;
-        return (
-          <>
-            <Table loading={loading}
-                   pagination={{pageSize: 15, onChange: (page) => handlePaginate(page), total: totalCount}} rowKey="id"
-                   dataSource={(!loading && data.garages) || []}
-                   columns={columns}/>
-          </>
-        )
-      }}
-    </Query>
-  );
-
   return (
     <MainLayout>
       <div className="page body-numbers">
@@ -143,7 +127,14 @@ const GarageList = props => {
               </Row>
             </PageHeader>
 
-            {GarageList(listOptions)}
+            <ResourceQueryList {...{
+              columns,
+              query: GET_GARAGE_LIST,
+              listOptions,
+              handlePaginate,
+              totalCount,
+              resource: 'garages'
+            }}/>
 
             <DeleteConfirmationModal visible={confirmVisibility}
                                      onOk={() => handleDelete()}

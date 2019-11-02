@@ -5,7 +5,7 @@ import moment from 'moment';
 import {Form, Input, Button, Row, Col, Drawer} from 'antd';
 
 import {RequiredRule} from '../../lib/form-rules';
-import {ADD_GARAGE, GET_GARAGE_LIST, UPDATE_GARAGE} from "./garage-gql";
+import {ADD_GARAGE, GET_GARAGE_LIST, UPDATE_GARAGE} from "./../../queries/garage-gql";
 
 import {errorNotification, successNotification} from "../../hooks/use-notification";
 

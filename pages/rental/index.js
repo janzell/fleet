@@ -2,7 +2,7 @@ import {useState} from 'react';
 import {Row, Modal, Table, Col, Icon, Input, Tag, Alert, PageHeader, Button, Divider} from 'antd';
 
 import MainLayout from '../../layout/main';
-import {DRIVERS_SUBSCRIPTION, DELETE_DRIVER} from "./rental-gql";
+import {DRIVERS_SUBSCRIPTION, DELETE_DRIVER} from "./../../queries/rental-gql";
 import {Subscription} from 'react-apollo';
 import RentalDrawer from './rental-drawer';
 import ConfirmModal from './../../components/confirm-modal';

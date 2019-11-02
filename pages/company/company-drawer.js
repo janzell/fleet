@@ -5,7 +5,7 @@ import {useEffect} from "react";
 import {Form, Input, Button, Row, Col, Drawer} from 'antd';
 
 import {RequiredRule} from '../../lib/form-rules';
-import {ADD_COMPANY, GET_COMPANIES_LIST, UPDATE_COMPANY} from "./company-gql";
+import {ADD_COMPANY, GET_COMPANIES_LIST, UPDATE_COMPANY} from "./../../queries/company-gql";
 import {errorNotification, successNotification} from "../../hooks/use-notification";
 
 const {TextArea} = Input;

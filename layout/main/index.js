@@ -6,7 +6,7 @@ import {Router} from '../../routes';
 const {Header, Sider, Content} = Layout;
 
 import TopBar from "./top-bar";
-import ControlSubMenuList from  './control-submenu';
+import ControlSubMenuList from './control-submenu';
 import FooterBlock from './footer';
 
 import './index.css';

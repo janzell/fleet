@@ -1,0 +1,4 @@
+- args:
+    cascade: false
+    sql: CREATE TYPE body_number_status AS ENUM ('assigned', 'unassigned');
+  type: run_sql

@@ -1,16 +1,16 @@
 import {useEffect, useState} from 'react';
-import {Row, Table, Col, Icon, Input, PageHeader, Button} from 'antd';
+import {Row, Col, Icon, Input, PageHeader, Button} from 'antd';
 
 import MainLayout from '../../layout/main';
-import {Query} from 'react-apollo';
 import CompanyDrawer from './company-drawer';
 import DeleteConfirmationModal from './../../components/modal/delete-confirmation-modal';
 import {withApollo} from "react-apollo";
 
-import {GET_COMPANIES_LIST, DELETE_COMPANY, GET_TOTAL_COUNT} from "./company-gql";
+import {GET_COMPANIES_LIST, DELETE_COMPANY, GET_TOTAL_COUNT} from "./../../queries/company-gql";
 
 import {successNotification} from '../../hooks/use-notification'
 import useColumnFormatter from "../../hooks/table/use-column-formatter";
+import ResourceQueryList from "../../components/resource-query-list";
 
 const {Search} = Input;
 
@@ -106,22 +106,6 @@ const CompanyList = props => {
     onCancel: () => cancelModal()
   };
 
-  const CompanysList = (options) => (
-    <Query query={GET_COMPANIES_LIST} variables={options} fetchPolicy="network-only">
-      {({data, loading, error}) => {
-        if (error) return `Error! )${error.message}`;
-        return (
-          <>
-            <Table loading={loading}
-                   pagination={{pageSize: 15, onChange: (page) => handlePaginate(page), total: totalCount}} rowKey="id"
-                   dataSource={(!loading && data.companies) || []}
-                   columns={columns}/>
-          </>
-        )
-      }}
-    </Query>
-  );
-
   return (
     <MainLayout>
       <div className="page companies">
@@ -144,11 +128,20 @@ const CompanyList = props => {
               </Row>
             </PageHeader>
 
-            {CompanysList(listOptions)}
 
-            <DeleteConfirmationModal visible={confirmVisibility}
-                                     onOk={() => handleDelete()}
-                                     onCancel={() => showOrCancelConfirmModal(false, null)}/>
+            <ResourceQueryList {...{
+              columns,
+              query: GET_COMPANIES_LIST,
+              listOptions,
+              handlePaginate,
+              totalCount,
+              resource: 'companies'
+            }}/>
+
+            <DeleteConfirmationModal
+              visible={confirmVisibility}
+              onOk={() => handleDelete()}
+              onCancel={() => showOrCancelConfirmModal(false, null)}/>
 
             <CompanyDrawer {...drawerProps}/>
           </div>

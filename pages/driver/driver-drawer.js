@@ -7,7 +7,7 @@ import {Form, Input, Button, Row, Col, notification, Drawer} from 'antd';
 import DriverUpload from './driver-upload';
 
 import {RequiredRule} from '../../lib/form-rules';
-import {ADD_DRIVER, GET_DRIVERS_LIST, UPDATE_DRIVER} from "./drivers-gql";
+import {ADD_DRIVER, GET_DRIVERS_LIST, UPDATE_DRIVER} from "./../../queries/drivers-gql";
 import {errorNotification, successNotification} from "../../hooks/use-notification";
 
 const {TextArea} = Input;

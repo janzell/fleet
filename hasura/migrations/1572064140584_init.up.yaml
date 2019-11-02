@@ -5,136 +5,136 @@
     query_templates: []
     remote_schemas: []
     tables:
-    - array_relationships: []
-      delete_permissions: []
-      event_triggers: []
-      insert_permissions: []
-      object_relationships: []
-      select_permissions: []
-      table: drivers
-      update_permissions: []
-    - array_relationships: []
-      delete_permissions: []
-      event_triggers: []
-      insert_permissions: []
-      object_relationships: []
-      select_permissions: []
-      table: sold_units
-      update_permissions: []
-    - array_relationships: []
-      delete_permissions: []
-      event_triggers: []
-      insert_permissions: []
-      object_relationships: []
-      select_permissions: []
-      table: rentals
-      update_permissions: []
-    - array_relationships: []
-      delete_permissions: []
-      event_triggers: []
-      insert_permissions: []
-      object_relationships: []
-      select_permissions: []
-      table: drop_units
-      update_permissions: []
-    - array_relationships: []
-      delete_permissions: []
-      event_triggers: []
-      insert_permissions: []
-      object_relationships: []
-      select_permissions: []
-      table: garages
-      update_permissions: []
-    - array_relationships: []
-      delete_permissions: []
-      event_triggers: []
-      insert_permissions: []
-      object_relationships: []
-      select_permissions: []
-      table: parts
-      update_permissions: []
-    - array_relationships: []
-      delete_permissions: []
-      event_triggers: []
-      insert_permissions: []
-      object_relationships: []
-      select_permissions: []
-      table: year_models
-      update_permissions: []
-    - array_relationships: []
-      delete_permissions: []
-      event_triggers: []
-      insert_permissions: []
-      object_relationships: []
-      select_permissions: []
-      table: companies
-      update_permissions: []
-    - array_relationships: []
-      delete_permissions: []
-      event_triggers: []
-      insert_permissions: []
-      object_relationships: []
-      select_permissions: []
-      table: users
-      update_permissions: []
-    - array_relationships: []
-      delete_permissions: []
-      event_triggers: []
-      insert_permissions: []
-      object_relationships: []
-      select_permissions: []
-      table: series
-      update_permissions: []
-    - array_relationships: []
-      delete_permissions: []
-      event_triggers: []
-      insert_permissions: []
-      object_relationships: []
-      select_permissions: []
-      table: case_numbers
-      update_permissions: []
-    - array_relationships: []
-      delete_permissions: []
-      event_triggers: []
-      insert_permissions: []
-      object_relationships:
-      - comment: null
-        name: body
-        using:
-          foreign_key_constraint_on: body_number
-      - comment: null
-        name: case
-        using:
-          foreign_key_constraint_on: case_number
-      - comment: null
-        name: company
-        using:
-          foreign_key_constraint_on: company_id
-      - comment: null
-        name: garage
-        using:
-          foreign_key_constraint_on: garage_id
-      - comment: null
-        name: series
-        using:
-          foreign_key_constraint_on: series_id
-      select_permissions: []
-      table: taxis
-      update_permissions: []
-    - array_relationships: []
-      delete_permissions: []
-      event_triggers: []
-      insert_permissions: []
-      object_relationships: []
-      select_permissions: []
-      table: migrations
-      update_permissions: []
-    - array_relationships: []
-      delete_permissions: []
-      event_triggers: []
-      insert_permissions: []
-      object_relationships: []
-      select_permissions: []
-      table: body_numbers
-      update_permissions: []
+      - array_relationships: []
+        delete_permissions: []
+        event_triggers: []
+        insert_permissions: []
+        object_relationships: []
+        select_permissions: []
+        table: drivers
+        update_permissions: []
+      - array_relationships: []
+        delete_permissions: []
+        event_triggers: []
+        insert_permissions: []
+        object_relationships: []
+        select_permissions: []
+        table: sold_units
+        update_permissions: []
+      - array_relationships: []
+        delete_permissions: []
+        event_triggers: []
+        insert_permissions: []
+        object_relationships: []
+        select_permissions: []
+        table: rentals
+        update_permissions: []
+      - array_relationships: []
+        delete_permissions: []
+        event_triggers: []
+        insert_permissions: []
+        object_relationships: []
+        select_permissions: []
+        table: drop_units
+        update_permissions: []
+      - array_relationships: []
+        delete_permissions: []
+        event_triggers: []
+        insert_permissions: []
+        object_relationships: []
+        select_permissions: []
+        table: garages
+        update_permissions: []
+      - array_relationships: []
+        delete_permissions: []
+        event_triggers: []
+        insert_permissions: []
+        object_relationships: []
+        select_permissions: []
+        table: parts
+        update_permissions: []
+      - array_relationships: []
+        delete_permissions: []
+        event_triggers: []
+        insert_permissions: []
+        object_relationships: []
+        select_permissions: []
+        table: year_models
+        update_permissions: []
+      - array_relationships: []
+        delete_permissions: []
+        event_triggers: []
+        insert_permissions: []
+        object_relationships: []
+        select_permissions: []
+        table: companies
+        update_permissions: []
+      - array_relationships: []
+        delete_permissions: []
+        event_triggers: []
+        insert_permissions: []
+        object_relationships: []
+        select_permissions: []
+        table: users
+        update_permissions: []
+      - array_relationships: []
+        delete_permissions: []
+        event_triggers: []
+        insert_permissions: []
+        object_relationships: []
+        select_permissions: []
+        table: series
+        update_permissions: []
+      - array_relationships: []
+        delete_permissions: []
+        event_triggers: []
+        insert_permissions: []
+        object_relationships: []
+        select_permissions: []
+        table: case_numbers
+        update_permissions: []
+      - array_relationships: []
+        delete_permissions: []
+        event_triggers: []
+        insert_permissions: []
+        object_relationships:
+          - comment: null
+            name: body
+            using:
+              foreign_key_constraint_on: body_number
+          - comment: null
+            name: case
+            using:
+              foreign_key_constraint_on: case_number
+          - comment: null
+            name: company
+            using:
+              foreign_key_constraint_on: company_id
+          - comment: null
+            name: garage
+            using:
+              foreign_key_constraint_on: garage_id
+          - comment: null
+            name: series
+            using:
+              foreign_key_constraint_on: series_id
+        select_permissions: []
+        table: taxis
+        update_permissions: []
+      - array_relationships: []
+        delete_permissions: []
+        event_triggers: []
+        insert_permissions: []
+        object_relationships: []
+        select_permissions: []
+        table: migrations
+        update_permissions: []
+      - array_relationships: []
+        delete_permissions: []
+        event_triggers: []
+        insert_permissions: []
+        object_relationships: []
+        select_permissions: []
+        table: body_numbers
+        update_permissions: []
   type: replace_metadata

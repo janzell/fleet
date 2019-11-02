@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {Row, Table, Col, Icon, Input, notification, PageHeader, Button, Divider} from 'antd';
 
 import MainLayout from '../../layout/main';
-import {DELETE_PART, GET_PARTS_LIST, GET_TOTAL_COUNT} from "./parts-gql";
+import {DELETE_PART, GET_PARTS_LIST, GET_TOTAL_COUNT} from "./../../queries/parts-gql";
 import {Query} from 'react-apollo';
 import PartDrawer from './parts-drawer';
 

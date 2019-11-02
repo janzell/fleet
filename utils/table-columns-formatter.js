@@ -1,6 +1,6 @@
 const columnsTitleFormatter = (titles, overrides) => {
   let formatted_fields = titles.map(v => {
-    let title = v.split('_').join(' ').split('.').join(' '); 
+    let title = v.split('_').join(' ').split('.').join(' ');
     return {title, dataIndex: v, key: v};
   });
 
