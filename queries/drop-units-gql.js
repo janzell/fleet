@@ -20,16 +20,6 @@ const dropUnitsFields = `id
         id
         name
     }
-    garage_id
-    garage {
-        id
-        name
-    }
-    company_id
-    company {
-        id
-        name
-    }
     mv_file_number
     private_number
     temporary_plate_number
@@ -39,7 +29,7 @@ const dropUnitsFields = `id
 
 const GET_DROP_UNITS_LIST = gql`
     query getDropUnitsList($limit: Int!, $offset: Int!, $order_by: [drop_units_order_by!], $where: drop_units_bool_exp) {
-        dropUnits(limit: $limit, offset: $offset, order_by: $order_by, where: $where) {
+        drop_units(limit: $limit, offset: $offset, order_by: $order_by, where: $where) {
             ${dropUnitsFields}
         }
     }`;

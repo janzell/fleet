@@ -1,0 +1,6 @@
+- args:
+    sql: ALTER TABLE "public"."drop_units" ADD COLUMN "garage_id" int4
+  type: run_sql
+- args:
+    sql: ALTER TABLE "public"."drop_units" ALTER COLUMN "garage_id" DROP NOT NULL
+  type: run_sql

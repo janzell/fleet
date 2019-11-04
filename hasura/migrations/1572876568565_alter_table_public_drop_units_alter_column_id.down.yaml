@@ -1,0 +1,12 @@
+- args:
+    sql: ALTER TABLE "public"."drop_units" ALTER COLUMN "id" TYPE integer;
+  type: run_sql
+- args:
+    sql: ALTER TABLE "public"."drop_units" ALTER COLUMN "id" DROP NOT NULL;
+  type: run_sql
+- args:
+    sql: ALTER TABLE "public"."drop_units" DROP CONSTRAINT "drop_units_id_key"
+  type: run_sql
+- args:
+    sql: COMMENT ON COLUMN "public"."drop_units"."id" IS E'null'
+  type: run_sql

@@ -1,0 +1,8 @@
+- args:
+    cascade: false
+    sql: "CREATE TABLE drop_units AS \nTABLE taxis \nWITH NO DATA;\n"
+  type: run_sql
+- args:
+    name: drop_units
+    schema: public
+  type: add_existing_table_or_view

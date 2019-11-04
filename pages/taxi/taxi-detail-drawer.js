@@ -1,10 +1,10 @@
-import {Row, Col, Button, Drawer, Typography} from 'antd';
+import {Descriptions, Divider, Button, Drawer, Typography} from 'antd';
 
 import DropUnitsList from './drop-units-list';
 import {formatTitle} from '../../hooks/use-column-formatter';
 
 
-const {Title, Text} = Typography;
+const {Title} = Typography;
 
 const TaxiDetailDrawer = (props) => {
 
@@ -27,27 +27,22 @@ const TaxiDetailDrawer = (props) => {
     'or_issued_at',
     'cr_number',
     'cr_issued_at',
-    'notes',
     'series_id',
     'mv_file_number',
     'private_number',
     'temporary_plate_number',
     'created_at',
     'updated_at',
+    'notes',
   ];
 
   const TaxiItems = (taxi) => {
     return (
-      <Row>
+      <Descriptions bordered size="small">
         {columns.map(key => {
-          return (
-            <Col key={key} span={8}>
-              <Text strong>{formatTitle(key)}</Text>
-              : {taxi[key]}
-            </Col>
-          )
+          return <Descriptions.Item key={key} label={formatTitle(key)}>{taxi[key]}</Descriptions.Item>
         })}
-      </Row>
+      </Descriptions>
     )
   };
 
@@ -63,11 +58,17 @@ const TaxiDetailDrawer = (props) => {
       <Title level={4}>Taxi Detail</Title>
 
       {TaxiItems(taxi)}
+      <Divider dashed />
 
       <Title level={4}>Assigned Driver</Title>
+      {TaxiItems(taxi)}
+
+      <Divider dashed />
 
       <Title level={4}>History</Title>
       <DropUnitsList taxi={taxi}/>
+
+      <Divider dashed />
 
       <div className="button-container">
         <Button onClick={onCancel}>Cancel</Button>

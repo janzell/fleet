@@ -10,6 +10,7 @@ const items = [
   {key: '/body-number', label: 'Body Numbers', icon: 'number', className: 'nav-text'},
   {key: '/garage', label: 'Garages', icon: 'car', className: 'nav-text'},
   {key: '/year-model', label: 'Year Models', icon: 'calendar', className: 'nav-text'},
+  {key: '/drop-units', label: 'Drop Units', icon: 'car', className: 'nav-text'},
 ];
 
 const ControlSubMenuList = (props) => {

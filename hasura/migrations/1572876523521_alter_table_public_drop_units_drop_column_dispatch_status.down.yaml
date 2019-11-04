@@ -1,0 +1,7 @@
+- args:
+    sql: ALTER TABLE "public"."drop_units" ADD COLUMN "dispatch_status" dispatch_status
+  type: run_sql
+- args:
+    sql: ALTER TABLE "public"."drop_units" ALTER COLUMN "dispatch_status" DROP NOT
+      NULL
+  type: run_sql

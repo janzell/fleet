@@ -1,0 +1,4 @@
+- args:
+    cascade: false
+    sql: CREATE TYPE dispatch_status AS ENUM ('run', 'drop', 'standby');
+  type: run_sql

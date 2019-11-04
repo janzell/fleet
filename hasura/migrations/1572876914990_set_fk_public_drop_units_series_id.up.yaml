@@ -1,0 +1,6 @@
+- args:
+    sql: "\n           alter table \"public\".\"drop_units\"\n           add constraint
+      \"drop_units_series_id_fkey\" \n           foreign key (\"series_id\") \n           references
+      \"public\".\"series\"\n           (\"id\") on update cascade on delete cascade;\n
+      \     "
+  type: run_sql

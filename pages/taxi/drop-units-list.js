@@ -2,7 +2,7 @@ import {Query} from 'react-apollo';
 import {useState} from 'react';
 import {Table} from 'antd';
 
-import {GET_TAXIS_LIST} from "../../queries/taxi-gql";
+import {GET_DROP_UNITS_LIST} from "../../queries/drop-units-gql";
 import {titlesFormatter} from '../../hooks/use-column-formatter';
 
 const DropUnitList = (props) => {
@@ -16,14 +16,14 @@ const DropUnitList = (props) => {
   const [totalCount, setTotalCount] = useState(0);
 
   const columns = titlesFormatter([
+    'body_number',
     'case_number',
     'plate_number',
     'acquired_at',
     'engine_number',
     'year_model',
     'series.name',
-    'created_at',
-    'updated_at'
+    'notes'
   ]);
 
 
@@ -34,14 +34,14 @@ const DropUnitList = (props) => {
   }
 
   return (
-    <Query query={GET_TAXIS_LIST} variables={listOptions} fetchPolicy="network-only">
+    <Query query={GET_DROP_UNITS_LIST} variables={listOptions} fetchPolicy="network-only">
       {({data, loading, error}) => {
         if (error) return `Error! ${error.message}`;
         return (
           <>
             <Table pagination={{pageSize: 15, onChange: (page) => handlePaginate(page), total: totalCount}}
                    rowKey="id"
-                   dataSource={(!loading && data.taxis) || []}
+                   dataSource={(!loading && data.drop_units) || []}
                    columns={columns}/>
           </>
         )

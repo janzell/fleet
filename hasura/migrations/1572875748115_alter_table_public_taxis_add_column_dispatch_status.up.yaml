@@ -1,0 +1,4 @@
+- args:
+    sql: ALTER TABLE "public"."taxis" ADD COLUMN "dispatch_status" dispatch_status
+      NOT NULL DEFAULT 'run';
+  type: run_sql
