@@ -9,7 +9,7 @@ import {withApollo} from "react-apollo";
 import {GET_SERIES_LIST, DELETE_SERIES, GET_TOTAL_COUNT} from "./../../queries/series-gql";
 
 import {successNotification} from '../../hooks/use-notification'
-import useColumnFormatter from "../../hooks/table/use-column-formatter";
+import {useColumnFormatter} from "../../hooks/use-column-formatter";
 import ResourceQueryList from "../../components/resource-query-list";
 
 const {Search} = Input;
@@ -22,8 +22,8 @@ const SeriesList = props => {
   const [mode, setMode] = useState('add');
   const [series, setSeries] = useState({});
 
-  const [drawerVisibility, showDrawerVisibility] = useState(false);
-  const [confirmVisibility, showConfirmVisibility] = useState(false);
+  const [drawerVisibility, setDrawerVisibility] = useState(false);
+  const [confirmVisibility, setConfirmModalVisibility] = useState(false);
 
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
@@ -33,18 +33,18 @@ const SeriesList = props => {
   const handleFormMode = series => {
     setMode('edit');
     setSeries(series);
-    showDrawerVisibility(true);
+    setDrawerVisibility(true);
   };
 
   const showOrCancelConfirmModal = (visible, series) => {
     setToBeDeletedId(series.id);
-    showConfirmVisibility(visible);
+    setConfirmModalVisibility(visible);
   };
 
-  const cancelModal = () => {
+  const cancelDrawer = () => {
     setMode('add');
     setSeries({});
-    showDrawerVisibility(false);
+    setDrawerVisibility(false);
   };
 
   // todo: we can make this as custom hooks for deleting resource;
@@ -101,8 +101,8 @@ const SeriesList = props => {
     series,
     mode,
     visible: drawerVisibility,
-    onOk: () => showDrawerVisibility(false),
-    onCancel: () => cancelModal()
+    onOk: () => setDrawerVisibility(false),
+    onCancel: () => cancelDrawer()
   };
 
 
@@ -117,7 +117,7 @@ const SeriesList = props => {
               </div>
               <Row className="mt-20">
                 <Col span={12}>
-                  <Button key="1" onClick={() => showDrawerVisibility(true)} type="primary"><Icon
+                  <Button key="1" onClick={() => setDrawerVisibility(true)} type="primary"><Icon
                     type="plus"/>Series</Button>
                 </Col>
                 <Col offset={4} span={8}>

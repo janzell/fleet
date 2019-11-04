@@ -10,10 +10,11 @@ import {GET_TAXIS_LIST, DELETE_TAXI, GET_TOTAL_COUNT} from "./../../queries/taxi
 
 import DeleteConfirmationModal from "../../components/modal/delete-confirmation-modal";
 
-import useColumnFormatter from "../../hooks/table/use-column-formatter";
 import {successNotification} from '../../hooks/use-notification'
 
 import ResourceQueryList from '../../components/resource-query-list';
+import TaxiDetailDrawer from "./taxi-detail-drawer";
+import useTaxiColumns from './use-tax-columns';
 
 const {Search} = Input;
 
@@ -24,8 +25,9 @@ const TaxiList = props => {
   const [mode, setMode] = useState('add');
   const [taxi, setTaxi] = useState({});
 
-  const [drawerVisibility, showDrawerVisibility] = useState(false);
-  const [confirmVisibility, showConfirmVisibility] = useState(false);
+  const [drawerVisibility, setDrawerVisibility] = useState(false);
+  const [detailDrawerVisibility, setDetailDrawerVisibility] = useState(false);
+  const [confirmVisibility, setConfirmModalVisibility] = useState(false);
 
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
@@ -34,23 +36,25 @@ const TaxiList = props => {
 
 
   // handle the edit/add mode
-  const handleFormMode = taxi => {
-    setMode('edit');
-    setTaxi(taxi);
-    showDrawerVisibility(true);
+  const handleFormMode = (record, view = 'edit') => {
+    setMode(view);
+    setTaxi(record);
+
+    (view === 'edit') ? setDrawerVisibility(true) : setDetailDrawerVisibility(true);
   };
 
   // show or cancel confirm modal
   const showOrCancelConfirmModal = (visible, taxi) => {
     setToBeDeletedId(taxi.id);
-    showConfirmVisibility(visible);
+    setConfirmModalVisibility(visible);
   };
 
+
   // cancel taxi modal
-  const cancelModal = () => {
+  const cancelDrawer = () => {
     setMode('add');
     setTaxi({});
-    showDrawerVisibility(false);
+    setDrawerVisibility(false);
   };
 
   // delete a resource
@@ -83,22 +87,11 @@ const TaxiList = props => {
     handleTotalCount(where);
   };
 
-  // table fields
-  const fields = ['body_number', 'case_number', 'plate_number', 'acquired_at', 'engine_number', 'year_model', 'series.name', 'created_at', 'updated_at'];
-  const columns = useColumnFormatter(fields, handleFormMode, showOrCancelConfirmModal, [{
-    title: 'status',
-    key: 'status',
-    dataIndex: 'status',
-    render: status => {
-      const color = (status === '24_HRS') ? 'blue' : 'green';
-      return (
-        <Tag color={color} key={status}>
-          {status.toUpperCase()}
-        </Tag>
-      )
-    }
-  }]);
 
+  // Table columns
+  const [columns] = useTaxiColumns({handleFormMode, showOrCancelConfirmModal});
+
+  // Record count.
   const handleTotalCount = (where = null) => {
     const q = where != null ? {query: GET_TOTAL_COUNT, variables: {where}} : {query: GET_TOTAL_COUNT};
 
@@ -106,8 +99,20 @@ const TaxiList = props => {
       .then(({data}) => setTotalCount(data.taxis_aggregate.aggregate.count));
   };
 
+  // Effects
   useEffect(() => refreshResult(), [searchText]);
   useEffect(() => handleTotalCount(), []);
+
+  const detailDrawerProps = {
+    title: 'Vehicle Information',
+    listOptions,
+    taxi,
+    mode,
+    visible: detailDrawerVisibility,
+    onOk: () => setDetailDrawerVisibility(false),
+    onCancel: () => setDetailDrawerVisibility(false)
+  };
+
 
   const drawerProps = {
     title: (mode === 'edit') ? 'Edit Taxi' : 'New Taxi',
@@ -115,10 +120,9 @@ const TaxiList = props => {
     taxi,
     mode,
     visible: drawerVisibility,
-    onOk: () => showDrawerVisibility(false),
-    onCancel: () => cancelModal()
+    onOk: () => setDrawerVisibility(false),
+    onCancel: () => cancelDrawer()
   };
-
 
   return (
     <MainLayout>
@@ -131,7 +135,7 @@ const TaxiList = props => {
               </div>
               <Row className="mt-20">
                 <Col span={12}>
-                  <Button key="1" onClick={() => showDrawerVisibility(true)} type="primary"><Icon
+                  <Button key="1" onClick={() => setDrawerVisibility(true)} type="primary"><Icon
                     type="plus"/>Taxi</Button>
                 </Col>
                 <Col offset={4} span={8}>
@@ -141,11 +145,20 @@ const TaxiList = props => {
               </Row>
             </PageHeader>
 
-            <ResourceQueryList {...{columns, query: GET_TAXIS_LIST, listOptions, handlePaginate, totalCount, resource: 'taxis'}}/>
+            <ResourceQueryList {...{
+              columns,
+              query: GET_TAXIS_LIST,
+              listOptions,
+              handlePaginate,
+              totalCount,
+              resource: 'taxis'
+            }}/>
 
             <DeleteConfirmationModal visible={confirmVisibility}
                                      onOk={() => handleDelete()}
                                      onCancel={() => showOrCancelConfirmModal(false, null)}/>
+
+            <TaxiDetailDrawer {...detailDrawerProps}/>
 
             <TaxiDrawer {...drawerProps}/>
           </div>

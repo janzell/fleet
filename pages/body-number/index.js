@@ -9,7 +9,7 @@ import {withApollo} from "react-apollo";
 import {GET_BODY_NUMBER_LIST, DELETE_BODY_NUMBER, GET_TOTAL_COUNT} from "./../../queries/body-numbers-gql";
 
 import {errorNotification, successNotification} from '../../hooks/use-notification'
-import useColumnFormatter from "../../hooks/table/use-column-formatter";
+import {useColumnFormatter} from "../../hooks/use-column-formatter";
 import ResourceQueryList from "../../components/resource-query-list";
 
 const {Search} = Input;
@@ -22,8 +22,8 @@ const BodyNumberList = props => {
   const [mode, setMode] = useState('add');
   const [bodyNumber, setBodyNumber] = useState({});
 
-  const [drawerVisibility, showDrawerVisibility] = useState(false);
-  const [confirmVisibility, showConfirmVisibility] = useState(false);
+  const [drawerVisibility, setDrawerVisibility] = useState(false);
+  const [confirmVisibility, setConfirmModalVisibility] = useState(false);
 
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
@@ -33,18 +33,18 @@ const BodyNumberList = props => {
   const handleFormMode = bodyNumber => {
     setMode('edit');
     setBodyNumber(bodyNumber);
-    showDrawerVisibility(true);
+    setDrawerVisibility(true);
   };
 
   const showOrCancelConfirmModal = (visible, record) => {
     setToBeDeletedId(record.number);
-    showConfirmVisibility(visible);
+    setConfirmModalVisibility(visible);
   };
 
-  const cancelModal = () => {
+  const cancelDrawer = () => {
     setMode('add');
     setBodyNumber({});
-    showDrawerVisibility(false);
+    setDrawerVisibility(false);
   };
 
   // TODO: new custom hook
@@ -108,8 +108,8 @@ const BodyNumberList = props => {
     bodyNumber,
     mode,
     visible: drawerVisibility,
-    onOk: () => showDrawerVisibility(false),
-    onCancel: () => cancelModal()
+    onOk: () => setDrawerVisibility(false),
+    onCancel: () => cancelDrawer()
   };
 
 
@@ -126,7 +126,7 @@ const BodyNumberList = props => {
               </div>
               <Row className="mt-20">
                 <Col span={12}>
-                  <Button key="1" onClick={() => showDrawerVisibility(true)} type="primary"><Icon
+                  <Button key="1" onClick={() => setDrawerVisibility(true)} type="primary"><Icon
                     type="plus"/>Body Number</Button>
                 </Col>
                 <Col offset={4} span={8}>

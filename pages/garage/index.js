@@ -9,7 +9,7 @@ import {withApollo} from "react-apollo";
 import {GET_GARAGE_LIST, DELETE_GARAGE, GET_TOTAL_COUNT} from "./../../queries/garage-gql";
 
 import {successNotification} from '../../hooks/use-notification'
-import useColumnFormatter from "../../hooks/table/use-column-formatter";
+import {useColumnFormatter} from "../../hooks/use-column-formatter";
 import ResourceQueryList from "../../components/resource-query-list";
 
 const {Search} = Input;
@@ -22,8 +22,8 @@ const GarageList = props => {
   const [mode, setMode] = useState('add');
   const [garage, setGarage] = useState({});
 
-  const [drawerVisibility, showDrawerVisibility] = useState(false);
-  const [confirmVisibility, showConfirmVisibility] = useState(false);
+  const [drawerVisibility, setDrawerVisibility] = useState(false);
+  const [confirmVisibility, setConfirmModalVisibility] = useState(false);
 
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
@@ -33,18 +33,18 @@ const GarageList = props => {
   const handleFormMode = garage => {
     setMode('edit');
     setGarage(garage);
-    showDrawerVisibility(true);
+    setDrawerVisibility(true);
   };
 
   const showOrCancelConfirmModal = (visible, garage) => {
     setToBeDeletedId(garage.id);
-    showConfirmVisibility(visible);
+    setConfirmModalVisibility(visible);
   };
 
-  const cancelModal = () => {
+  const cancelDrawer = () => {
     setMode('add');
     setGarage({});
-    showDrawerVisibility(false);
+    setDrawerVisibility(false);
   };
 
   // todo: we can make this as custom hooks for deleting resource;
@@ -101,8 +101,8 @@ const GarageList = props => {
     garage,
     mode,
     visible: drawerVisibility,
-    onOk: () => showDrawerVisibility(false),
-    onCancel: () => cancelModal()
+    onOk: () => setDrawerVisibility(false),
+    onCancel: () => cancelDrawer()
   };
 
   return (
@@ -118,7 +118,7 @@ const GarageList = props => {
               </div>
               <Row className="mt-20">
                 <Col span={12}>
-                  <Button key="1" onClick={() => showDrawerVisibility(true)} type="primary"><Icon
+                  <Button key="1" onClick={() => setDrawerVisibility(true)} type="primary"><Icon
                     type="plus"/>Garage</Button>
                 </Col>
                 <Col offset={4} span={8}>

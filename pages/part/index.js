@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {Row, Table, Col, Icon, Input, notification, PageHeader, Button, Divider} from 'antd';
+import {Row, Table, Col, Icon, Input, notification, PageHeader, Button} from 'antd';
 
 import MainLayout from '../../layout/main';
 import {DELETE_PART, GET_PARTS_LIST, GET_TOTAL_COUNT} from "./../../queries/parts-gql";
@@ -7,9 +7,8 @@ import {Query} from 'react-apollo';
 import PartDrawer from './parts-drawer';
 
 import {withApollo} from "react-apollo";
-import columnsTitleFormatter from "../../utils/table-columns-formatter";
 import DeleteConfirmationModal from "../../components/modal/delete-confirmation-modal";
-import useColumnFormatter from "../../hooks/table/use-column-formatter";
+import {useColumnFormatter} from "../../hooks/use-column-formatter";
 
 const {Search} = Input;
 
@@ -25,8 +24,8 @@ const PartList = props => {
   const [mode, setMode] = useState('add');
   const [part, setPart] = useState({});
 
-  const [drawerVisibility, showDrawerVisibility] = useState(false);
-  const [confirmVisibility, showConfirmVisibility] = useState(false);
+  const [drawerVisibility, setDrawerVisibility] = useState(false);
+  const [confirmVisibility, setConfirmModalVisibility] = useState(false);
 
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
@@ -45,18 +44,18 @@ const PartList = props => {
   const handleFormMode = part => {
     setMode('edit');
     setPart(part);
-    showDrawerVisibility(true);
+    setDrawerVisibility(true);
   };
 
   const showOrCancelConfirmModal = (visible, part) => {
     setToBeDeletedId(part.id);
-    showConfirmVisibility(visible);
+    setConfirmModalVisibility(visible);
   };
 
-  const cancelModal = () => {
+  const cancelDrawer = () => {
     setMode('add');
     setPart({});
-    showDrawerVisibility(false);
+    setDrawerVisibility(false);
   };
 
   // todo: we can make this as custom hooks for deleting resource;
@@ -115,8 +114,8 @@ const PartList = props => {
     part,
     mode,
     visible: drawerVisibility,
-    onOk: () => showDrawerVisibility(false),
-    onCancel: () => cancelModal()
+    onOk: () => setDrawerVisibility(false),
+    onCancel: () => cancelDrawer()
   };
 
   const PartsList = (options) => (
@@ -146,7 +145,7 @@ const PartList = props => {
               </div>
               <Row className="mt-20">
                 <Col span={12}>
-                  <Button key="1" onClick={() => showDrawerVisibility(true)} type="primary"><Icon
+                  <Button key="1" onClick={() => setDrawerVisibility(true)} type="primary"><Icon
                     type="plus"/>Part</Button>
                 </Col>
                 <Col offset={4} span={8}>

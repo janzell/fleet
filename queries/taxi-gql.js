@@ -5,7 +5,6 @@ const taxiFields = `id
     body_number
     engine_number
     case_number
-    acquired_at
     year_model
     status
     sticker
@@ -44,14 +43,6 @@ const GET_TAXIS_LIST = gql`
         }
     }`;
 
-const TAXIS_SUBSCRIPTION = gql`
-    subscription onTaxisAdded($limit: Int, $offset: Int, $order_by: [taxis_order_by!]) {
-        taxis(limit: $limit, offset: $offset, order_by: $order_by){
-            ${taxiFields}
-        }
-    }
-`;
-
 const ADD_TAXI = gql`
     mutation addTaxi($taxi: [taxis_insert_input!]!) {
         insert_taxis(objects: $taxi) {
@@ -89,4 +80,4 @@ const GET_TOTAL_COUNT = gql`
     }
 `;
 
-export {GET_TAXIS_LIST, GET_TOTAL_COUNT, DELETE_TAXI, UPDATE_TAXI, ADD_TAXI, TAXIS_SUBSCRIPTION};
+export {GET_TAXIS_LIST, GET_TOTAL_COUNT, DELETE_TAXI, UPDATE_TAXI, ADD_TAXI};

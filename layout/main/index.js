@@ -11,7 +11,6 @@ import FooterBlock from './footer';
 
 import './index.css';
 
-
 const headerStyles = {
   background: '#fff',
   padding: 0,
@@ -29,6 +28,7 @@ const layoutStyles = {
 
 const logoState = {
   width: 150,
+  color: '#FFFFFF',
   display: 'block',
 };
 
@@ -69,7 +69,7 @@ export default (props) => {
 
   const Logo = () => {
     return (
-      <div className="logo">
+      <div style={{height: '65px', padding: '20px'}}>
         <h2 style={logoStyles}>Fleet</h2>
         <p id="initialLogo" style={initialLogoStyles}>F</p>
       </div>

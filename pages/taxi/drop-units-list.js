@@ -3,33 +3,50 @@ import {useState} from 'react';
 import {Table} from 'antd';
 
 import {GET_TAXIS_LIST} from "../../queries/taxi-gql";
+import {titlesFormatter} from '../../hooks/use-column-formatter';
 
 const DropUnitList = (props) => {
 
-  const [listOptions, setListOptions] = useState();
+  const {taxi} = props;
+
+  const listOptionsDefault = {limit: 5, offset: 0, order_by: [{updated_at: 'desc'}, {created_at: 'desc'}]};
+
+
+  const [listOptions, setListOptions] = useState(listOptionsDefault);
   const [totalCount, setTotalCount] = useState(0);
 
-  const columns = {};
+  const columns = titlesFormatter([
+    'case_number',
+    'plate_number',
+    'acquired_at',
+    'engine_number',
+    'year_model',
+    'series.name',
+    'created_at',
+    'updated_at'
+  ]);
 
+
+  console.log(columns);
 
   function handlePaginate(page) {
+
   }
 
   return (
     <Query query={GET_TAXIS_LIST} variables={listOptions} fetchPolicy="network-only">
-    {({data, loading, error}) => {
-      if (error) return `Error! ${error.message}`;
-      return (
-        <>
-          <Table pagination={{pageSize: 15, onChange: (page) => handlePaginate(page), total: totalCount}}
-                 rowKey="id"
-                 expandedRowRender={record => <p style={{margin: 0}}><u>Notes:</u> {record.notes}</p>}
-                 dataSource={(!loading && data.taxis) || []}
-                 columns={columns}/>
-        </>
-      )
-    }}
-  </Query>
+      {({data, loading, error}) => {
+        if (error) return `Error! ${error.message}`;
+        return (
+          <>
+            <Table pagination={{pageSize: 15, onChange: (page) => handlePaginate(page), total: totalCount}}
+                   rowKey="id"
+                   dataSource={(!loading && data.taxis) || []}
+                   columns={columns}/>
+          </>
+        )
+      }}
+    </Query>
   )
 };
 

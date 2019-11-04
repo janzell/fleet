@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {Row,  Col, Icon, Input, PageHeader, Button} from 'antd';
+import {Row, Col, Icon, Input, PageHeader, Button} from 'antd';
 
 import MainLayout from '../../layout/main';
 import {GET_USERS_LIST, DELETE_USER, GET_TOTAL_COUNT} from "./../../queries/user-gql";
@@ -8,7 +8,7 @@ import UserDrawer from './user-drawer';
 
 import {withApollo} from "react-apollo";
 import DeleteConfirmationModal from "../../components/modal/delete-confirmation-modal";
-import useColumnFormatter from "../../hooks/table/use-column-formatter";
+import {useColumnFormatter} from "../../hooks/use-column-formatter";
 import {successNotification} from "../../hooks/use-notification";
 import ResourceQueryList from "../../components/resource-query-list";
 
@@ -23,8 +23,8 @@ const UserList = props => {
   const [mode, setMode] = useState('add');
   const [user, setUser] = useState({});
 
-  const [drawerVisibility, showDrawerVisibility] = useState(false);
-  const [confirmVisibility, showConfirmVisibility] = useState(false);
+  const [drawerVisibility, setDrawerVisibility] = useState(false);
+  const [confirmVisibility, setConfirmModalVisibility] = useState(false);
 
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
@@ -34,18 +34,18 @@ const UserList = props => {
   const handleFormMode = user => {
     setMode('edit');
     setUser(user);
-    showDrawerVisibility(true);
+    setDrawerVisibility(true);
   };
 
   const showOrCancelConfirmModal = (visible, user) => {
     setToBeDeletedId(user.id);
-    showConfirmVisibility(visible);
+    setConfirmModalVisibility(visible);
   };
 
-  const cancelModal = () => {
+  const cancelDrawer = () => {
     setMode('add');
     setUser({});
-    showDrawerVisibility(false);
+    setDrawerVisibility(false);
   };
 
   const handleDelete = async () => {
@@ -93,8 +93,8 @@ const UserList = props => {
     user,
     mode,
     visible: drawerVisibility,
-    onOk: () => showDrawerVisibility(false),
-    onCancel: () => cancelModal()
+    onOk: () => setDrawerVisibility(false),
+    onCancel: () => cancelDrawer()
   };
 
 
@@ -112,7 +112,7 @@ const UserList = props => {
               </div>
               <Row className="mt-20">
                 <Col span={12}>
-                  <Button key="1" onClick={() => showDrawerVisibility(true)} type="primary"><Icon
+                  <Button key="1" onClick={() => setDrawerVisibility(true)} type="primary"><Icon
                     type="plus"/>User</Button>
                 </Col>
                 <Col offset={4} span={8}>

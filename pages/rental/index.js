@@ -15,8 +15,8 @@ const DriverList = props => {
   // States
   const [mode, setMode] = useState('add');
   const [rental, setDriver] = useState({});
-  const [drawerVisibility, showDrawerVisibility] = useState(false);
-  const [confirmVisibility, showConfirmVisibility] = useState(false);
+  const [drawerVisibility, setDrawerVisibility] = useState(false);
+  const [confirmVisibility, setConfirmModalVisibility] = useState(false);
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
 
   // Methods
@@ -24,18 +24,18 @@ const DriverList = props => {
     console.log(rental, 'rental');
     setMode('edit');
     setDriver(rental);
-    showDrawerVisibility(true);
+    setDrawerVisibility(true);
   };
 
   const showOrCancelConfirmModal = (visible, id) => {
     setToBeDeletedId(id);
-    showConfirmVisibility(visible);
+    setConfirmModalVisibility(visible);
   };
 
   const cancelDriverModal = () => {
     setMode('add');
     setDriver({});
-    showDrawerVisibility(false);
+    setDrawerVisibility(false);
   };
 
   const handleDelete = async () => {
@@ -123,7 +123,7 @@ const DriverList = props => {
               </div>
               <Row className="mt-20">
                 <Col span={12}>
-                  <Button key="1" onClick={() => showDrawerVisibility(true)} type="primary"><Icon
+                  <Button key="1" onClick={() => setDrawerVisibility(true)} type="primary"><Icon
                     type="plus"/>Rental</Button>
                 </Col>
                 <Col offset={4} span={8}>
@@ -146,7 +146,7 @@ const DriverList = props => {
             />
 
             <RentalDrawer rental={rental} mode={mode} visible={drawerVisibility}
-                          onOk={() => showDrawerVisibility(false)}
+                          onOk={() => setDrawerVisibility(false)}
                           onCancel={() => cancelDriverModal()}/>
           </div>
         </Row>

@@ -4,15 +4,6 @@ body {
     background: #f0f2f5;
 }
 
-.logo {
-    height: 65px;
-    padding: 20px;
-}
-
-.logo h2 {
-    color: #FFF;
-}
-
 .anticon-menu-fold,
 .anticon-menu-unfold {
     font-size: 20px;

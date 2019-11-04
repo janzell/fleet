@@ -1,8 +1,8 @@
 @import '~antd/dist/antd.css';
-@import 'https://fonts.googleapis.com/css?family=Poppins&display=swap';
+@import 'https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap';
 
 html, body {
-    font-family: Poppins, sans-serif;
+    font-family: Poppins, 'PT Mono', Arial, sans-serif;
     height: 100%;
     margin: 0;
     background: #edf2f6;

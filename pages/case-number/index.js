@@ -9,7 +9,7 @@ import {withApollo} from "react-apollo";
 import {GET_CASE_NUMBER_LIST, DELETE_CASE_NUMBER, GET_TOTAL_COUNT} from "./../../queries/case-numbers-gql";
 
 import {successNotification} from '../../hooks/use-notification'
-import useColumnFormatter from "../../hooks/table/use-column-formatter";
+import {useColumnFormatter} from "../../hooks/use-column-formatter";
 import ResourceQueryList from "../../components/resource-query-list";
 
 const {Search} = Input;
@@ -22,8 +22,8 @@ const CaseNumberList = props => {
   const [mode, setMode] = useState('add');
   const [caseNumber, setCaseNumber] = useState({});
 
-  const [drawerVisibility, showDrawerVisibility] = useState(false);
-  const [confirmVisibility, showConfirmVisibility] = useState(false);
+  const [drawerVisibility, setDrawerVisibility] = useState(false);
+  const [confirmVisibility, setConfirmModalVisibility] = useState(false);
 
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
@@ -33,18 +33,18 @@ const CaseNumberList = props => {
   const handleFormMode = caseNumber => {
     setMode('edit');
     setCaseNumber(caseNumber);
-    showDrawerVisibility(true);
+    setDrawerVisibility(true);
   };
 
   const showOrCancelConfirmModal = (visible, id) => {
     setToBeDeletedId(id);
-    showConfirmVisibility(visible);
+    setConfirmModalVisibility(visible);
   };
 
-  const cancelModal = () => {
+  const cancelDrawer = () => {
     setMode('add');
     setCaseNumber({});
-    showDrawerVisibility(false);
+    setDrawerVisibility(false);
   };
 
   // todo: we can make this as custom hooks for deleting resource;
@@ -101,8 +101,8 @@ const CaseNumberList = props => {
     caseNumber,
     mode,
     visible: drawerVisibility,
-    onOk: () => showDrawerVisibility(false),
-    onCancel: () => cancelModal()
+    onOk: () => setDrawerVisibility(false),
+    onCancel: () => cancelDrawer()
   };
 
 
@@ -119,7 +119,7 @@ const CaseNumberList = props => {
               </div>
               <Row className="mt-20">
                 <Col span={12}>
-                  <Button key="1" onClick={() => showDrawerVisibility(true)} type="primary"><Icon
+                  <Button key="1" onClick={() => setDrawerVisibility(true)} type="primary"><Icon
                     type="plus"/>Case Number</Button>
                 </Col>
                 <Col offset={4} span={8}>
