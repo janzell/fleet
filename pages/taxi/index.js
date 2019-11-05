@@ -93,15 +93,17 @@ const TaxiList = props => {
 
   // Record count.
   const handleTotalCount = (where = null) => {
-    const q = where != null ? {query: GET_TOTAL_COUNT, variables: {where}} : {query: GET_TOTAL_COUNT};
 
-    props.client.query(q)
-      .then(({data}) => setTotalCount(data.taxis_aggregate.aggregate.count));
+    const q = where != null ? {query: GET_TOTAL_COUNT, variables: {where}} : {query: GET_TOTAL_COUNT};
+    console.log(q);
+    props.client.query(q).then(({data}) => {
+      console.log(data);
+      setTotalCount(data.taxis_aggregate.aggregate.count);
+    });
   };
 
   // Effects
   useEffect(() => refreshResult(), [searchText]);
-  useEffect(() => handleTotalCount(), []);
 
   const detailDrawerProps = {
     title: 'Vehicle Information',

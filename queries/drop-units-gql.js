@@ -62,8 +62,8 @@ const UPDATE_DROP_UNIT = gql`
     }`;
 
 const GET_TOTAL_COUNT = gql`
-    {
-        drop_units_aggregate {
+    query getTotalCount($where:drop_units_bool_exp) {
+        drop_units_aggregate(where: $where){
             aggregate {
                 count
             }

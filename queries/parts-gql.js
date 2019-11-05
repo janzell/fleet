@@ -53,8 +53,8 @@ const UPDATE_PART = gql`
     }`;
 
 const GET_TOTAL_COUNT = gql`
-    {
-        parts_aggregate {
+    query getTotalCount($where:parts_bool_exp) {
+        parts_aggregate(where: $where){
             aggregate {
                 count
             }

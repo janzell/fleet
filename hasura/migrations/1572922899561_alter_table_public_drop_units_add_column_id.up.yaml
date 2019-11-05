@@ -1,0 +1,3 @@
+- args:
+    sql: ALTER TABLE "public"."drop_units" ADD COLUMN "id" serial NOT NULL;
+  type: run_sql

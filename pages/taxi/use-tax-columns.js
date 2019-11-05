@@ -10,19 +10,38 @@ const useTaxiColumns = ({handleFormMode, showOrCancelConfirmModal}) => {
     'acquired_at',
     'engine_number',
     'year_model',
-    'series.name',
-    'created_at',
-    'updated_at'
+    'series.name'
   ];
+
+  const dispatchStatusColor = {
+    run: 'green',
+    standby: 'blue'
+  };
+
+  const rentalStatusColor = {
+    '24_HRS': '#87d068',
+    'STRAIGHT': '#2db7f5',
+    'RENT_TO_OWN': '#108ee9'
+  };
 
   const columns = useColumnFormatter(fields, handleFormMode, showOrCancelConfirmModal, [{
     title: 'status',
     key: 'status',
     dataIndex: 'status',
     render: status => {
-      const color = (status === '24_HRS') ? 'blue' : 'green';
       return (
-        <Tag color={color} key={status}>
+        <Tag color={rentalStatusColor[status]} key={status}>
+          {status.toUpperCase()}
+        </Tag>
+      )
+    }
+  }, {
+    title: 'Dispatch Status',
+    key: 'dispatch_status',
+    dataIndex: 'dispatch_status',
+    render: status => {
+      return (
+        <Tag color={dispatchStatusColor[status]} key={status}>
           {status.toUpperCase()}
         </Tag>
       )

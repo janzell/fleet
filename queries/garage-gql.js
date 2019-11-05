@@ -58,8 +58,8 @@ const UPDATE_GARAGE = gql`
     }`;
 
 const GET_TOTAL_COUNT = gql`
-    {
-        garages_aggregate {
+    query getTotalCount($where:garages_bool_exp) {
+        garages_aggregate(where: $where){
             aggregate {
                 count
             }

@@ -61,7 +61,7 @@ const TaxiDetailDrawer = (props) => {
       <Divider dashed />
 
       <Title level={4}>Assigned Driver</Title>
-      {TaxiItems(taxi)}
+      {/*{TaxiItems(taxi)}*/}
 
       <Divider dashed />
 

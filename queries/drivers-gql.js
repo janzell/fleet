@@ -53,8 +53,8 @@ const UPDATE_DRIVER = gql`
     }`;
 
 const GET_TOTAL_COUNT = gql`
-    {
-        drivers_aggregate {
+    query getTotalCount($where:drivers_bool_exp) {
+        drivers_aggregate(where: $where){
             aggregate {
                 count
             }

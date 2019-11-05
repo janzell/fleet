@@ -7,6 +7,7 @@ const taxiFields = `id
     case_number
     year_model
     status
+    dispatch_status,
     sticker
     acquired_at
     or_number
@@ -71,13 +72,14 @@ const UPDATE_TAXI = gql`
     }`;
 
 const GET_TOTAL_COUNT = gql`
-    {
-        taxis_aggregate {
+    query getTotalCount($where:taxis_bool_exp) {
+        taxis_aggregate(where: $where){
             aggregate {
                 count
             }
         }
     }
+    
 `;
 
 export {GET_TAXIS_LIST, GET_TOTAL_COUNT, DELETE_TAXI, UPDATE_TAXI, ADD_TAXI};

@@ -53,8 +53,8 @@ const UPDATE_USER = gql`
     }`;
 
 const GET_TOTAL_COUNT = gql`
-    {
-        users_aggregate {
+    query getTotalCount($where:users_bool_exp) {
+        users_aggregate(where: $where){
             aggregate {
                 count
             }

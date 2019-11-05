@@ -9,7 +9,12 @@ const DropUnitList = (props) => {
 
   const {taxi} = props;
 
-  const listOptionsDefault = {limit: 5, offset: 0, order_by: [{updated_at: 'desc'}, {created_at: 'desc'}]};
+  const listOptionsDefault = {
+    where: {body_number: {_eq: taxi.body_number}},
+    limit: 5,
+    offset: 0,
+    order_by: [{updated_at: 'desc'}, {created_at: 'desc'}]
+  };
 
 
   const [listOptions, setListOptions] = useState(listOptionsDefault);
@@ -25,9 +30,6 @@ const DropUnitList = (props) => {
     'series.name',
     'notes'
   ]);
-
-
-  console.log(columns);
 
   function handlePaginate(page) {
 

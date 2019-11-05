@@ -58,8 +58,8 @@ const UPDATE_BODY_NUMBER = gql`
     }`;
 
 const GET_TOTAL_COUNT = gql`
-    {
-        body_numbers_aggregate {
+    query getTotalCount($where:body_numbers_bool_exp) {
+        body_numbers_aggregate(where: $where){
             aggregate {
                 count
             }

@@ -1,0 +1,11 @@
+- args:
+    sql: ALTER TABLE "public"."drop_units" ALTER COLUMN "created_at" TYPE timestamp
+      without time zone;
+  type: run_sql
+- args:
+    sql: ALTER TABLE ONLY "public"."drop_units" ALTER COLUMN "created_at" SET DEFAULT
+      now();
+  type: run_sql
+- args:
+    sql: COMMENT ON COLUMN "public"."drop_units"."created_at" IS E'null'
+  type: run_sql

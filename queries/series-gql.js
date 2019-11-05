@@ -58,8 +58,8 @@ const UPDATE_SERIES = gql`
     }`;
 
 const GET_TOTAL_COUNT = gql`
-    {
-        series_aggregate {
+    query getTotalCount($where:series_bool_exp) {
+        series_aggregate(where: $where){
             aggregate {
                 count
             }

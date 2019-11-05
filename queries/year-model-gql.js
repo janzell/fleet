@@ -60,8 +60,8 @@ const UPDATE_YEAR_MODEL = gql`
     }`;
 
 const GET_TOTAL_COUNT = gql`
-    {
-        year_models_aggregate {
+    query getTotalCount($where:year_models_bool_exp) {
+        year_models_aggregate(where: $where){
             aggregate {
                 count
             }

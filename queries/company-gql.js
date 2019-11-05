@@ -58,8 +58,8 @@ const UPDATE_COMPANY = gql`
     }`;
 
 const GET_TOTAL_COUNT = gql`
-    {
-        companies_aggregate {
+    query getTotalCount($where:companies_bool_exp) {
+        companies_aggregate(where: $where){
             aggregate {
                 count
             }

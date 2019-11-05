@@ -59,14 +59,13 @@ const UPDATE_CASE_NUMBER = gql`
     }`;
 
 const GET_TOTAL_COUNT = gql`
-    {
-        case_numbers_aggregate {
+    query getTotalCount($where:case_numbers_bool_exp) {
+        case_numbers_aggregate(where: $where){
             aggregate {
                 count
             }
         }
-    }
-`;
+    }`;
 
 export {
   GET_CASE_NUMBER_LIST,
