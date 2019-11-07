@@ -1,0 +1,3 @@
+- args:
+    sql: DROP TABLE "public"."drivers_other_info"
+  type: run_sql

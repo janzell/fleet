@@ -1,0 +1,5 @@
+- args:
+    cascade: false
+    sql: CREATE TYPE employment_status AS ENUM ('active', 'resigned', 're-apply',
+      'awol');
+  type: run_sql

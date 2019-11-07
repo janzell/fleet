@@ -18,6 +18,28 @@ const titlesFormatter = (titles, overrides) => {
   return (overrides) ? formatted_fields.concat(overrides) : formatted_fields;
 };
 
+const ViewAction = (handleFormMode, record) => {
+  return (
+    <>
+      <a href="javascript:;" onClick={() => handleFormMode(record, 'view')}><Icon type="eye"/></a>
+      <Divider type="vertical"/>
+    </>
+  )
+};
+
+const EditAction = (handleFormMode, record) => {
+  return (
+    <>
+      <a href="javascript:;" onClick={() => handleFormMode(record)}><Icon type="edit"/></a>
+      <Divider type="vertical"/>
+    </>
+  )
+};
+
+const DeleteAction = (showOrCancelConfirmModal, record) => {
+  return (<a href="javascript:;" onClick={() => showOrCancelConfirmModal(true, record)}><Icon type="delete"/></a>);
+};
+
 /**
  * Table column formatter
  * @param fields
@@ -28,21 +50,21 @@ const titlesFormatter = (titles, overrides) => {
  */
 const useColumnFormatter = (fields, handleFormMode, showOrCancelConfirmModal, overrides = []) => {
 
-  let overridesList = [{
-    title: 'Actions',
-    dataIndex: 'actions',
-    width: 110,
-    key: 'actions',
-    render: (text, record) => (
-      <span>
-        <a href="javascript:;" onClick={() => handleFormMode(record, 'view')}><Icon type="eye"/></a>
-        <Divider type="vertical"/>
-        <a href="javascript:;" onClick={() => handleFormMode(record)}><Icon type="edit"/></a>
-        <Divider type="vertical"/>
-        <a href="javascript:;" onClick={() => showOrCancelConfirmModal(true, record)}><Icon type="delete"/></a>
-      </span>
-    )
-  }];
+  let overridesList = (handleFormMode && showOrCancelConfirmModal)
+    ? [{
+      title: 'Actions',
+      dataIndex: 'actions',
+      width: 110,
+      key: 'actions',
+      render: (text, record) => (
+        <span>
+          {handleFormMode && ViewAction(handleFormMode, record)}
+          {handleFormMode && EditAction(handleFormMode, record)}
+          {showOrCancelConfirmModal && DeleteAction(showOrCancelConfirmModal, record)}
+        </span>
+      )
+    }]
+    : [];
 
   // Merge the additional overrides.
   if (overrides) {

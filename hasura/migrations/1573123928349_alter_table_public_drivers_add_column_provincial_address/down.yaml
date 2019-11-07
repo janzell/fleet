@@ -1,0 +1,3 @@
+- args:
+    sql: ALTER TABLE "public"."drivers" DROP COLUMN "provincial_address";
+  type: run_sql

@@ -1,0 +1,4 @@
+- args:
+    cascade: false
+    sql: CREATE TYPE gender AS ENUM ('male', 'female');
+  type: run_sql

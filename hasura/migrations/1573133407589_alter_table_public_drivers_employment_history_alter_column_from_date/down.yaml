@@ -1,0 +1,7 @@
+- args:
+    sql: COMMENT ON COLUMN "public"."drivers_employment_history"."from_date" IS E'null'
+  type: run_sql
+- args:
+    sql: alter table "public"."drivers_employment_history" rename column "start_date"
+      to "from_date";
+  type: run_sql

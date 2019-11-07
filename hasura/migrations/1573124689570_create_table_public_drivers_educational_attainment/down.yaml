@@ -1,0 +1,3 @@
+- args:
+    sql: DROP TABLE "public"."drivers_educational_attainment"
+  type: run_sql

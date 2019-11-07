@@ -1,0 +1,4 @@
+- args:
+    sql: ALTER TABLE "public"."drivers_other_info" ADD COLUMN "driver_id" integer
+      NULL;
+  type: run_sql

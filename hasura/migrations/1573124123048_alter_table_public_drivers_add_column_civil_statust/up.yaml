@@ -1,0 +1,4 @@
+- args:
+    sql: ALTER TABLE "public"."drivers" ADD COLUMN "civil_statust" civil_status NULL
+      DEFAULT 'single';
+  type: run_sql
