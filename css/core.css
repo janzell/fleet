@@ -269,9 +269,13 @@ a:active, a:hover {
     border-top: none;
 }
 
+.ant-descriptions-item-label {
+    text-transform: capitalize;
+}
 /** ----------------------------------.*
    Miscellaneous
 ---------------------------------------**/
+
 ::-webkit-input-placeholder {
     font-style: italic;
 }
@@ -360,3 +364,4 @@ a:active, a:hover {
 .button-container .ant-btn {
     margin-left: 10px;
 }
+

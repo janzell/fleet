@@ -1,0 +1,7 @@
+- args:
+    name: employment_histories
+    new_name: drivers_employment_histories
+    table:
+      name: drivers
+      schema: public
+  type: rename_relationship

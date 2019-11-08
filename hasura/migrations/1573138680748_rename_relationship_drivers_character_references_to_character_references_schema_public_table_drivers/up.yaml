@@ -1,0 +1,7 @@
+- args:
+    name: drivers_character_references
+    new_name: character_references
+    table:
+      name: drivers
+      schema: public
+  type: rename_relationship

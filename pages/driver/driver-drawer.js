@@ -61,7 +61,7 @@ const DriverDrawer = props => {
 
   return (
     <Drawer
-      width={600}
+      width="80%"
       title={title}
       placement="right"
       closable={false}

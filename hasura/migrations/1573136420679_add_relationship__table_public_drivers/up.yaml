@@ -1,0 +1,12 @@
+- args:
+    name: drivers_other_infos
+    table:
+      name: drivers
+      schema: public
+    using:
+      foreign_key_constraint_on:
+        column: driver_id
+        table:
+          name: drivers_other_info
+          schema: public
+  type: create_array_relationship

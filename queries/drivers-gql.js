@@ -1,11 +1,63 @@
 import {gql} from 'apollo-boost';
 
 const driverFields = `id
+    driver_number
     first_name
     last_name
+    middle_name
     license_number
-    address
-    contact_number
+    city_address
+    telephone_number
+    provincial_address
+    email_address
+    birthdate
+    birthplace
+    height
+    weight
+    religion
+    civil_status
+    citizenship
+    gender
+    spouse_name
+    spouse_address
+    occupation
+    father_name
+    father_occupation
+    mother_name
+    mother_occupation
+    parent_address
+    parent_tel_number
+    language
+    character_references {
+        name
+        position
+        telephone_number
+    }
+    educational_attainments {
+        primary_degree
+        primary_school_name
+        primary_year_attended
+        secondary_degree
+        secondary_school_name
+        secondary_year_attended
+        tertiary_degree
+        tertiary_school_name
+        tertiary_year_attended
+        vocational_degree
+        vocational_school_name
+        vocational_year_attended
+        special_skills
+        others
+    }
+    employment_histories {
+        company_name
+        position
+        start_date
+        end_date
+    }
+    other_infos { 
+        employment_status
+    }
     created_at
     updated_at
     `;

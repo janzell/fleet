@@ -1,0 +1,7 @@
+- args:
+    name: other_infos
+    new_name: drivers_other_infos
+    table:
+      name: drivers
+      schema: public
+  type: rename_relationship

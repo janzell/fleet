@@ -11,6 +11,7 @@ import {GET_DRIVERS_LIST, DELETE_DRIVER, GET_TOTAL_COUNT} from "./../../queries/
 import {successNotification} from '../../hooks/use-notification'
 import {useColumnFormatter} from "../../hooks/use-column-formatter";
 import ResourceQueryList from "../../components/resource-query-list";
+import DriverDetailDrawer from "./driver-detail-drawer";
 
 const {Search} = Input;
 
@@ -24,12 +25,13 @@ const {Search} = Input;
 const DriverList = props => {
 
   const listOptionsDefault = {limit: 15, offset: 0, order_by: [{updated_at: 'desc'}, {created_at: 'desc'}]};
-  const fields = ['first_name', 'last_name', 'license_number', 'address', 'contact_number', 'created_at', 'updated_at'];
+  const fields = ['driver_number', 'first_name', 'last_name', 'license_number', 'telephone_number', 'city_address', 'provincial_address', 'created_at', 'updated_at'];
 
   const [mode, setMode] = useState('add');
   const [driver, setDriver] = useState({});
 
   const [drawerVisibility, setDrawerVisibility] = useState(false);
+  const [driverDrawerVisibility, setDriverDrawerVisibility] = useState(false);
   const [confirmVisibility, setConfirmModalVisibility] = useState(false);
 
   const [toBeDeletedId, setToBeDeletedId] = useState(null);
@@ -37,10 +39,10 @@ const DriverList = props => {
   const [listOptions, setListOptions] = useState(listOptionsDefault);
   const [searchText, setSearchText] = useState('');
 
-  const handleFormMode = driver => {
-    setMode('edit');
-    setDriver(driver);
-    setDrawerVisibility(true);
+  const handleFormMode = (record, action) => {
+    setMode(action);
+    setDriver(record);
+    (action === 'view') ? setDriverDrawerVisibility(true) : setDrawerVisibility(true);
   };
 
   const showOrCancelConfirmModal = (visible, driver) => {
@@ -104,6 +106,15 @@ const DriverList = props => {
   useEffect(() => refreshResult(), [searchText]);
   useEffect(() => handleTotalCount(), []);
 
+  const driverDetailDrawer = {
+    listOptions,
+    driver,
+    mode,
+    visible: driverDrawerVisibility,
+    onOk: () => setDriverDrawerVisibility(false),
+    onCancel: () => setDriverDrawerVisibility(false)
+  };
+
   const drawerProps = {
     title: (mode === 'edit') ? 'Edit Driver' : 'New Driver',
     listOptions,
@@ -120,7 +131,6 @@ const DriverList = props => {
         <Row>
           <div className="right-content">
 
-            {/* make it reusable component? */}
             <PageHeader title="Driver">
               <div className="wrap">
                 <div className="content">List of drivers</div>
@@ -136,7 +146,6 @@ const DriverList = props => {
               </Row>
             </PageHeader>
 
-
             <ResourceQueryList {...{
               columns,
               query: GET_DRIVERS_LIST,
@@ -151,6 +160,9 @@ const DriverList = props => {
                                      onCancel={() => showOrCancelConfirmModal(false, null)}/>
 
             <DriverDrawer {...drawerProps}/>
+
+            <DriverDetailDrawer {...driverDetailDrawer}/>
+
           </div>
         </Row>
       </div>
