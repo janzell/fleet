@@ -1,4 +1,0 @@
-- args:
-    cascade: false
-    sql: CREATE TYPE civil_status AS ENUM ('single', 'married');
-  type: run_sql

@@ -1,3 +1,0 @@
-- args:
-    sql: alter table "public"."drop_units" drop constraint "drop_units_pkey";
-  type: run_sql

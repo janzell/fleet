@@ -1,6 +1,0 @@
-- args:
-    relationship: driver
-    table:
-      name: drivers_educational_attainment
-      schema: public
-  type: drop_relationship

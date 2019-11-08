@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."drivers" ADD COLUMN "height" text NULL;
-  type: run_sql

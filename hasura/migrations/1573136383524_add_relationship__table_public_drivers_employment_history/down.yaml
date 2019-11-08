@@ -1,6 +1,0 @@
-- args:
-    relationship: driver
-    table:
-      name: drivers_employment_history
-      schema: public
-  type: drop_relationship

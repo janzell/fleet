@@ -1,6 +1,0 @@
-- args:
-    relationship: drivers_other_infos
-    table:
-      name: drivers
-      schema: public
-  type: drop_relationship

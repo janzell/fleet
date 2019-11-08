@@ -1,4 +1,0 @@
-- args:
-    sql: "\n          alter table \"public\".\"drivers_character_reference\" drop
-      constraint \"drivers_character_reference_driver_id_fkey\"\n      "
-  type: run_sql

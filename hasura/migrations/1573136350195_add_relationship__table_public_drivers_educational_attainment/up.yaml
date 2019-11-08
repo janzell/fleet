@@ -1,8 +1,0 @@
-- args:
-    name: driver
-    table:
-      name: drivers_educational_attainment
-      schema: public
-    using:
-      foreign_key_constraint_on: driver_id
-  type: create_object_relationship

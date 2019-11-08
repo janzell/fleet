@@ -1,6 +1,0 @@
-- args:
-    sql: COMMENT ON COLUMN "public"."drivers"."address" IS E''
-  type: run_sql
-- args:
-    sql: alter table "public"."drivers" rename column "address" to "city_address";
-  type: run_sql

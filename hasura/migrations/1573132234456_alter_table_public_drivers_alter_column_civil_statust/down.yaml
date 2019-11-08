@@ -1,9 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."drivers" ALTER COLUMN "civil_statust" TYPE USER-DEFINED;
-  type: run_sql
-- args:
-    sql: COMMENT ON COLUMN "public"."drivers"."civil_statust" IS E'null'
-  type: run_sql
-- args:
-    sql: alter table "public"."drivers" rename column "civil_status" to "civil_statust";
-  type: run_sql

@@ -1,6 +1,0 @@
-- args:
-    sql: "\n           alter table \"public\".\"drivers_educational_attainment\"\n
-      \          add constraint \"drivers_educational_attainment_driver_id_fkey\"
-      \n           foreign key (\"driver_id\") \n           references \"public\".\"drivers\"\n
-      \          (\"id\") on update cascade on delete cascade;\n      "
-  type: run_sql

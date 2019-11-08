@@ -1,8 +1,0 @@
-- args:
-    name: series
-    table:
-      name: drop_units
-      schema: public
-    using:
-      foreign_key_constraint_on: series_id
-  type: create_object_relationship

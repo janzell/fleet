@@ -1,6 +1,0 @@
-- args:
-    relationship: drivers_character_references
-    table:
-      name: drivers
-      schema: public
-  type: drop_relationship

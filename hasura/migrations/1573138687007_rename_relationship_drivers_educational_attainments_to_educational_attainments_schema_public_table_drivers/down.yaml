@@ -1,7 +1,0 @@
-- args:
-    name: educational_attainments
-    new_name: drivers_educational_attainments
-    table:
-      name: drivers
-      schema: public
-  type: rename_relationship

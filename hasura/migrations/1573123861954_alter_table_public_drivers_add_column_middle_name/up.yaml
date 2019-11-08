@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."drivers" ADD COLUMN "middle_name" text NULL;
-  type: run_sql

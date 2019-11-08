@@ -1,6 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."drivers" ADD COLUMN "contact_number" text
-  type: run_sql
-- args:
-    sql: ALTER TABLE "public"."drivers" ALTER COLUMN "contact_number" DROP NOT NULL
-  type: run_sql

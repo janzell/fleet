@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."drivers" DROP COLUMN "parent_tel_number";
-  type: run_sql
